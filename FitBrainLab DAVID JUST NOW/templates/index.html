@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+{% block title %}Home - Fit Brain Lab{% endblock %}
+{% block content %}
+<section>
+<body>
+    <!-- Hero Section -->
+
+    <section class="index-section">
+        <div class="grid-container">
+            <div class="hero-title">
+                <div class="badge">Research Lab</div>
+                <h1 class="hero-heading">
+                Fit Brain Lab
+                </h1>
+                <p class="hero-description">
+                Exploring how physical activity enhances stress resilience in students through evidence-based research and community engagement.
+                </p>
+                <div class="btn-group">
+                <button class="primary-btn">
+                    Explore Our Research
+                    <span class="arrow-icon">→</span>
+                </button>
+                <button class="secondary-btn">Join Our Community</button>
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="{{ url_for('static', filename='images/placeholder.png') }}" alt="Main image" class="object-cover" />
+            </div>
+        </div>
+      </section>
+
+    <!-- Research Focus Section-->
+
+    <section class="index-section">
+        <div class="research-containe"> <!--NOT SPELLED PURPOSEFULY-->
+
+          <div class="research-title">
+                <div class="badge">Our Focus</div>
+                <h2 class="research-heading">Exercise & Stress Resilience</h2>
+                <p class="research-description">
+                    Our lab investigates how physical activity can enhance stress resilience, developing evidence-based interventions to improve mental well-being.
+                </p>
+          </div>
+
+          <div class="grid-container">
+            <img
+              src="{{ url_for('static', filename='images/placeholder.png') }}" 
+              width="600"
+              height="400"
+              alt="Research methodology visualization"
+              class="responsive-img"
+            />
+            <div class="research-features">
+                <ul class="research-features-list">
+
+                    <li class="research-feature-item">
+                        <div class="icon-wrapper">
+                          <img src="/static/icons/brain.svg" alt="Brain icon" class="icon" />
+                        </div>
+                        <div class="research-text-content">
+                          <h3>Brain Resilience</h3>
+                          <p>
+                            We pioneer research on exercise-based strategies to enhance stress resilience, with special focus on student populations.
+                          </p>
+                        </div>
+                    </li>
+
+
+                    <li class="research-feature-item">
+                        <div class="icon-wrapper">
+                          <img src="/static/icons/brain.svg" alt="Brain icon" class="icon" />
+                        </div>
+                        <div class="research-text-content">
+                          <h3>Neurobiological Mechanisms</h3>
+                          <p>
+                            Our lab investigates neurobiological mechanisms through human and animal studies to understand how physical activity protects the brain against chronic stressors.
+                         </p>
+                        </div>
+                    </li>
+
+                      
+                    <li class="research-feature-item">
+                        <div class="icon-wrapper">
+                          <img src="/static/icons/brain.svg" alt="Brain icon" class="icon" />
+                        </div>
+                        <div class="research-text-content">
+                          <h3>Exercise Interventions</h3>
+                          <p>
+                            We develop evidence-based exercise protocols that strengthen the brain's natural resilience systems.
+                        </p>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+          </div>
+        </div>
+    </section>
+      
+
+
+    
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="section-title">
+            <div class="badge">
+                <span class="badge-text">Did You Know?</span>
+            </div>
+            <h2>Facts You Might Not Know</h2>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>20 min</h3>
+                <p>Just 20 minutes of moderate exercise can boost your mood for up to 12 hours.</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>68%</h3>
+                <p>Students who exercise regularly are 68% more likely to report better stress management during exams.</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>30%</h3>
+                <p>Regular physical activity can improve your sleep quality by up to 30%, crucial for academic performance.</p>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Featured Initiatives -->
+    <section class="featured-initiatives">
+        <div class="section-title">
+            <div class="badge">
+                <span class="badge-text">Featured Initiatives</span>
+            </div>
+            <h2>Tools for Change</h2>
+            <p>Explore our community engagement and gamified habit-building initiatives.</p>
+        </div>
+
+        <div class="initiatives-grid">
+            <!-- Community Section -->
+            <div class="initiative-card">
+                <div class="initiative-content">
+                    <h3>Unlock Your Potential with a Community</h3>
+                    <p>Exercising with others builds more than strength: It creates shared goals, mutual support, and meaningful friendships. When you move together, you stay consistent, feel encouraged, and enjoy every step of the journey.</p>
+                    
+                    <div class="initiative-features">
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <h4>Interactive map of 50+ sports communities</h4>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <h4>Connect with like-minded students</h4>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <h4>Filter by sport type, location, and skill level</h4>
+                        </div>
+                    </div>
+                    
+                    <a href="#connect" class="primary-btn">Connect with Others</a>
+                </div>
+                <img src="https://placehold.co/550x364" alt="Community Image" class="initiative-image">
+            </div>
+
+            <!-- Habit Builder Section -->
+            <div class="initiative-card">
+                <img src="https://placehold.co/550x364" alt="Habit Builder Image" class="initiative-image">
+                <div class="initiative-content">
+                    <h3>Habit-Building Game</h3>
+                    <p>Our gamified approach to building healthy exercise habits helps students stay motivated and track their progress.</p>
+                    
+                    <div class="initiative-features">
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <h4>Compete with peers on our community leaderboard</h4>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <h4>Fun exercise challenges that build lasting habits</h4>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <h4>Unlock fascinating neuroscience facts about how physical activity transforms your brain</h4>
+                        </div>
+                    </div>
+                    
+                    <a href="#habit-builder" class="primary-btn">Try the Habit Builder</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="section-title">
+            <div class="badge">
+                <span class="badge-text">Our People</span>
+            </div>
+            <h2>Research Team</h2>
+            <p>Meet the interdisciplinary team of researchers, students, and staff behind our work.</p>
+        </div>
+
+        <div class="team-grid">
+            <div class="team-card">
+                <img src="https://placehold.co/256x235" alt="Team Member" class="team-image">
+                <div class="team-info">
+                    <h3>Joram Mul</h3>
+                    <p class="team-role">Lead Researcher (2019-Current)</p>
+                    <p class="team-description">Specializes in molecular adaptations in the brain that protect against stress and improve metabolic health.</p>
+                </div>
+            </div>
+            
+            <div class="team-card">
+                <img src="https://placehold.co/256x235" alt="Team Member" class="team-image">
+                <div class="team-info">
+                    <h3>Joram Mul</h3>
+                    <p class="team-role">Lead Researcher (2019-Current)</p>
+                    <p class="team-description">Specializes in molecular adaptations in the brain that protect against stress and improve metabolic health.</p>
+                </div>
+            </div>
+            
+            <div class="team-card">
+                <img src="https://placehold.co/256x235" alt="Team Member" class="team-image">
+                <div class="team-info">
+                    <h3>Joram Mul</h3>
+                    <p class="team-role">Lead Researcher (2019-Current)</p>
+                    <p class="team-description">Specializes in molecular adaptations in the brain that protect against stress and improve metabolic health.</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="#full-team" class="secondary-btn">Meet the Full Team</a>
+    </section>
+
+    <!-- Get Involved Section -->
+    <section class="get-involved">
+        <div class="get-involved-content">
+            <div class="section-title">
+                <h2>Get Involved</h2>
+                <p>Whether you're a student interested in participating in our research, a potential collaborator, or just curious about our work, we'd love to hear from you.</p>
+            </div>
+
+            <div class="involved-buttons">
+                <a href="#contact" class="primary-btn">Contact Us</a>
+                <a href="#internships" class="secondary-btn">Internship Opportunities</a>
+            </div>
+        </div>
+        <img src="https://placehold.co/610x404" alt="Get Involved Image" class="get-involved-image">
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-square"></div>
+                <div class="logo-text">
+                    <h1>FitBrain Lab</h1>
+                    <p>UvA</p>
+                </div>
+            </div>
+            
+            <div class="footer-nav">
+                <div class="footer-column">
+                    <h3>Column One</h3>
+                    <!-- Navigation links will be added here -->
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Column Two</h3>
+                    <!-- Navigation links will be added here -->
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Column Three</h3>
+                    <!-- Navigation links will be added here -->
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</section>
+{% endblock %}

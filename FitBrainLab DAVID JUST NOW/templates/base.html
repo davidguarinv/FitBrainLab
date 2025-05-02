@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Fit Brain Lab{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=The+Seasons&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Norwester&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo-container">
+        <!--
+        <div class="logo-square"></div>
+        -->
+        <div class="logo-text">
+            <h1>FitBrain Lab</h1>
+            <p>UvA</p>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/about" class="nav-link">About</a>
+        <a href="/research" class="nav-link">Research</a>
+        <a href="/publications" class="nav-link">Publications</a>
+        <a href="/communities" class="nav-link">Communities</a>
+        <a href="/game" class="nav-link">Game</a>
+        <a href="/login" class="nav-link">Login</a>
+        <a href="/signup" class="nav-link">Sign Up</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+      <div class="footer-logo">
+          <div class="logo-square"></div>
+          <div class="logo-text">
+              <h1>FitBrain Lab</h1>
+              <p>UvA</p>
+          </div>
+      </div>
+      
+      <div class="footer-nav">
+          <div class="footer-column">
+              <h3>Column One</h3>
+              <a href="#" class="footer-link">Twenty One</a>
+              <a href="#" class="footer-link">Thirty Two</a>
+              <a href="#" class="footer-link">Fourty Three</a>
+              <a href="#" class="footer-link">Fifty Four</a>
+          </div>
+          
+          <div class="footer-column">
+              <h3>Column Two</h3>
+              <a href="#" class="footer-link">Sixty Five</a>
+              <a href="#" class="footer-link">Seventy Six</a>
+              <a href="#" class="footer-link">Eighty Seven</a>
+              <a href="#" class="footer-link">Ninety Eight</a>
+          </div>
+          
+          <div class="footer-column">
+              <h3>Column Three</h3>
+              <a href="#" class="footer-link">One Hundred</a>
+              <a href="#" class="footer-link">One Hundred One</a>
+              <a href="#" class="footer-link">One Hundred Two</a>
+              <a href="#" class="footer-link">One Hundred Three</a>
+          </div>
+      </div>
+
+      <div class="footer-bottom">
+          <p>CompanyName @ 202X. All rights reserved.</p>
+          <div class="footer-links">
+              <a href="#" class="footer-link">Eleven</a>
+              <a href="#" class="footer-link">Twelve</a>
+              <a href="#" class="footer-link">Thirteen</a>
+          </div>
+      </div>
+  </div>
+</footer>
+
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Community{% endblock %}
+{% block content %}
+<section>
+    <body>
+        <div class="main-container">
+           
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="section-title">
+                    <h2>Communities</h2>
+                    <p>Find the perfect physical activity group that matches your interests, commitment level, and price</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Cards Section -->
+        <section class="community-cards">
+            <div class="community-grid">
+                <div class="community-card">
+                    <img src="https://placehold.co/160x160" alt="Community 1" class="community-image">
+                    <div class="community-info">
+                        <h3>Community1</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        <button class="learn-more-btn">Learn More →</button>
+                    </div>
+                </div>
+                <div class="community-card">
+                    <img src="https://placehold.co/160x160" alt="Community 2" class="community-image">
+                    <div class="community-info">
+                        <h3>Community2</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        <button class="learn-more-btn">Learn More →</button>
+                    </div>
+                </div>
+                <div class="community-card">
+                    <img src="https://placehold.co/160x160" alt="Community 3" class="community-image">
+                    <div class="community-info">
+                        <h3>Community3</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        <button class="learn-more-btn">Learn More →</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="pagination-btn disabled">Previous</button>
+            <div class="page-numbers">
+                <button class="page-number active">1</button>
+                <button class="page-number">2</button>
+                <button class="page-number">3</button>
+                <span>...</span>
+                <button class="page-number">67</button>
+                <button class="page-number">68</button>
+            </div>
+            <button class="pagination-btn">Next</button>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-container">
+                <div class="filter-btn active">Show All</div>
+                <div class="filter-btn">Multilingual</div>
+                <div class="filter-btn">Free</div>
+                <div class="filter-btn">Membership</div>
+                <div class="filter-btn">Indoor</div>
+                <div class="filter-btn">Outdoor</div>
+                <div class="filter-btn">English</div>
+            </div>
+            <div class="filter-all-btn">
+                <span>All Filters</span>
+                <div class="filter-icon"></div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="map-section">
+            <div class="map-image"></div>
+            <button class="look-map-btn">Look at the map</button>
+            <div class="search-container">
+                <input type="text" placeholder="Search" class="search-input">
+                <div class="search-icon"></div>
+            </div>
+        </div>
+
+        <!-- Contact Form Section -->
+        <section class="contact-form">
+            <div class="contact-container">
+              <!-- Left Panel -->
+              <div class="contact-info">
+                <h2>Share your community</h2>
+                <p>
+                  Know a great sports group that's not listed? Or couldn't find what you were looking for?
+                  Fill out the form — we'll update the list or get back to you!
+                </p>
+                <p>📞 +1 012 3456 789</p>
+                <p>📧 demo@gmail.com</p>
+                <p>📍 132 Dartmouth Street Boston,<br> Massachusetts 02156 United States</p>
+              </div>
+          
+              <!-- Right Panel -->
+              <form class="contact-form-content">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" placeholder="John">
+                  </div>
+                  <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" placeholder="Doe">
+                  </div>
+                </div>
+          
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="demo@gmail.com">
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="+1 012 3456 789">
+                  </div>
+                </div>
+          
+                <div class="form-group full-width">
+                  <label>Select Subject?</label>
+                  <div class="radio-group">
+                    <label><input type="radio" name="subject" checked> Suggest your community</label>
+                    <label><input type="radio" name="subject"> General Inquiry</label>
+                  </div>
+                </div>
+          
+                <div class="form-group full-width">
+                  <label for="message">Message</label>
+                  <textarea id="message" placeholder="Write your message.."></textarea>
+                </div>
+          
+                <button type="submit" class="submit-btn">Send Message</button>
+              </form>
+            </div>
+          </section>          
+    </body>
+</section>
+{% endblock %}

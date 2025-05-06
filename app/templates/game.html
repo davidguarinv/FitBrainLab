@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Game - Fit Brain Lab{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Left Column: Game Content -->
+        <div class="col-lg-8">
+            {% if current_user.is_authenticated %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="card-title h4 mb-3">Welcome back, {{ current_user.username }}!</h2>
+                    <p class="card-text">Ready to take on today's challenges?</p>
+                </div>
+            </div>
+            
+            <h3 class="h5 mb-3">Available Challenges</h3>
+            <div class="row g-4">
+                {% for challenge in sample_challenges %}
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h4 class="h6 mb-0">{{ challenge.title }}</h4>
+                                <span class="badge bg-{{ 'success' if challenge.difficulty == 'E' else 'warning' if challenge.difficulty == 'M' else 'danger' }}">
+                                    {{ challenge.difficulty }}
+                                </span>
+                            </div>
+                            <p class="card-text small mb-3">{{ challenge.description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small">{{ challenge.points }} points</span>
+                                <button class="btn btn-sm btn-primary">Start Challenge</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title h4 mb-3">Welcome to FitBrain Lab Game!</h2>
+                    <p class="card-text">Sign up or log in to start taking challenges and improving your mental fitness.</p>
+                    
+                    <!-- Login Form -->
+                    <form method="POST" action="{{ url_for('main.login') }}" class="mb-4">
+                        <h3 class="h5 mb-3">Login</h3>
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="loginEmail" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Log In</button>
+                    </form>
+
+                    <!-- Sign Up Form -->
+                    <form method="POST" action="{{ url_for('main.signup') }}">
+                        <h3 class="h5 mb-3">Sign Up</h3>
+                        <div class="mb-3">
+                            <label for="signupEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="signupEmail" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="signupPassword" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Leaderboard -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Leaderboard</h3>
+                    {% if top_users %}
+                    <div class="list-group list-group-flush">
+                        {% for user in top_users %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">{{ user.username }}</h6>
+                                {% if user.top_sport %}
+                                <small class="text-muted">{{ user.top_sport }}</small>
+                                {% endif %}
+                            </div>
+                            <span class="badge bg-primary rounded-pill">{{ loop.index }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No users on the leaderboard yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

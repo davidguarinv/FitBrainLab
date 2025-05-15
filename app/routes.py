@@ -1,24 +1,118 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.security import generate_password_hash
-from .models import db, User, Challenge, CompletedChallenge, InProgressChallenge
+from werkzeug.security import generate_password_hash, check_password_hash
+from . import db
+from .models import User, Challenge, CompletedChallenge, InProgressChallenge
+from .forms import LoginForm, RegistrationForm
 from datetime import datetime, timedelta
 from sqlalchemy import func
 
-bp = Blueprint('game', __name__, url_prefix='/game')
+# Create blueprint
+bp = Blueprint('main', __name__)
 
-# Main Routes
+# Main application routes
 @bp.route('/')
 def index():
-    # Get sample challenges for each difficulty
-    sample_challenges = {
-        'easy': Challenge.query.filter_by(difficulty='E').first(),
-        'medium': Challenge.query.filter_by(difficulty='M').first(),
-        'hard': Challenge.query.filter_by(difficulty='H').first()
-    }
-    
-    # Get top users for leaderboard
-    top_users = User.query.filter_by(is_public=True).limit(10).all()
+    return render_template('index.html')
+
+@bp.route('/about')
+def about():
+    return render_template('about.html')
+
+@bp.route('/research')
+def research():
+    return render_template('research.html')
+
+@bp.route('/publications')
+def publications():
+    return render_template('publications.html')
+
+@bp.route('/communities')
+def communities():
+    return render_template('communities.html')
+
+@bp.route('/game')
+def game():
+    # Get sample challenges and top users for the leaderboard
+    sample_challenges = [
+        {
+            'title': 'Morning Run',
+            'description': 'Start your day with a 20-minute jog',
+            'difficulty': 'E',
+            'points': 100
+        },
+        {
+            'title': 'HIIT Session',
+            'description': '30-minute high-intensity interval training',
+            'difficulty': 'M',
+            'points': 200
+        },
+        {
+            'title': 'Marathon Training',
+            'description': '2-hour endurance run',
+            'difficulty': 'H',
+            'points': 300
+        }
+    ]
+
+    with current_app.app_context():
+        top_users = User.query.filter_by(is_public=True).order_by(User.id.desc()).limit(10).all()
+    return render_template('game.html', sample_challenges=sample_challenges, top_users=top_users)
+
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+        
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid email or password', 'error')
+            return redirect(url_for('main.login'))
+            
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        return redirect(next_page or url_for('main.game'))
+        
+    return render_template('login.html', title='Sign In', form=form)
+
+@bp.route('/login-redirect')
+def login_redirect():
+    return redirect(url_for('main.login'))
+
+@bp.route('/signup-redirect')
+def signup_redirect():
+    return redirect(url_for('main.signup'))
+
+@bp.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.game'))
+        
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(
+            username=form.username.data,
+            email=form.email.data,
+            is_public=True
+        )
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('Congratulations, you are now a registered user!', 'success')
+        login_user(user)
+        return redirect(url_for('main.game'))
+        
+    return render_template('signup.html', title='Register', form=form)
+
+@bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.')
+    return redirect(url_for('main.game'))
     
     # Calculate total points for each user
     for user in top_users:
@@ -29,59 +123,9 @@ def index():
             CompletedChallenge.user_id == user.id
         ).scalar() or 0
         user.total_points = total_points
-    
-    return render_template('game.html', 
-                         sample_challenges=sample_challenges,
-                         top_users=top_users,
-                         user=current_user)
-
-@bp.route('/login', methods=['POST'])
-def login():
-    data = request.form
-    user = User.query.filter_by(email=data.get('email')).first()
-    
-    if user and user.check_password(data.get('password')):
-        login_user(user)
-        return redirect(url_for('game.index'))
-    
-    flash('Invalid email or password')
-    return redirect(url_for('game.index'))
-
-@bp.route('/signup', methods=['POST'])
-def signup():
-    data = request.form
-    email = data.get('email')
-    password = data.get('password')
-    
-    if not email or not password:
-        flash('Email and password are required')
-        return redirect(url_for('game.index'))
-    
-    if User.query.filter_by(email=email).first():
-        flash('Email already registered')
-        return redirect(url_for('game.index'))
-    
-    user = User(
-        username=User.generate_username(),
-        email=email,
-        is_public=True
-    )
-    user.set_password(password)
-    
-    db.session.add(user)
-    db.session.commit()
-    
-    login_user(user)
-    return redirect(url_for('game.index'))
-
-@bp.route('/logout', methods=['POST'])
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('game.index'))
 
 # API Routes
-@bp.route('/api/challenges')
+@bp.route('/api/challenges', methods=['GET'])
 @login_required
 def list_challenges():
     challenges = Challenge.query.all()
@@ -96,86 +140,153 @@ def list_challenges():
 @bp.route('/api/challenges/<int:challenge_id>/start', methods=['POST'])
 @login_required
 def start_challenge(challenge_id):
-    challenge = Challenge.query.get_or_404(challenge_id)
-    
     # Check if already in progress
-    if InProgressChallenge.query.filter_by(
+    existing = InProgressChallenge.query.filter_by(
         user_id=current_user.id,
         challenge_id=challenge_id
-    ).first():
-        return jsonify(msg="Challenge already in progress"), 400
+    ).first()
     
-    in_progress = InProgressChallenge(
+    if existing:
+        return jsonify({'status': 'already_started'})
+    
+    # Create new in-progress challenge
+    ip = InProgressChallenge(
         user_id=current_user.id,
-        challenge_id=challenge_id
+        challenge_id=challenge_id,
+        started_at=datetime.utcnow()
     )
-    db.session.add(in_progress)
+    db.session.add(ip)
     db.session.commit()
     
-    return jsonify(success=True)
+    return jsonify({'status': 'started', 'id': ip.id})
 
 @bp.route('/api/challenges/<int:challenge_id>/complete', methods=['POST'])
 @login_required
 def complete_challenge(challenge_id):
-    # Remove from in progress
-    in_progress = InProgressChallenge.query.filter_by(
+    # Check if in progress
+    ip = InProgressChallenge.query.filter_by(
         user_id=current_user.id,
         challenge_id=challenge_id
-    ).first_or_404()
+    ).first()
     
-    db.session.delete(in_progress)
+    if not ip:
+        return jsonify({'error': 'Challenge not started'}), 400
     
-    # Add to completed
+    # Get challenge details
+    challenge = Challenge.query.get_or_404(challenge_id)
+    
+    # Mark as completed
     completed = CompletedChallenge(
         user_id=current_user.id,
-        challenge_id=challenge_id
+        challenge_id=challenge_id,
+        completed_at=datetime.utcnow(),
+        points_earned=challenge.points
     )
+    
+    # Update user points
+    current_user.points = (current_user.points or 0) + challenge.points
+    
+    # Remove from in-progress
+    db.session.delete(ip)
     db.session.add(completed)
     db.session.commit()
     
-    return jsonify(success=True)
+    return jsonify({
+        'status': 'completed',
+        'points_earned': challenge.points,
+        'total_points': current_user.points
+    })
 
 @bp.route('/api/progress')
 @login_required
 def get_progress():
-    today = datetime.utcnow().date()
-    start_of_week = today - timedelta(days=today.weekday())
-    
-    # Get completed challenges for the week
+    # Get completed challenges
     completed = db.session.query(
-        func.date(CompletedChallenge.completed_at).label('date'),
-        func.sum(Challenge.points).label('points')
-    ).join(Challenge).filter(
-        CompletedChallenge.user_id == current_user.id,
-        CompletedChallenge.completed_at >= start_of_week
-    ).group_by('date').all()
+        Challenge,
+        CompletedChallenge.completed_at
+    ).join(
+        CompletedChallenge,
+        Challenge.id == CompletedChallenge.challenge_id
+    ).filter(
+        CompletedChallenge.user_id == current_user.id
+    ).all()
     
-    # Format as {date: points}
-    progress = {str(c.date): c.points for c in completed}
+    # Get in-progress challenges
+    in_progress = db.session.query(
+        Challenge,
+        InProgressChallenge.started_at
+    ).join(
+        InProgressChallenge,
+        Challenge.id == InProgressChallenge.challenge_id
+    ).filter(
+        InProgressChallenge.user_id == current_user.id
+    ).all()
     
-    return jsonify(progress)
+    return jsonify({
+        'completed': [{
+            'id': c.id,
+            'title': c.title,
+            'points': c.points,
+            'completed_at': completed_at.isoformat()
+        } for c, completed_at in completed],
+        'in_progress': [{
+            'id': c.id,
+            'title': c.title,
+            'started_at': started_at.isoformat()
+        } for c, started_at in in_progress],
+        'total_points': current_user.points or 0
+    })
 
 @bp.route('/api/leaderboard')
 def get_leaderboard():
-    today = datetime.utcnow().date()
-    start = today - timedelta(days=today.weekday())
-    board = []
+    # Get top users by points
+    top_users = db.session.query(
+        User,
+        db.func.coalesce(db.func.sum(CompletedChallenge.points_earned), 0).label('total_points')
+    ).outerjoin(
+        CompletedChallenge,
+        User.id == CompletedChallenge.user_id
+    ).filter(
+        User.is_public == True
+    ).group_by(
+        User.id
+    ).order_by(
+        db.desc('total_points')
+    ).limit(10).all()
     
-    for u in User.query.filter_by(is_public=True):
-        pts = db.session.query(func.sum(Challenge.points)).join(
-            CompletedChallenge,
-            Challenge.id == CompletedChallenge.challenge_id
+    # Add current user if not in top 10
+    current_user_data = None
+    if current_user.is_authenticated:
+        user_rank = db.session.query(
+            db.func.count(User.id)
         ).filter(
-            CompletedChallenge.user_id == u.id,
-            CompletedChallenge.completed_at >= start
-        ).scalar() or 0
+            User.is_public == True,
+            User.id != current_user.id,
+            db.func.coalesce(
+                db.func.sum(CompletedChallenge.points_earned).filter(
+                    CompletedChallenge.user_id == User.id
+                ), 0
+            ) > db.func.coalesce(
+                db.func.sum(CompletedChallenge.points_earned).filter(
+                    CompletedChallenge.user_id == current_user.id
+                ), 0
+            )
+        ).scalar() + 1
         
-        board.append({
-            'username': u.username,
-            'points': pts
-        })
+        current_user_data = {
+            'rank': user_rank,
+            'username': current_user.username,
+            'points': current_user.points or 0
+        }
     
-    return jsonify(sorted(board, key=lambda x: x['points'], reverse=True))
+    return jsonify({
+        'top_users': [{
+            'rank': i + 1,
+            'username': user.username,
+            'points': int(points)
+        } for i, (user, points) in enumerate(top_users)],
+        'current_user': current_user_data
+    })
 
 @bp.route('/api/profile')
 @login_required
@@ -184,28 +295,27 @@ def get_profile():
         'username': current_user.username,
         'email': current_user.email,
         'is_public': current_user.is_public,
-        'top_sport': current_user.top_sport
+        'points': current_user.points or 0,
+        'top_sport': current_user.top_sport,
+        'member_since': current_user.created_at.isoformat()
     })
 
 @bp.route('/api/profile', methods=['PUT'])
 @login_required
 def update_profile():
-    data = request.json
+    data = request.get_json()
     
+    if 'username' in data:
+        current_user.username = data['username']
+    if 'email' in data:
+        current_user.email = data['email']
     if 'is_public' in data:
         current_user.is_public = data['is_public']
-        
-    if 'top_sport' in data:
-        now = datetime.utcnow()
-        if not current_user.last_sport_update or (now - current_user.last_sport_update).days >= 30:
-            current_user.top_sport = data['top_sport']
-            current_user.last_sport_update = now
-            
-    if 'password' in data:
+    if 'password' in data and data['password']:
         current_user.set_password(data['password'])
-        
+    
     db.session.commit()
-    return jsonify(success=True)
+    return jsonify({'status': 'success'})
 
 @bp.route('/api/profile', methods=['DELETE'])
 @login_required
@@ -213,4 +323,4 @@ def delete_profile():
     db.session.delete(current_user)
     db.session.commit()
     logout_user()
-    return jsonify(success=True)
+    return jsonify({'status': 'account_deleted'})

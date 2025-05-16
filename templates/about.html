@@ -1,171 +1,800 @@
 {% extends "base.html" %}
 {% block title %}About{% endblock %}
 {% block content %}
-<section>
-<body>
-    <div class="main-container">
-        <!-- Hero Section -->
-        <div class="hero-section">
-            <img src="https://placehold.co/600x431" class="hero-image" />
-            <div class="hero-content">
-                <div class="hero-caption">
-                    <div class="hero-caption-title">About fitbrain lab</div>
-                    <div class="hero-caption-main">Stay Active and Fit</div>
+<main class="flex-1">
+    <!-- Hero Section -->
+    <section class="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-blue-50 to-blue-100/50">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col items-center text-center space-y-4 mb-8">
+            <div class="space-y-2">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+                Meet Our Researchers
+            </div>
+            <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">The Fit Brain Lab Team</h1>
+            <p class="max-w-[800px] text-gray-500 md:text-xl">
+                Meet our interdisciplinary team of researchers dedicated to understanding the connections between
+                exercise, brain function, and mental health.
+            </p>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Lab Mission Section -->
+    <section class="w-full py-12 md:py-24 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+            <div class="space-y-4">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+                Our Purpose
+            </div>
+            <h2 class="text-3xl font-bold tracking-tighter">Our Mission</h2>
+            <p class="text-gray-500">
+                The Fit Brain Lab investigates how physical activity affects brain function and mental health. Our
+                research spans from molecular mechanisms to behavioral interventions, with the goal of developing
+                evidence-based strategies to enhance stress resilience and mental wellbeing through exercise.
+            </p>
+            <p class="text-gray-500">
+                We employ a translational approach, combining animal models to understand neurobiological mechanisms
+                with human studies to develop and test interventions. Our interdisciplinary team brings together
+                expertise in neuroscience, psychology, exercise physiology, and data science.
+            </p>
+            <div class="flex items-center gap-4 pt-4">
+                <div class="flex items-center gap-2">
+                <!-- Map pin icon -->
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-5 w-5 text-blue-600"
+                >
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <span class="text-sm font-medium">Science Park, University of Amsterdam</span>
                 </div>
-                <div class="hero-description">
-                    Rhoncus morbi et augue nec, in id ullamcorper at sit. Condimentum sit nunc in eros scelerisque sed. Commodo in viverra nunc, ullamcorper ut. Non, amet, aliquet scelerisque nullam sagittis, pulvinar. Fermentum scelerisque sit consectetur hac mi. Mollis leo eleifend ultricies purus iaculis.
-                </div>
-                <div class="hero-buttons">
-                    <div class="hero-button-filled">
-                        <div class="hero-button-text">Research</div>
-                    </div>
-                    <div class="hero-button-outline">
-                        <div class="hero-button-text">Publications</div>
-                    </div>
+                <div class="flex items-center gap-2">
+                <!-- Building icon -->
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-5 w-5 text-blue-600"
+                >
+                    <rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect>
+                    <path d="M9 22v-4h6v4"></path>
+                    <path d="M8 6h.01"></path>
+                    <path d="M16 6h.01"></path>
+                    <path d="M12 6h.01"></path>
+                    <path d="M8 10h.01"></path>
+                    <path d="M16 10h.01"></path>
+                    <path d="M12 10h.01"></path>
+                    <path d="M8 14h.01"></path>
+                    <path d="M16 14h.01"></path>
+                    <path d="M12 14h.01"></path>
+                </svg>
+                <span class="text-sm font-medium">Swammerdam Institute for Life Sciences</span>
                 </div>
             </div>
+            </div>
+            <div class="relative h-[300px] rounded-xl overflow-hidden">
+            <img
+                src="/placeholder.svg?height=300&width=600"
+                alt="Fit Brain Lab team and facilities"
+                fill
+                class="object-cover"
+            />
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Principal Investigator Section -->
+    <section class="w-full py-12 md:py-24 bg-blue-50">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col items-start space-y-4 mb-8">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            Lab Director
+            </div>
+            <h2 class="text-2xl font-bold tracking-tighter md:text-3xl">Principal Investigator</h2>
         </div>
 
-        <!-- Goals Section -->
-        <div class="goals-section">
-            <div class="goals-header">
-                <div class="goals-title">Our Goals</div>
+        <div class="grid gap-8 md:grid-cols-3 items-start">
+            <div class="md:col-span-1">
+            <div class="relative h-[400px] w-full rounded-xl overflow-hidden">
+                <img
+                src="/placeholder.svg?height=400&width=300"
+                alt="Dr. Joram Mul"
+                fill
+                class="object-cover"
+                />
             </div>
-            <div class="goals-grid">
-                <div class="goal-item">
-                    <div class="goal-icon"></div>
-                    <div class="goal-text">Egestas elit dui scelerisque ut eu purus aliquam vitae habitasse.</div>
-                </div>
-                <div class="goal-item">
-                    <div class="goal-icon"></div>
-                    <div class="goal-text">Id eros pellentesque facilisi id mollis faucibus commodo enim.</div>
-                </div>
-                <div class="goal-item">
-                    <div class="goal-icon"></div>
-                    <div class="goal-text">Nunc, pellentesque velit malesuada non massa arcu.</div>
-                </div>
-                <div class="goal-item">
-                    <div class="goal-icon"></div>
-                    <div class="goal-text">Imperdiet purus pellentesque sit mi nibh sit integer faucibus.</div>
-                </div>
             </div>
+            <div class="md:col-span-2 space-y-6">
+            <div class="space-y-2">
+                <h3 class="text-2xl font-bold">Dr. Joram Mul</h3>
+                <p class="text-lg text-blue-600">Assistant Professor of Exercise Neurobiology</p>
+                <p class="text-gray-500">
+                Brain Plasticity group (Prof. Dr. Paul Lucassen)
+                <br />
+                Swammerdam Institute for Life Sciences, Faculty of Science
+                <br />
+                University of Amsterdam
+                </p>
+            </div>
+
+            <div class="space-y-2">
+                <h4 class="text-lg font-semibold">Education & Career</h4>
+                <ul class="space-y-2 text-gray-500">
+                <li class="flex items-start gap-2">
+                    <!-- Graduation cap icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
+                    >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <span>2005 Diploma in Biology, Utrecht University (the Netherlands)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
+                    >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <span>
+                    2010 Ph.D. in Neuroscience, Utrecht University (the Netherlands), with Prof. Dr. Edwin Cuppen
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
+                    >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <span>2011 Postdoctoral Fellow at University of Cincinnati with Prof. Dr. Randy Seeley</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
+                    >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <span>2013 Postdoctoral Fellow at Harvard University with Prof. Dr. Laurie Goodyear</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
+                    >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <span>2016 Postdoctoral Fellow at Amsterdam UMC with Prof. Dr. Susanne la Fleur</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
+                    >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <span>2019 Assistant Professor, University of Amsterdam</span>
+                </li>
+                </ul>
+            </div>
+
+            <div class="space-y-2">
+                <h4 class="text-lg font-semibold">Research Focus</h4>
+                <p class="text-gray-500">
+                Dr. Mul's research focuses on understanding the neurobiological mechanisms through which exercise
+                affects brain function and stress resilience. His work spans from molecular and cellular studies to
+                behavioral interventions, with a particular interest in translating findings from animal models to
+                human applications.
+                </p>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Current PhD Students Section -->
+    <section class="w-full py-12 md:py-24 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col items-start space-y-4 mb-8">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            Current Researchers
+            </div>
+            <h2 class="text-2xl font-bold tracking-tighter md:text-3xl">PhD Students</h2>
+            <p class="max-w-[800px] text-gray-500">
+            Our doctoral researchers are conducting innovative studies on the relationships between exercise, brain
+            function, and mental health.
+            </p>
         </div>
 
-        <!-- Team Section -->
-        <div class="team-section">
-            <div class="team-header">
-                <div class="team-title">Meet the FitBran Lab Team</div>
-                <div class="team-subtitle">We bring experts in all fields to understand how physical activity builds resilience</div>
-            </div>
-            <div class="team-grid">
-                <div class="team-member">
-                    <img src="https://placehold.co/256x235" class="member-image" />
-                    <div class="member-info">
-                        <div class="member-name">Joram Mul</div>
-                        <div class="member-role">Lead Researcher (2019-Current)</div>
-                        <div class="member-description">PhD in Molecular Biology, specializes in molecular adaptations in the brain that protect against stress and improve metabolic health.</div>
-                        <div class="member-contact">Contact Darrell</div>
-                    </div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Marene Hardonk -->
+            <div class="rounded-lg border bg-white shadow-sm">
+            <div class="p-6">
+                <div class="flex items-center gap-4">
+                <div class="relative h-16 w-16 rounded-full overflow-hidden">
+                    <img
+                    src="/placeholder.svg?height=64&width=64"
+                    alt="Marene Hardonk"
+                    fill
+                    class="object-cover"
+                    />
                 </div>
-                <div class="team-member">
-                    <img src="https://placehold.co/256x235" class="member-image" />
-                    <div class="member-info">
-                        <div class="member-name">Joram Mul</div>
-                        <div class="member-role">Lead Researcher (2019-Current)</div>
-                        <div class="member-description">PhD in Molecular Biology, specializes in molecular adaptations in the brain that protect against stress and improve metabolic health.</div>
-                        <div class="member-contact">Contact Darrell</div>
-                    </div>
+                <div>
+                    <h3 class="text-xl font-semibold">Marene Hardonk, MSc</h3>
+                    <p class="text-sm text-gray-500">Ph.D.-plus student, 02/2022 – 04/2026</p>
                 </div>
-                <div class="team-member">
-                    <img src="https://placehold.co/256x235" class="member-image" />
-                    <div class="member-info">
-                        <div class="member-name">Joram Mul</div>
-                        <div class="member-role">Lead Researcher (2019-Current)</div>
-                        <div class="member-description">PhD in Molecular Biology, specializes in molecular adaptations in the brain that protect against stress and improve metabolic health.</div>
-                        <div class="member-contact">Contact Darrell</div>
-                    </div>
-                </div>
-                <div class="team-member">
-                    <img src="https://placehold.co/256x235" class="member-image" />
-                    <div class="member-info">
-                        <div class="member-name">Joram Mul</div>
-                        <div class="member-role">Lead Researcher (2019-Current)</div>
-                        <div class="member-description">PhD in Molecular Biology, specializes in molecular adaptations in the brain that protect against stress and improve metabolic health.</div>
-                        <div class="member-contact">Contact Darrell</div>
-                    </div>
-                </div>
-                <div class="team-member">
-                    <img src="https://placehold.co/256x235" class="member-image" />
-                    <div class="member-info">
-                        <div class="member-name">Joram Mul</div>
-                        <div class="member-role">Lead Researcher (2019-Current)</div>
-                        <div class="member-description">PhD in Molecular Biology, specializes in molecular adaptations in the brain that protect against stress and improve metabolic health.</div>
-                        <div class="member-contact">Contact Darrell</div>
-                    </div>
                 </div>
             </div>
+            <div class="p-6 flex-1">
+                <div class="space-y-4">
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Education</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>B.Sc. University of Amsterdam</li>
+                    <li>M.Sc. University of Amsterdam</li>
+                    </ul>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Supervision</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                    <li>Co-supervisor: Prof. dr. Paul Lucassen (FNWI-UvA)</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Anneke Vuuregge -->
+            <div class="rounded-lg border bg-white shadow-sm">
+            <div class="p-6">
+                <div class="flex items-center gap-4">
+                <div class="relative h-16 w-16 rounded-full overflow-hidden">
+                    <img
+                    src="/placeholder.svg?height=64&width=64"
+                    alt="Anneke Vuuregge"
+                    fill
+                    class="object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold">Anneke Vuuregge, MSc</h3>
+                    <p class="text-sm text-gray-500">Ph.D. student, 04/2022 – 07/2026</p>
+                </div>
+                </div>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="space-y-4">
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Education</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>B.Sc. University of Amsterdam</li>
+                    <li>M.Sc. University of Amsterdam</li>
+                    </ul>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Supervision</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                    <li>Co-supervisors: Dr. Anouk Schrantee (Amsterdam UMC)</li>
+                    <li>Prof. dr. Paul Lucassen (SILS-UvA)</li>
+                    <li>Prof. dr. Claudi Bockting (Amsterdam UMC)</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Katarzyna Lasek -->
+            <div class="rounded-lg border bg-white shadow-sm">
+            <div class="p-6">
+                <div class="flex items-center gap-4">
+                <div class="relative h-16 w-16 rounded-full overflow-hidden">
+                    <img
+                    src="/placeholder.svg?height=64&width=64"
+                    alt="Katarzyna Lasek"
+                    fill
+                    class="object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold">Katarzyna (Kasia) Lasek, MSc</h3>
+                    <p class="text-sm text-gray-500">Ph.D. student, 01/2025 – 01/2029</p>
+                </div>
+                </div>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="space-y-4">
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Education</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>B.Sc. Tilburg University</li>
+                    <li>M.Sc. Maastricht University</li>
+                    </ul>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Supervision</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                    <li>Co-supervisors: Dr. Sanne de Wit (FMG-UvA)</li>
+                    <li>Dr. Sascha Struijs (VU)</li>
+                    <li>Prof. dr. Paul Lucassen (FNWI-UvA)</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- PhD and Postdoc Alumni Section -->
+    <section class="w-full py-12 md:py-24 bg-blue-50">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col items-start space-y-4 mb-8">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            Former Members
+            </div>
+            <h2 class="text-2xl font-bold tracking-tighter md:text-3xl">PhD and Postdoc Alumni</h2>
+            <p class="max-w-[800px] text-gray-500">
+            Former members of our lab who have contributed to our research mission.
+            </p>
         </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <div class="footer-logo">
-                <div class="footer-logo-content">
-                    <div class="footer-logo-text">FitBrain Lab</div>
-                    <div class="footer-logo-subtext">UvA</div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <!-- Amber Koert -->
+            <div class="rounded-lg border bg-white shadow-sm">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold">Amber Koert</h3>
+                <p class="text-sm text-gray-500">Ph.D. student, 2025 – 2029</p>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="space-y-4">
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Supervision</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                    <li>Co-supervisors: Dr. Anouk Schrantee (Amsterdam UMC)</li>
+                    <li>Prof. dr. Paul Lucassen (SILS-UvA)</li>
+                    <li>Prof. dr. Claudi Bockting (Amsterdam UMC)</li>
+                    </ul>
+                </div>
                 </div>
             </div>
-            <div class="footer-columns">
-                <div class="footer-column">
-                    <div class="footer-column-header">
-                        <div class="footer-column-header-text">Column One</div>
-                    </div>
-                    <div class="footer-column-content">
-                        <div class="footer-column-content-text">Twenty One</div>
-                        <div class="footer-column-content-text">Thirty Two</div>
-                        <div class="footer-column-content-text">Fourty Three</div>
-                        <div class="footer-column-content-text">Fifty Four</div>
-                    </div>
+            </div>
+
+            <!-- Margo Slomp -->
+            <div class="rounded-lg border bg-white shadow-sm">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold">Margo Slomp</h3>
+                <p class="text-sm text-gray-500">Ph.D. student, 2021 – 2024</p>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="space-y-4">
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Supervision</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>Direct supervisor: Prof. Dr. Susanne la Fleur (Amsterdam UMC)</li>
+                    <li>Co-supervisors: Dr. Joram Mul (FNWI-UvA)</li>
+                    <li>Dr. Anouk Schrantee (Amsterdam UMC)</li>
+                    </ul>
                 </div>
-                <div class="footer-column">
-                    <div class="footer-column-header">
-                        <div class="footer-column-header-text">Column Two</div>
-                    </div>
-                    <div class="footer-column-content">
-                        <div class="footer-column-content-text">Sixty Five</div>
-                        <div class="footer-column-content-text">Seventy Six</div>
-                        <div class="footer-column-content-text">Eighty Seven</div>
-                        <div class="footer-column-content-text">Ninety Eight</div>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <div class="footer-column-header">
-                        <div class="footer-column-header-text">Column Three</div>
-                    </div>
-                    <div class="footer-column-content">
-                        <div class="footer-column-content-text">One Two</div>
-                        <div class="footer-column-content-text">Three Four</div>
-                        <div class="footer-column-content-text">Five Six</div>
-                        <div class="footer-column-content-text">Seven Eight</div>
-                    </div>
                 </div>
             </div>
-            <div class="footer-divider"></div>
-            <div class="footer-copyright">
-                <div class="footer-copyright-text">CompanyName @ 202X. All rights reserved.</div>
-                <div class="footer-links">
-                    <div class="footer-link">
-                        <div class="footer-link-text">Eleven</div>
-                    </div>
-                    <div class="footer-link">
-                        <div class="footer-link-text">Twelve</div>
-                    </div>
-                    <div class="footer-link">
-                        <div class="footer-link-text">Thirteen</div>
-                    </div>
+            </div>
+
+            <!-- Muzeyyen Ugur -->
+            <div class="rounded-lg border bg-white shadow-sm">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold">Muzeyyen Ugur</h3>
+                <p class="text-sm text-gray-500">Ph.D. student, 2021 – 2024</p>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="space-y-4">
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Supervision</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>Direct supervisor: Prof. Dr. Susanne la Fleur (Amsterdam UMC)</li>
+                    <li>Co-supervisors: Dr. Joram Mul (FNWI-UvA)</li>
+                    </ul>
                 </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Dr. Wouter Cox -->
+            <div class="rounded-lg border bg-white shadow-sm">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold">Dr. Wouter Cox</h3>
+                <p class="text-sm text-gray-500">Postdoctoral Fellow, 2021 – 2024</p>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="space-y-4">
+                <div class="space-y-2">
+                    <h4 class="text-sm font-medium">Supervision</h4>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                    <li>Direct supervisor: Dr. Vanessa van Ast (FMG-UvA)</li>
+                    <li>Dr. Harm Krugers (FNWI-UvA)</li>
+                    <li>Dr. Joram Mul (FNWI-UvA)</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
             </div>
         </div>
-    </div>
-</body>
-</section>
+        </div>
+    </section>
+
+    <!-- Join Our Team Section -->
+    <section id="join-us" class="w-full py-12 md:py-24 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="grid gap-6 lg:grid-cols-2 lg:gap-12">
+            <div class="space-y-4">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+                Opportunities
+            </div>
+            <h2 class="text-3xl font-bold tracking-tighter">Join Our Team</h2>
+            <p class="text-gray-500">
+                We are always looking for motivated students and researchers who are interested in the intersection of
+                exercise, neuroscience, and mental health. If you are interested in an internship or working with our
+                lab, please fill out the form.
+            </p>
+            <div class="space-y-2">
+                <h3 class="text-xl font-semibold">What We Offer</h3>
+                <ul class="space-y-2 text-gray-500">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <!-- Brain icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-blue-600"
+                    >
+                        <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
+                        <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
+                        <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
+                        <path d="M7 22v-3"></path>
+                        <path d="M17 22v-3"></path>
+                        <path d="M12 22v-6"></path>
+                        <path d="M12 13v-3"></path>
+                        <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
+                    </svg>
+                    </div>
+                    <span>Hands-on experience with cutting-edge neuroscience research methods</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <!-- Users icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-blue-600"
+                    >
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    </div>
+                    <span>Mentorship from experienced researchers in a collaborative environment</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <!-- File text icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-blue-600"
+                    >
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" x2="8" y1="13" y2="13"></line>
+                        <line x1="16" x2="8" y1="17" y2="17"></line>
+                        <line x1="10" x2="8" y1="9" y2="9"></line>
+                    </svg>
+                    </div>
+                    <span>Opportunities to contribute to publications and present at conferences</span>
+                </li>
+                </ul>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-xl font-semibold">Current Opportunities</h3>
+                <ul class="space-y-2 text-gray-500">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <!-- Graduation cap icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-blue-600"
+                    >
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    </div>
+                    <span>Master's thesis projects in exercise neuroscience</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-blue-600"
+                    >
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    </div>
+                    <span>Bachelor's internships in laboratory techniques and data analysis</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-blue-600"
+                    >
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    </div>
+                    <span>Research assistant positions for recent graduates</span>
+                </li>
+                </ul>
+            </div>
+            </div>
+
+            <div class="space-y-4">
+            <div class="rounded-lg border bg-white shadow-sm">
+                <div class="p-6">
+                <h3 class="text-xl font-semibold">Contact Us</h3>
+                <p class="text-sm text-gray-500">
+                    Fill out this form to express your interest in joining our lab. We will get back to you as soon as
+                    possible.
+                </p>
+                </div>
+                <div class="p-6">
+                <form class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label htmlFor="first-name" class="text-sm font-medium">
+                        First Name
+                        </label>
+                        <input
+                        id="first-name"
+                        placeholder="Enter your first name"
+                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                    </div>
+                    <div class="space-y-2">
+                        <label htmlFor="last-name" class="text-sm font-medium">
+                        Last Name
+                        </label>
+                        <input
+                        id="last-name"
+                        placeholder="Enter your last name"
+                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                    </div>
+                    </div>
+                    <div class="space-y-2">
+                    <label htmlFor="email" class="text-sm font-medium">
+                        Email
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                    </div>
+                    <div class="space-y-2">
+                    <label htmlFor="phone" class="text-sm font-medium">
+                        Phone (optional)
+                    </label>
+                    <input
+                        id="phone"
+                        placeholder="Enter your phone number"
+                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                    </div>
+                    <div class="space-y-2">
+                    <label htmlFor="education" class="text-sm font-medium">
+                        Current Education/Position
+                    </label>
+                    <input
+                        id="education"
+                        placeholder="e.g., BSc Student, MSc Student, PhD Candidate"
+                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                    </div>
+                    <div class="space-y-2">
+                    <label htmlFor="interest" class="text-sm font-medium">
+                        Area of Interest
+                    </label>
+                    <input
+                        id="interest"
+                        placeholder="e.g., Exercise Neuroscience, Mental Health"
+                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                    </div>
+                    <div class="space-y-2">
+                    <label htmlFor="message" class="text-sm font-medium">
+                        Message
+                    </label>
+                    <textarea
+                        id="message"
+                        placeholder="Tell us about your background, research interests, and why you want to join our lab"
+                        rows={4}
+                        class="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    ></textarea>
+                    </div>
+                </form>
+                </div>
+                <div class="p-6">
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2 w-full">
+                    Submit Application
+                </button>
+                </div>
+            </div>
+            <div class="flex items-center justify-center gap-4 text-sm text-gray-500">
+                <div class="flex items-center gap-1">
+                <!-- Mail icon -->
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-4 w-4"
+                >
+                    <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                </svg>
+                <span>fitbrainlab@uva.nl</span>
+                </div>
+                <div class="flex items-center gap-1">
+                <!-- Phone icon -->
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-4 w-4"
+                >
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <span>+31 20 123 4567</span>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+</main>
 {% endblock %}

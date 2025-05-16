@@ -11,135 +11,86 @@
 </head>
 
 <body class="min-h-screen flex flex-col bg-gray-50">
-  <header class="header">
-    <div class="container">
-      <nav class="flex justify-between items-center h-16">
-        <div class="flex items-center">
-          <a href="{{ url_for('main.index') }}" class="text-xl font-bold text-gray-800 hover:text-primary">
-            FitBrain <span class="font-normal">Lab</span>
-          </a>
-        </div>
-        
-        <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center space-x-8">
-          <a href="{{ url_for('main.index') }}" class="text-gray-600 hover:text-primary transition-colors">Home</a>
-          <a href="{{ url_for('main.about') }}" class="text-gray-600 hover:text-primary transition-colors">About</a>
-          <a href="{{ url_for('main.research') }}" class="text-gray-600 hover:text-primary transition-colors">Research</a>
-          <a href="{{ url_for('main.publications') }}" class="text-gray-600 hover:text-primary transition-colors">Publications</a>
-          <a href="{{ url_for('main.communities') }}" class="text-gray-600 hover:text-primary transition-colors">Communities</a>
-          <a href="{{ url_for('main.game') }}" class="text-gray-600 hover:text-primary transition-colors">Game</a>
-          
-          {% if current_user.is_authenticated %}
-          <div class="flex items-center space-x-4 ml-4">
-            <span class="text-gray-700">Welcome, {{ current_user.username }}!</span>
-            <a href="{{ url_for('main.logout') }}" class="btn btn-secondary">Logout</a>
-          </div>
-          {% else %}
-          <div class="flex items-center space-x-4">
-            <a href="{{ url_for('main.login') }}" class="btn btn-secondary">Login</a>
-            <a href="{{ url_for('main.signup') }}" class="btn btn-primary">Sign Up</a>
-          </div>
-          {% endif %}
-        </div>
-        
-        <!-- Mobile menu button -->
-        <div class="md:hidden">
-          <button type="button" class="text-gray-500 hover:text-gray-600 focus:outline-none" id="mobile-menu-button">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-      </nav>
-      
-      <!-- Mobile menu -->
-      <div class="md:hidden hidden" id="mobile-menu">
-        <div class="pt-2 pb-3 space-y-1">
-          <a href="{{ url_for('main.index') }}" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Home</a>
-          <a href="{{ url_for('main.about') }}" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">About</a>
-          <a href="{{ url_for('main.research') }}" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Research</a>
-          <a href="{{ url_for('main.publications') }}" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Publications</a>
-          <a href="{{ url_for('main.communities') }}" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Communities</a>
-          <a href="{{ url_for('main.game') }}" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Game</a>
-          
-          {% if current_user.is_authenticated %}
-          <div class="pt-4 pb-3 border-t border-gray-200 mt-4">
-            <div class="px-3">
-              <div class="text-sm font-medium text-gray-500">Welcome, {{ current_user.username }}!</div>
-            </div>
-            <div class="mt-3 space-y-1">
-              <a href="{{ url_for('main.logout') }}" class="block w-full px-3 py-2 text-left text-base font-medium text-red-600 hover:bg-red-50">
-                Logout
-              </a>
-            </div>
-          </div>
-          {% else %}
-          <div class="pt-4 space-y-2">
-            <a href="{{ url_for('main.login') }}" class="block w-full px-3 py-2 text-center text-base font-medium text-primary hover:bg-gray-50">
-              Login
-            </a>
-            <a href="{{ url_for('main.signup') }}" class="block w-full px-3 py-2 text-center text-base font-medium text-white bg-primary rounded-md hover:bg-primary-dark">
-              Sign Up
-            </a>
-          </div>
-          {% endif %}
-        </div>
+  <header class="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+  <div class="container mx-auto flex h-16 items-center justify-between py-4 px-4 md:px-6">
+    <div class="flex items-center gap-2">
+      <!-- Brain icon -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="h-6 w-6"
+      >
+        <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
+        <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
+        <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
+        <path d="M7 22v-3"></path>
+        <path d="M17 22v-3"></path>
+        <path d="M12 22v-6"></path>
+        <path d="M12 13v-3"></path>
+        <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
+      </svg>
+      <span class="text-xl font-semibold">Fit Brain Lab</span>
+    </div>
+    <nav class="hidden md:flex items-center gap-6">
+      <a href="/" class="text-sm font-medium text-blue-600">Home</a>
+      <a href="/research" class="text-sm font-medium transition-colors hover:text-blue-600">Research</a>
+      <a href="/publications" class="text-sm font-medium transition-colors hover:text-blue-600">Publications</a>
+      <a href="/about" class="text-sm font-medium transition-colors hover:text-blue-600">About Us</a>
+      <a href="#community" class="text-sm font-medium transition-colors hover:text-blue-600">Communities</a>
+      <a href="#game" class="text-sm font-medium transition-colors hover:text-blue-600">Game </a>
+    </nav>
+    <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-9 px-4 py-2 md:hidden">
+      Menu
+    </button>
+  </div>
+</header>
+{% block content %}
+{% endblock %}
+
+
+<footer class="bg-gray-800 text-white py-8">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="text-lg font-bold mb-4">FitBrain Lab</h3>
+        <p class="text-gray-400">University of Amsterdam</p>
+        <p class="text-gray-400">Science Park 904, 1098 XH Amsterdam</p>
+      </div>
+      <div>
+        <h4 class="text-lg font-bold mb-4">Quick Links</h4>
+        <ul class="space-y-2">
+          <li><a href="{{ url_for('main.about') }}" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+          <li><a href="{{ url_for('main.research') }}" class="text-gray-400 hover:text-white transition-colors">Research</a></li>
+          <li><a href="{{ url_for('main.publications') }}" class="text-gray-400 hover:text-white transition-colors">Publications</a></li>
+          <li><a href="{{ url_for('main.communities') }}" class="text-gray-400 hover:text-white transition-colors">Communities</a></li>
+          <li><a href="{{ url_for('main.game') }}" class="text-gray-400 hover:text-white transition-colors">Game</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-lg font-bold mb-4">Connect</h4>
+        <ul class="space-y-2">
+          <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Twitter</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition-colors">GitHub</a></li>
+        </ul>
       </div>
     </div>
-  </header>
-
-  <main class="flex-grow">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="container mx-auto px-4 py-2">
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-              {{ message }}
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-    
-    {% block content %}{% endblock %}
-  </main>
-
-  <footer class="bg-gray-800 text-white py-8">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <h3 class="text-lg font-bold mb-4">FitBrain Lab</h3>
-          <p class="text-gray-400">University of Amsterdam</p>
-          <p class="text-gray-400">Science Park 904, 1098 XH Amsterdam</p>
-        </div>
-        <div>
-          <h4 class="text-lg font-bold mb-4">Quick Links</h4>
-          <ul class="space-y-2">
-            <li><a href="{{ url_for('main.about') }}" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-            <li><a href="{{ url_for('main.research') }}" class="text-gray-400 hover:text-white transition-colors">Research</a></li>
-            <li><a href="{{ url_for('main.publications') }}" class="text-gray-400 hover:text-white transition-colors">Publications</a></li>
-            <li><a href="{{ url_for('main.communities') }}" class="text-gray-400 hover:text-white transition-colors">Communities</a></li>
-            <li><a href="{{ url_for('main.game') }}" class="text-gray-400 hover:text-white transition-colors">Game</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-lg font-bold mb-4">Connect</h4>
-          <ul class="space-y-2">
-            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Twitter</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">GitHub</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-        <p>&copy; <span id="current-year"></span> FitBrain Lab. All rights reserved.</p>
-      </div>
-      <script>
-        // Set current year in footer
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-      </script>
+    <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+      <p>&copy; <span id="current-year"></span> FitBrain Lab. All rights reserved.</p>
     </div>
-  </footer>
+    <script>
+      // Set current year in footer
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+  </div>
+</footer>
 
   <script>
     // Mobile menu toggle

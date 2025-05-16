@@ -1,48 +1,555 @@
 {% extends "base.html" %}
 {% block title %}Research - Fit Brain Lab{% endblock %}
 {% block content %}
-<section class="research-page">
-    <div class="hero-section">
-        <div class="container">
-            <h1>Our Research</h1>
-            <p class="lead">Exploring the intersection of physical activity and cognitive resilience</p>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="research-areas">
-            <h2>Research Areas</h2>
-            <div class="research-grid">
-                <div class="research-card">
-                    <h3>Exercise & Brain Health</h3>
-                    <p>Investigating how different forms of physical activity impact cognitive function and brain plasticity.</p>
-                </div>
-                <div class="research-card">
-                    <h3>Stress Resilience</h3>
-                    <p>Understanding the mechanisms through which exercise enhances our ability to cope with stress.</p>
-                </div>
-                <div class="research-card">
-                    <h3>Student Well-being</h3>
-                    <p>Developing evidence-based interventions to support student mental health through physical activity.</p>
-                </div>
+<main class="flex-1">
+    <!-- Hero Section -->
+    <section class="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-blue-50 to-blue-100/50">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col items-center text-center space-y-4 mb-8">
+            <div class="space-y-2">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+                Our Research Focus
+            </div>
+            <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Research Projects</h1>
+            <p class="max-w-[800px] text-gray-500 md:text-xl">
+                Exploring the connections between physical activity, stress resilience, and mental health through
+                innovative research approaches.
+            </p>
             </div>
         </div>
+        </div>
+    </section>
 
-        <div class="current-projects">
-            <h2>Current Projects</h2>
-            <div class="project-list">
-                <div class="project-item">
-                    <h3>Exercise Intensity Study</h3>
-                    <p>Examining how different exercise intensities affect stress response and cognitive performance in university students.</p>
-                    <a href="#" class="learn-more">Learn More →</a>
+    <!-- Human Research Projects Section -->
+    <section class="w-full py-12 md:py-24 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col items-start space-y-4 mb-8">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            Human Studies
+            </div>
+            <h2 class="text-2xl font-bold tracking-tighter md:text-3xl">Research Projects</h2>
+            <p class="max-w-[800px] text-gray-500">
+            Our research projects investigate how physical activity affects mental health and stress resilience in
+            various populations. It provides insights into the neurobiological mechanisms underlying the effects of
+            exercise on stress resilience.
+            </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- StayFine Project Card -->
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-blue-300 transition-colors">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                <h3 class="text-xl font-semibold">StayFine Project</h3>
+                <p class="text-sm text-gray-500">Preventing relapse in adolescents</p>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="relative h-40 w-full mb-4 rounded-md overflow-hidden">
+                <img
+                    src="/placeholder.svg?height=160&width=320"
+                    alt="StayFine Project"
+                    fill
+                    class="object-cover"
+                />
                 </div>
-                <div class="project-item">
-                    <h3>Long-term Effects Study</h3>
-                    <p>A longitudinal study tracking the impact of regular physical activity on academic performance and stress levels.</p>
-                    <a href="#" class="learn-more">Learn More →</a>
+                <p class="text-sm text-gray-500 line-clamp-4">
+                A longitudinal randomized control trial assessing the efficacy of a personalized app to prevent
+                relapse in adolescents that remitted from depression and/or anxiety disorders.
+                </p>
+            </div>
+            <div class="flex items-center p-6">
+                <a href="/research/stayfine" class="w-full">
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full group">
+                    View Project
+                    <!-- Arrow right icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </button>
+                </a>
+            </div>
+            </div>
+
+            <!-- LEOPARD PREDICT Project Card -->
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-blue-300 transition-colors">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                <h3 class="text-xl font-semibold">LEOPARD PREDICT</h3>
+                <p class="text-sm text-gray-500">Predicting antidepressant response</p>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="relative h-40 w-full mb-4 rounded-md overflow-hidden">
+                <img
+                    src="/placeholder.svg?height=160&width=320"
+                    alt="LEOPARD PREDICT Project"
+                    fill
+                    class="object-cover"
+                />
+                </div>
+                <p class="text-sm text-gray-500 line-clamp-4">
+                Determining if we can predict antidepressant-treatment response in depressed patients within two
+                weeks of starting treatment using rsfMRI data and physical activity parameters.
+                </p>
+            </div>
+            <div class="flex items-center p-6">
+                <a href="/research/leopard-predict" class="w-full">
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full group">
+                    View Project
+                    <!-- Arrow right icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </button>
+                </a>
+            </div>
+            </div>
+
+            <!-- STRIDE-4-Mental Health Project Card -->
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-blue-300 transition-colors">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                <h3 class="text-xl font-semibold">STRIDE-4-Mental Health</h3>
+                <p class="text-sm text-gray-500">Exercise for student wellbeing</p>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="relative h-40 w-full mb-4 rounded-md overflow-hidden">
+                <img
+                    src="/placeholder.svg?height=160&width=320"
+                    alt="STRIDE-4-Mental Health Project"
+                    fill
+                    class="object-cover"
+                />
+                </div>
+                <p class="text-sm text-gray-500 line-clamp-4">
+                Applying a network approach to uncover factors influencing exercise persistence in students and its
+                relationships to mental health, personality, and lifestyle.
+                </p>
+            </div>
+            <div class="flex items-center p-6">
+                <a href="/research/stride-4" class="w-full">
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full group">
+                    View Project
+                    <!-- Arrow right icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </button>
+                </a>
+            </div>
+            </div>
+
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-blue-300 transition-colors">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                <h3 class="text-xl font-semibold">Brain Adaptations</h3>
+                <p class="text-sm text-gray-500">Stress resilience following exercise</p>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="relative h-40 w-full mb-4 rounded-md overflow-hidden">
+                <img
+                    src="/placeholder.svg?height=160&width=320"
+                    alt="Brain Adaptations Project"
+                    fill
+                    class="object-cover"
+                />
+                </div>
+                <p class="text-sm text-gray-500 line-clamp-4">
+                Investigating ΔFOSB and other brain adaptations driving stress resilience following voluntary wheel
+                running in animal models.
+                </p>
+            </div>
+            <div class="flex items-center p-6">
+                <a href="/research/brain-adaptations" class="w-full">
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full group">
+                    View Project
+                    <!-- Arrow right icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </button>
+                </a>
+            </div>
+            </div>
+
+            <!-- Template for Future Human Research Project -->
+            <div class="rounded-lg border border-dashed bg-card text-card-foreground shadow-sm hover:border-blue-200 transition-colors">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                <h3 class="text-xl font-semibold text-gray-500">Future Project</h3>
+                <p class="text-sm text-gray-500">Coming soon</p>
+            </div>
+            <div class="p-6 flex-1 flex items-center justify-center">
+                <div class="text-center p-6">
+                <!-- File text icon -->
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-12 w-12 text-gray-300 mx-auto mb-4"
+                >
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" x2="8" y1="13" y2="13"></line>
+                    <line x1="16" x2="8" y1="17" y2="17"></line>
+                    <line x1="10" x2="8" y1="9" y2="9"></line>
+                </svg>
+                <p class="text-sm text-gray-500">
+                    New human research projects will be added here as they are developed.
+                </p>
                 </div>
             </div>
+            <div class="flex items-center p-6">
+                <button
+                disabled
+                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white h-10 px-4 py-2 w-full"
+                >
+                Coming Soon
+                </button>
+            </div>
+            </div>
         </div>
-    </div>
-</section>
+        </div>
+    </section>
+
+    <!-- Animal Research Projects Section -->
+    <section class="w-full py-12 md:py-24 bg-blue-50">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col items-start space-y-4 mb-8">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            Animal Models
+            </div>
+            <h2 class="text-2xl font-bold tracking-tighter md:text-3xl">Animal Model Research Projects</h2>
+            <p class="max-w-[800px] text-gray-500">
+            Our animal model research provides insights into the neurobiological mechanisms underlying the effects
+            of exercise on stress resilience.
+            </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Brain Adaptations Project Card -->
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-blue-300 transition-colors">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                <h3 class="text-xl font-semibold">Brain Adaptations</h3>
+                <p class="text-sm text-gray-500">Stress resilience following exercise</p>
+            </div>
+            <div class="p-6 flex-1">
+                <div class="relative h-40 w-full mb-4 rounded-md overflow-hidden">
+                <img
+                    src="/placeholder.svg?height=160&width=320"
+                    alt="Brain Adaptations Project"
+                    fill
+                    class="object-cover"
+                />
+                </div>
+                <p class="text-sm text-gray-500 line-clamp-4">
+                Investigating ΔFOSB and other brain adaptations driving stress resilience following voluntary wheel
+                running in animal models.
+                </p>
+            </div>
+            <div class="flex items-center p-6">
+                <a href="/research/brain-adaptations" class="w-full">
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full group">
+                    View Project
+                    <!-- Arrow right icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </button>
+                </a>
+            </div>
+            </div>
+
+            <!-- Template for Future Animal Research Project -->
+            <div class="rounded-lg border border-dashed bg-card text-card-foreground shadow-sm hover:border-blue-200 transition-colors">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                <h3 class="text-xl font-semibold text-gray-500">Future Project</h3>
+                <p class="text-sm text-gray-500">Coming soon</p>
+            </div>
+            <div class="p-6 flex-1 flex items-center justify-center">
+                <div class="text-center p-6">
+                <!-- Flask icon -->
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-12 w-12 text-gray-300 mx-auto mb-4"
+                >
+                    <path d="M9 3h6"></path>
+                    <path d="M10 3v4"></path>
+                    <path d="M14 3v4"></path>
+                    <path d="M6 8h12a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2Z"></path>
+                    <path d="M5 14h14a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1Z"></path>
+                    <path d="M5 18h14a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1Z"></path>
+                </svg>
+                <p class="text-sm text-gray-500">
+                    New animal model research projects will be added here as they are developed.
+                </p>
+                </div>
+            </div>
+            <div class="flex items-center p-6">
+                <button
+                disabled
+                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white h-10 px-4 py-2 w-full"
+                >
+                Coming Soon
+                </button>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Research Approach Section -->
+    <section class="w-full py-12 md:py-24 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+            <div class="space-y-4">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+                Methodology
+            </div>
+            <h2 class="text-3xl font-bold tracking-tighter">Our Research Approach</h2>
+            <p class="text-gray-500">
+                Our lab employs a multi-disciplinary approach to understand the complex relationships between physical
+                activity, stress resilience, and mental health.
+            </p>
+            <ul class="space-y-2">
+                <li class="flex items-start gap-2">
+                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <!-- Brain icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-4 w-4 text-blue-600"
+                    >
+                    <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
+                    <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
+                    <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
+                    <path d="M7 22v-3"></path>
+                    <path d="M17 22v-3"></path>
+                    <path d="M12 22v-6"></path>
+                    <path d="M12 13v-3"></path>
+                    <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
+                    </svg>
+                </div>
+                <span>Combining neuroscience, psychology, and exercise physiology</span>
+                </li>
+                <li class="flex items-start gap-2">
+                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <!-- Users icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-4 w-4 text-blue-600"
+                    >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <span>Translational research from animal models to human applications</span>
+                </li>
+                <li class="flex items-start gap-2">
+                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <!-- Microscope icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="h-4 w-4 text-blue-600"
+                    >
+                    <path d="M6 18h8"></path>
+                    <path d="M3 22h18"></path>
+                    <path d="M14 22a7 7 0 1 0 0-14h-1"></path>
+                    <path d="M9 14h2"></path>
+                    <path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"></path>
+                    <path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"></path>
+                    </svg>
+                </div>
+                <span>Innovative methodologies including neuroimaging and wearable technology</span>
+                </li>
+            </ul>
+            </div>
+            <div class="relative h-[300px] rounded-xl overflow-hidden">
+            <img
+                src="/placeholder.svg?height=300&width=600"
+                alt="Research approach visualization"
+                fill
+                class="object-cover"
+            />
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Publications Preview -->
+    <section class="w-full py-12 md:py-24 bg-blue-50">
+        <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col items-center text-center space-y-4 mb-8">
+            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            Academic Output
+            </div>
+            <h2 class="text-3xl font-bold tracking-tighter">Recent Publications</h2>
+            <p class="max-w-[800px] text-gray-500">
+            Our research findings are regularly published in peer-reviewed journals and presented at international
+            conferences.
+            </p>
+        </div>
+
+        <div class="mx-auto max-w-5xl space-y-4">
+            {[1, 2, 3].map((i) => (
+            <div key={i} class="rounded-lg border bg-white shadow-sm flex flex-col md:flex-row overflow-hidden">
+                <div class="p-6 flex-1">
+                <p class="text-sm text-gray-500 mb-2">Journal of Exercise Psychology, 2023</p>
+                <h3 class="text-xl font-bold mb-2">
+                    Exercise and Cortisol Response in University Students During Examination Periods
+                </h3>
+                <p class="text-sm text-gray-500 mb-4 line-clamp-2">
+                    This study examined the relationship between regular physical activity and cortisol levels during
+                    exam periods, finding significant stress-buffering effects in students who maintained consistent
+                    exercise routines.
+                </p>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium">Authors:</span>
+                    <span class="text-sm text-gray-500">Smith J, Johnson A, Williams B, et al.</span>
+                </div>
+                </div>
+                <div class="p-6 border-t md:border-t-0 md:border-l flex flex-col justify-center items-center md:w-48">
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full group">
+                    Read Paper
+                    <!-- Arrow right icon -->
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </button>
+                </div>
+            </div>
+            ))}
+
+            <div class="flex justify-center mt-8">
+            <a href="/publications">
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2">
+                View All Publications
+                <!-- Arrow right icon -->
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    class="ml-2 h-4 w-4"
+                >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                </svg>
+                </button>
+            </a>
+            </div>
+        </div>
+        </div>
+    </section>
+</main>
 {% endblock %}

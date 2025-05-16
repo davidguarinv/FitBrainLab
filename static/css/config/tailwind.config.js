@@ -1,74 +1,78 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+module.exports = {darkMode: ["class"],
   content: [
-    "../../templates/**/*.html",
-    "../../app/templates/**/*.html",
-    "../../static/js/**/*.js",
-    "../../app/static/js/**/*.js"
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+    "*.{js,ts,jsx,tsx,mdx}",
   ],
+  prefix: "",
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: 'var(--primary-color)',
-          dark: 'var(--primary-hover)'
+          DEFAULT: "hsl(221, 83%, 53%)", // Adjusted to a navy blue
+          foreground: "hsl(var(--primary-foreground))",
         },
-        gray: {
-          100: 'var(--gray-100)',
-          200: 'var(--gray-200)',
-          300: 'var(--gray-300)',
-          400: 'var(--gray-400)',
-          500: 'var(--gray-500)',
-          600: 'var(--gray-600)',
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
-        blue: {
-          500: 'var(--blue-500)',
-          600: 'var(--blue-600)',
-          700: 'var(--blue-700)',
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
-        red: {
-          500: 'var(--red-500)'
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
-        green: {
-          500: 'var(--green-500)'
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
-        yellow: {
-          500: 'var(--yellow-500)'
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
-        secondary: 'var(--text-secondary)',
-        'text-color': 'var(--text-color)',
-        'text-secondary': 'var(--text-secondary)',
-        'text-brand': 'var(--text-brand)',
-        'border-color': 'var(--border-color)',
-        'background-default': 'var(--background-default)',
-        'background-neutral': 'var(--background-neutral)',
-        'background-brand': 'var(--background-brand)',
-        'background-light': 'var(--background-light)',
-        'background-placeholder': 'var(--background-placeholder)',
-      },
-      fontFamily: {
-        sans: ['Roboto', 'Inter', 'sans-serif'],
-      },
-      spacing: {
-        'xs': 'var(--spacing-xs)',
-        'sm': 'var(--spacing-sm)',
-        'md': 'var(--spacing-md)',
-        'lg': 'var(--spacing-lg)',
-        'xl': 'var(--spacing-xl)',
-        '2xl': 'var(--spacing-2xl)',
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
       borderRadius: {
-        'sm': 'var(--border-radius-sm)',
-        'md': 'var(--border-radius-md)',
-        'lg': 'var(--border-radius-lg)',
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
-      boxShadow: {
-        'sm': 'var(--shadow-sm)',
-        'DEFAULT': 'var(--shadow)',
-        'md': 'var(--shadow-md)',
-        'lg': 'var(--shadow-lg)',
-      }
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")]
+
 }

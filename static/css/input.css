@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
     :root {
+
+
+      
       --background: 0 0% 100%;
       --foreground: 222.2 84% 4.9%;
       --card: 0 0% 100%;
@@ -49,11 +53,30 @@
     }
   }
   
-  @layer base {
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background text-foreground;
-    }
+
+@layer base {
+  * {
+    @apply border-border;
   }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@theme {
+
+/* HAVENT ACTUALLY CHANGED THE STYLING JUST BEGINNING TO BUILD THE THEME */
+
+  --color-bg-first: #F9FAFB; /* greyish white  gray-50*/
+  --color-bg-second: #F3F4F6    /* grey         gray-100*/
+  --color-bg-third:   ;      /*  blue */
+  --color-bg-footer:   ;      /*  dunno */
+
+  --color-ctext:  #000000; /* Already by default if you do not change text color.  Black */
+  --color-ctext-second: #6B7280; /* used for secondary text  gray-400 */
+
+  --color-white: #FFFFFF;  /* often used in some button backgrounds and stuff     white */
+  --color-accent:#2563EB;      /* blue accent    blue-600 */
+  --color-accent-bg: #DBEAFE;      /* For the small labels    blue-100*/
+  --color-accent-300: #93C5FD;    /* used for some hovering buttons */
+}

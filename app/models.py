@@ -80,7 +80,7 @@ class Challenge(db.Model):
     description = db.Column(db.String(500), nullable=False)
     difficulty = db.Column(db.String(1), nullable=False)  # 'E', 'M', 'H'
     points = db.Column(db.Integer, nullable=False)
-    regen_hours = db.Column(db.Integer, default=6)  # Hours before challenge regenerates
+    regen_hours = db.Column(db.Integer, default=6)  # Hours before challenge ates
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationships
@@ -98,6 +98,7 @@ class CompletedChallenge(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=False)
     completed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    points_earned = db.Column(db.Integer, nullable=True)  # Store points earned when completing the challenge
 
 
 # -------------------------

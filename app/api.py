@@ -9,24 +9,30 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 @bp.route('/challenges/<int:challenge_id>/start', methods=['POST'])
 @login_required
 def start_challenge(challenge_id):
+    from flask import flash, redirect, url_for
     challenge = Challenge.query.get_or_404(challenge_id)
     
     # Check if user can take this challenge
     if not current_user.can_take_challenge(challenge.difficulty):
-        return jsonify({
-            'success': False,
-            'message': f'You have reached your daily limit for {challenge.difficulty} challenges'
-        })
+        flash(f'You have reached your daily limit for {challenge.difficulty} challenges', 'error')
+        return redirect(url_for('main.game', section='challenges'))
     
     # Check if challenge is already in progress
     if InProgressChallenge.query.filter_by(
         user_id=current_user.id,
         challenge_id=challenge_id
     ).first():
-        return jsonify({
-            'success': False,
-            'message': 'Challenge already in progress'
-        })
+        flash('Challenge already in progress', 'info')
+        return redirect(url_for('main.game', section='challenges'))
+    
+    # Check if user already has 2 challenges in progress
+    in_progress_count = InProgressChallenge.query.filter_by(
+        user_id=current_user.id
+    ).count()
+    
+    if in_progress_count >= 2:
+        flash('You can only have 2 challenges in progress at once', 'error')
+        return redirect(url_for('main.game', section='challenges'))
     
     # Start the challenge
     in_progress = InProgressChallenge(
@@ -36,11 +42,14 @@ def start_challenge(challenge_id):
     db.session.add(in_progress)
     db.session.commit()
     
-    return jsonify({'success': True})
+    # Redirect to the challenges page with the active challenge
+    flash('Challenge started successfully!', 'success')
+    return redirect(url_for('main.game', section='challenges', active=challenge_id))
 
 @bp.route('/challenges/<int:challenge_id>/complete', methods=['POST'])
 @login_required
 def complete_challenge(challenge_id):
+    from flask import flash, redirect, url_for
     # Check if challenge is in progress
     in_progress = InProgressChallenge.query.filter_by(
         user_id=current_user.id,
@@ -52,7 +61,8 @@ def complete_challenge(challenge_id):
     # Complete the challenge
     completed = CompletedChallenge(
         user_id=current_user.id,
-        challenge_id=challenge_id
+        challenge_id=challenge_id,
+        points_earned=challenge.points
     )
     db.session.add(completed)
     
@@ -68,11 +78,14 @@ def complete_challenge(challenge_id):
     db.session.delete(in_progress)
     db.session.commit()
     
-    return jsonify({'success': True})
+    # Redirect to the progress page
+    flash('Challenge completed successfully!', 'success')
+    return redirect(url_for('main.game', section='progress'))
 
 @bp.route('/challenges/<int:challenge_id>/abandon', methods=['POST'])
 @login_required
 def abandon_challenge(challenge_id):
+    from flask import flash, redirect, url_for
     # Check if challenge is in progress
     in_progress = InProgressChallenge.query.filter_by(
         user_id=current_user.id,
@@ -83,7 +96,9 @@ def abandon_challenge(challenge_id):
     db.session.delete(in_progress)
     db.session.commit()
     
-    return jsonify({'success': True})
+    # Redirect to the challenges page
+    flash('Challenge abandoned.', 'info')
+    return redirect(url_for('main.game', section='challenges'))
 
 @bp.route('/profile/toggle-visibility', methods=['POST'])
 @login_required

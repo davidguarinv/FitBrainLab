@@ -86,11 +86,26 @@ def game(section='challenges'):
     # Get available challenges
     challenges = Challenge.query.all()
     
+    # Get in-progress challenges for the current user if authenticated
+    in_progress_challenges = []
+    if current_user.is_authenticated:
+        in_progress = InProgressChallenge.query.filter_by(user_id=current_user.id).all()
+        in_progress_challenge_ids = [c.challenge_id for c in in_progress]
+        in_progress_challenges = Challenge.query.filter(Challenge.id.in_(in_progress_challenge_ids)).all() if in_progress_challenge_ids else []
+    
+    # Filter out in-progress challenges from available challenges
+    available_challenges = [c for c in challenges if current_user.is_authenticated and c.id not in [ic.id for ic in in_progress_challenges] or not current_user.is_authenticated]
+    
+    # Limit challenges by difficulty according to specifications (3 easy, 2 medium, 1 hard)
+    import random
     challenges_by_difficulty = {
-        'E': [c for c in challenges if c.difficulty == 'E'],
-        'M': [c for c in challenges if c.difficulty == 'M'],
-        'H': [c for c in challenges if c.difficulty == 'H']
+        'E': random.sample([c for c in available_challenges if c.difficulty == 'E'], min(3, len([c for c in available_challenges if c.difficulty == 'E']))),
+        'M': random.sample([c for c in available_challenges if c.difficulty == 'M'], min(2, len([c for c in available_challenges if c.difficulty == 'M']))),
+        'H': random.sample([c for c in available_challenges if c.difficulty == 'H'], min(1, len([c for c in available_challenges if c.difficulty == 'H'])))
     }
+    
+    # Add in-progress challenges to the context
+    challenges_by_difficulty['in_progress'] = in_progress_challenges
     
     # Get recent completed challenges by any user
     recent_completed_challenges = db.session.query(
@@ -253,7 +268,16 @@ def start_challenge(challenge_id):
     ).first()
     
     if existing:
-        return jsonify({'status': 'already_started'})
+        return redirect(url_for('main.game', section='challenges', active=challenge_id))
+    
+    # Check if user already has 2 challenges in progress
+    in_progress_count = InProgressChallenge.query.filter_by(
+        user_id=current_user.id
+    ).count()
+    
+    if in_progress_count >= 2:
+        flash('You can only have 2 challenges in progress at once', 'error')
+        return redirect(url_for('main.game', section='challenges'))
     
     # Create new in-progress challenge
     ip = InProgressChallenge(
@@ -264,7 +288,8 @@ def start_challenge(challenge_id):
     db.session.add(ip)
     db.session.commit()
     
-    return jsonify({'status': 'started', 'id': ip.id})
+    # Redirect to challenges page with active challenge
+    return redirect(url_for('main.game', section='challenges', active=challenge_id))
 
 @bp.route('/api/challenges/<int:challenge_id>/complete', methods=['POST'])
 @login_required
@@ -276,7 +301,8 @@ def complete_challenge(challenge_id):
     ).first()
     
     if not ip:
-        return jsonify({'error': 'Challenge not started'}), 400
+        flash('Challenge not started', 'error')
+        return redirect(url_for('main.game', section='challenges'))
     
     # Get challenge details
     challenge = Challenge.query.get_or_404(challenge_id)
@@ -289,19 +315,14 @@ def complete_challenge(challenge_id):
         points_earned=challenge.points
     )
     
-    # Update user points
-    current_user.points = (current_user.points or 0) + challenge.points
-    
-    # Remove from in-progress
+    # Remove from in-progress and add completed challenge
     db.session.delete(ip)
     db.session.add(completed)
     db.session.commit()
     
-    return jsonify({
-        'status': 'completed',
-        'points_earned': challenge.points,
-        'total_points': current_user.points
-    })
+    # Flash a success message and redirect to progress page
+    flash('Challenge completed successfully!', 'success')
+    return redirect(url_for('main.game', section='progress'))
 
 @bp.route('/api/progress')
 @login_required

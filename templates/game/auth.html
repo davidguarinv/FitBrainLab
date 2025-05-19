@@ -1,0 +1,92 @@
+<!-- Auth Section -->
+<div class="bg-white rounded-lg shadow-sm p-8" x-data="{ activeTab: 'login', generatedUsername: '' }" x-init="generatedUsername = generateUsername()">
+    <h2 class="text-2xl font-bold mb-6">Welcome to FitBrain Lab Game!</h2>
+    <p class="text-gray-600 mb-8">Sign up or log in to start taking challenges and improving your mental fitness.</p>
+    
+    <!-- Auth Tabs -->
+    <div class="flex space-x-4 mb-8 border-b border-gray-200">
+        <button @click="activeTab = 'login'" 
+                :class="{'text-primary border-b-2 border-primary': activeTab === 'login', 
+                         'text-gray-500 hover:text-gray-700': activeTab !== 'login'}"
+                class="px-3 py-2 text-sm font-medium rounded-md">Login</button>
+        <button @click="activeTab = 'signup'"
+                :class="{'text-primary border-b-2 border-primary': activeTab === 'signup',
+                         'text-gray-500 hover:text-gray-700': activeTab !== 'signup'}"
+                class="px-3 py-2 text-sm font-medium rounded-md">Sign Up</button>
+    </div>
+
+    <div class="space-y-6">
+        <!-- Login Form -->
+        <div class="space-y-6" x-show="activeTab === 'login'" x-transition>
+            <h3 class="text-xl font-semibold">Login</h3>
+            <form method="POST" action="{{ url_for('main.login') }}" class="space-y-4">
+                {{ login_form.csrf_token }}
+                <div>
+                    <label for="loginEmail" class="block text-sm font-medium text-gray-700">Email address</label>
+                    <input type="email" id="loginEmail" name="email" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                </div>
+                <div>
+                    <label for="loginPassword" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="loginPassword" name="password" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                </div>
+                <button type="submit" 
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    Log In
+                </button>
+            </form>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div class="space-y-6" x-show="activeTab === 'signup'" x-transition>
+            <h3 class="text-xl font-semibold">Sign Up</h3>
+            <form method="POST" action="{{ url_for('main.signup') }}" class="space-y-4">
+                {{ signup_form.csrf_token }}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Username</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input type="text" id="signupUsername" name="username" x-model="generatedUsername" readonly required
+                               class="flex-1 block w-full rounded-l-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary bg-gray-50">
+                        <button type="button" @click="generatedUsername = generateUsername()"
+                                class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 text-gray-500 hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label for="signupEmail" class="block text-sm font-medium text-gray-700">Email address</label>
+                    <input type="email" id="signupEmail" name="email" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                </div>
+                <div>
+                    <label for="signupPassword" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="signupPassword" name="password" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                </div>
+                <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
+                    Sign Up
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Username generator function
+    function generateUsername() {
+        const adjectives = ['Happy', 'Clever', 'Swift', 'Bright', 'Agile', 'Quick', 'Smart', 'Active', 'Dynamic', 'Sharp',
+                          'Brilliant', 'Creative', 'Focused', 'Energetic', 'Powerful'];
+        const nouns = ['Brain', 'Mind', 'Thinker', 'Runner', 'Player', 'Athlete', 'Champion', 'Winner', 'Master', 'Star',
+                     'Genius', 'Ninja', 'Expert', 'Guru', 'Hero'];
+        const number = Math.floor(Math.random() * 1000);
+        
+        const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+        const noun = nouns[Math.floor(Math.random() * nouns.length)];
+        
+        return `${adjective}${noun}${number}`;
+    }
+</script>

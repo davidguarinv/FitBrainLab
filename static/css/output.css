@@ -886,10 +886,6 @@ body {
   width: 100%;
 }
 
-.max-w-2xl {
-  max-width: 42rem;
-}
-
 .max-w-5xl {
   max-width: 64rem;
 }
@@ -912,10 +908,6 @@ body {
 
 .max-w-md {
   max-width: 28rem;
-}
-
-.max-w-xl {
-  max-width: 36rem;
 }
 
 .flex-1 {
@@ -1355,11 +1347,6 @@ body {
   padding-bottom: 3rem;
 }
 
-.py-16 {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
-
 .py-2 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -1471,10 +1458,6 @@ body {
 
 .italic {
   font-style: italic;
-}
-
-.tracking-tight {
-  letter-spacing: -0.025em;
 }
 
 .tracking-tighter {
@@ -1664,49 +1647,6 @@ body {
   animation-play-state: running;
 }
 
-@theme {
-  /* HAVENT ACTUALLY CHANGED THE STYLING JUST BEGINNING TO BUILD THE THEME */
-
-  /*REMEMBER TO ACTUALLY MAKE THESE WORK. */
-
-  --color-bg-first: #000000;
-
-  /* greyish white  gray-50*/
-
-  --color-bg-second: #F3F4F6    /* grey         gray-100*/
-  --color-bg-third:   ;
-
-  /*  blue */
-
-  --color-bg-footer:   ;
-
-  /*  dunno */
-
-  --color-ctext:  #000000;
-
-  /* Already by default if you do not change text color.  Black */
-
-  --color-ctext-second: #6B7280;
-
-  /* used for secondary text  gray-400 */
-
-  --color-white: #FFFFFF;
-
-  /* often used in some button backgrounds and stuff     white */
-
-  --color-accent:#2563EB;
-
-  /* blue accent    blue-600 */
-
-  --color-accent-bg: #DBEAFE;
-
-  /* For the small labels    blue-100*/
-
-  --color-accent-300: #93C5FD;
-
-  /* used for some hovering buttons */
-}
-
 .file\:border-0::file-selector-button {
   border-width: 0px;
 }
@@ -1782,10 +1722,6 @@ body {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
-}
-
-.hover\:underline:hover {
-  text-decoration-line: underline;
 }
 
 .focus\:z-10:focus {
@@ -1912,11 +1848,6 @@ body {
   .sm\:text-4xl {
     font-size: 2.25rem;
     line-height: 2.5rem;
-  }
-
-  .sm\:text-5xl {
-    font-size: 3rem;
-    line-height: 1;
   }
 
   .sm\:text-sm {

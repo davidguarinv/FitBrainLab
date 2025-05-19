@@ -59,6 +59,11 @@ class User(UserMixin, db.Model):
             return False
         return True
 
+    @property
+    def points(self):
+        """Calculate total points from completed challenges."""
+        return sum(challenge.challenge.points for challenge in self.completed_challenges.all())
+
 
 # -------------------------
 # Challenge Model

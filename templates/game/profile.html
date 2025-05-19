@@ -1,0 +1,131 @@
+<!-- Profile Section -->
+{% if current_user.is_authenticated %}
+<div class="space-y-8">
+    <!-- Profile Overview -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-start justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-bold">{{ current_user.username }}</h2>
+                <p class="text-gray-600">Member since {{ current_user.created_at.strftime('%B %Y') }}</p>
+            </div>
+            <button onclick="toggleProfileVisibility();"
+                    class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
+                {{ 'Make Private' if current_user.is_public else 'Make Public' }}
+            </button>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <h3 class="text-sm font-medium text-gray-600">Total Points</h3>
+                <p class="text-2xl font-bold text-primary">{{ user_progress.total_points }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <h3 class="text-sm font-medium text-gray-600">Daily Streak</h3>
+                <p class="text-2xl font-bold text-primary">{{ user_progress.daily_streak }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <h3 class="text-sm font-medium text-gray-600">Rank</h3>
+                <p class="text-2xl font-bold text-primary">#{{ user_progress.rank }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <h3 class="text-sm font-medium text-gray-600">Completed</h3>
+                <p class="text-2xl font-bold text-primary">{{ user_progress.completed_challenges|length }}</p>
+            </div>
+        </div>
+
+        <!-- Profile Settings -->
+        <form method="POST" action="{{ url_for('main.update_profile') }}" class="space-y-4">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                <input type="email" id="email" name="email" value="{{ current_user.email }}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+            </div>
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" value="{{ current_user.username }}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+            </div>
+            <div>
+                <label for="top_sport" class="block text-sm font-medium text-gray-700">Favorite Activity</label>
+                <input type="text" id="top_sport" name="top_sport" value="{{ current_user.top_sport }}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+            </div>
+            <div class="pt-4">
+                <button type="submit"
+                        class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Achievement Progress -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <h3 class="text-xl font-bold mb-4">Achievement Progress</h3>
+        <div class="space-y-4">
+            <!-- Quick Starter Achievement -->
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-medium">Quick Starter</h4>
+                        <p class="text-sm text-gray-600">Complete 5 easy challenges</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-medium text-primary">3/5</p>
+                    <div class="w-32 h-2 bg-gray-200 rounded-full mt-2">
+                        <div class="w-3/5 h-full bg-primary rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Master Achievement -->
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-medium">Time Master</h4>
+                        <p class="text-sm text-gray-600">Maintain a 7-day streak</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-medium text-primary">{{ user_progress.daily_streak }}/7</p>
+                    <div class="w-32 h-2 bg-gray-200 rounded-full mt-2">
+                        <div class="h-full bg-primary rounded-full" :style="{ width: '{{ (user_progress.daily_streak / 7 * 100)|int }}%' }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Profile interaction scripts -->
+<script>
+function toggleProfileVisibility() {
+    fetch('/api/profile/toggle-visibility', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>

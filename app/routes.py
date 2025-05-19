@@ -29,75 +29,79 @@ def publications():
 
 @bp.route('/communities')
 def communities():
-    return render_template('communities5.html')
-
-#RESEARCH PROJECT ROUTES
-
-@bp.route('/stay_fine')
-def stay_fine():
-    return render_template('/research/stay_fine.html')
-
-
-@bp.route('/brain_adaptations')
-def brain_adaptations():
-    return render_template('/research/brain_adaptations.html')
-
-
-@bp.route('/leopard_predict')
-def leopard_predict():
-    return render_template('/research/leopard_predict.html')
-
-
-@bp.route('/stride_4')
-def stride_4():
-    return render_template('/research/stride_4.html')
-
+    return render_template('communities.html')
 
 @bp.route('/game')
-def game():
-    # Get sample challenges and top users for the leaderboard
-    sample_challenges = [
-        {
-            'title': 'Morning Run',
-            'description': 'Start your day with a 20-minute jog',
-            'difficulty': 'E',
-            'points': 100
-        },
-        {
-            'title': 'HIIT Session',
-            'description': '30-minute high-intensity interval training',
-            'difficulty': 'M',
-            'points': 200
-        },
-        {
-            'title': 'Marathon Training',
-            'description': '2-hour endurance run',
-            'difficulty': 'H',
-            'points': 300
-        }
-    ]
+@bp.route('/game/<section>')
+def game(section='challenges'):
+    if not current_user.is_authenticated and section not in ['leaderboard', None]:
+        section = 'auth'
+    
+    # Get top users for the leaderboard with their points
+    points_subq = db.session.query(
+        CompletedChallenge.user_id,
+        db.func.sum(Challenge.points).label('total_points')
+    ).join(
+        Challenge,
+        Challenge.id == CompletedChallenge.challenge_id
+    ).group_by(CompletedChallenge.user_id).subquery()
 
-    with current_app.app_context():
-        top_users = User.query.filter_by(is_public=True).order_by(User.id.desc()).limit(10).all()
-    return render_template('game.html', sample_challenges=sample_challenges, top_users=top_users)
+    top_users = db.session.query(User, db.func.coalesce(points_subq.c.total_points, 0))\
+        .outerjoin(points_subq, User.id == points_subq.c.user_id)\
+        .filter(User.is_public == True)\
+        .order_by(db.desc('total_points'))\
+        .limit(10).all()
+    
+    # Get user's progress if authenticated
+    user_progress = None
+    if current_user.is_authenticated:
+        completed = CompletedChallenge.query\
+            .filter_by(user_id=current_user.id)\
+            .order_by(CompletedChallenge.completed_at.desc())\
+            .limit(5).all()
+        user_progress = {
+            'completed_challenges': completed,
+            'total_points': sum(c.challenge.points for c in completed),
+            'daily_streak': current_user.daily_streak
+        }
+    
+    # Get available challenges
+    challenges = Challenge.query.all()
+    challenges_by_difficulty = {
+        'E': [c for c in challenges if c.difficulty == 'E'],
+        'M': [c for c in challenges if c.difficulty == 'M'],
+        'H': [c for c in challenges if c.difficulty == 'H']
+    }
+    
+    # Create forms for auth section
+    login_form = LoginForm() if section == 'auth' else None
+    signup_form = RegistrationForm() if section == 'auth' else None
+
+    return render_template('game.html',
+                           section=section,
+                           top_users=top_users,
+                           user_progress=user_progress,
+                           challenges=challenges_by_difficulty,
+                           login_form=login_form,
+                           signup_form=signup_form)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.game'))
         
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid email or password', 'error')
-            return redirect(url_for('main.login'))
+            return redirect(url_for('main.game', section='auth'))
             
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        return redirect(next_page or url_for('main.game'))
+        login_user(user)
+        flash('Successfully logged in!', 'success')
+        return redirect(url_for('main.game'))
         
-    return render_template('login.html', title='Sign In', form=form)
+    return redirect(url_for('main.game', section='auth'))
 
 @bp.route('/login-redirect')
 def login_redirect():
@@ -114,20 +118,29 @@ def signup():
         
     form = RegistrationForm()
     if form.validate_on_submit():
+        # Check if user already exists
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user:
+            flash('Email already registered', 'error')
+            return redirect(url_for('main.game', section='auth'))
+            
+        # Create new user
         user = User(
             username=form.username.data,
             email=form.email.data,
             is_public=True
         )
         user.set_password(form.password.data)
+        
+        # Save to database
         db.session.add(user)
         db.session.commit()
         
-        flash('Congratulations, you are now a registered user!', 'success')
+        # Log in the new user
         login_user(user)
+        flash('Account created successfully!', 'success')
         return redirect(url_for('main.game'))
-        
-    return render_template('signup.html', title='Register', form=form)
+    return redirect(url_for('main.game', section='auth'))
 
 @bp.route('/logout')
 @login_required

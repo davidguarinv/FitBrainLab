@@ -29,7 +29,7 @@ def publications():
 
 @bp.route('/communities')
 def communities():
-    return render_template('communities.html')
+    return render_template('communities5.html')
 
 @bp.route('/game')
 @bp.route('/game/<section>')

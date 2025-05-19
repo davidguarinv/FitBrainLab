@@ -10,7 +10,7 @@
             </div>
             <button onclick="toggleProfileVisibility();"
                     class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
-                {{ 'Make Private' if current_user.is_public else 'Make Public' }}
+                {{ 'Make Progress Private' if current_user.is_public else 'Make Progress Public' }}
             </button>
         </div>
 
@@ -37,9 +37,7 @@
         <!-- Profile Settings -->
         <form method="POST" action="{{ url_for('main.update_profile') }}" class="space-y-4">
             <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-                <input type="email" id="email" name="email" value="{{ current_user.email }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+
             </div>
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
@@ -47,14 +45,34 @@
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
             </div>
             <div>
-                <label for="top_sport" class="block text-sm font-medium text-gray-700">Favorite Activity</label>
-                <input type="text" id="top_sport" name="top_sport" value="{{ current_user.top_sport }}"
+                <label for="top_sport" class="block text-sm font-medium text-gray-700">Favorite Sport</label>
+                <select id="top_sport" name="top_sport"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                    <option value="" {% if not current_user.top_sport %}selected{% endif %}>Select a sport</option>
+                    <option value="Running" {% if current_user.top_sport == 'Running' %}selected{% endif %}>Running</option>
+                    <option value="Swimming" {% if current_user.top_sport == 'Swimming' %}selected{% endif %}>Swimming</option>
+                    <option value="Cycling" {% if current_user.top_sport == 'Cycling' %}selected{% endif %}>Cycling</option>
+                    <option value="Yoga" {% if current_user.top_sport == 'Yoga' %}selected{% endif %}>Yoga</option>
+                    <option value="Basketball" {% if current_user.top_sport == 'Basketball' %}selected{% endif %}>Basketball</option>
+                    <option value="Soccer" {% if current_user.top_sport == 'Soccer' %}selected{% endif %}>Soccer</option>
+                    <option value="Tennis" {% if current_user.top_sport == 'Tennis' %}selected{% endif %}>Tennis</option>
+                    <option value="Hiking" {% if current_user.top_sport == 'Hiking' %}selected{% endif %}>Hiking</option>
+                    <option value="Dancing" {% if current_user.top_sport == 'Dancing' %}selected{% endif %}>Dancing</option>
+                    <option value="Other" {% if current_user.top_sport and current_user.top_sport not in ['Running', 'Swimming', 'Cycling', 'Yoga', 'Basketball', 'Soccer', 'Tennis', 'Hiking', 'Dancing'] %}selected{% endif %}>Other</option>
+                </select>
             </div>
-            <div class="pt-4">
+            <div class="pt-4 flex flex-wrap gap-3">
                 <button type="submit"
                         class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
                     Save Changes
+                </button>
+                <a href="{{ url_for('main.logout') }}"
+                   class="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-300 transition-colors">
+                    Logout
+                </a>
+                <button type="button" onclick="confirmDeleteAccount()"
+                        class="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 transition-colors">
+                    Delete Account
                 </button>
             </div>
         </form>
@@ -127,5 +145,24 @@ function toggleProfileVisibility() {
             alert(data.message);
         }
     });
+}
+
+function confirmDeleteAccount() {
+    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        fetch('/api/profile/delete-account', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/';
+            } else {
+                alert(data.message);
+            }
+        });
+    }
 }
 </script>

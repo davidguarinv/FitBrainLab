@@ -54,24 +54,56 @@ def game(section='challenges'):
     
     # Get user's progress if authenticated
     user_progress = None
+    user_rank = None
     if current_user.is_authenticated:
         completed = CompletedChallenge.query\
             .filter_by(user_id=current_user.id)\
             .order_by(CompletedChallenge.completed_at.desc())\
             .limit(5).all()
+            
+        # Calculate user's rank based on points
+        user_points = sum(c.challenge.points for c in completed)
+        higher_ranked_users = db.session.query(db.func.count(User.id)).filter(
+            User.id != current_user.id,
+            User.is_public == True,
+            # Subquery to get users with higher points
+            User.id.in_(
+                db.session.query(CompletedChallenge.user_id)
+                .group_by(CompletedChallenge.user_id)
+                .having(db.func.sum(Challenge.points) > user_points)
+                .join(Challenge, Challenge.id == CompletedChallenge.challenge_id)
+            )
+        ).scalar() or 0
+        
+        user_rank = higher_ranked_users + 1  # User's rank (1-based)
+            
         user_progress = {
             'completed_challenges': completed,
-            'total_points': sum(c.challenge.points for c in completed),
+            'total_points': user_points,
             'daily_streak': current_user.daily_streak
         }
     
     # Get available challenges
     challenges = Challenge.query.all()
+    
     challenges_by_difficulty = {
         'E': [c for c in challenges if c.difficulty == 'E'],
         'M': [c for c in challenges if c.difficulty == 'M'],
         'H': [c for c in challenges if c.difficulty == 'H']
     }
+    
+    # Get recent completed challenges by any user
+    recent_completed_challenges = db.session.query(
+        CompletedChallenge, Challenge, User
+    ).join(
+        Challenge, Challenge.id == CompletedChallenge.challenge_id
+    ).join(
+        User, User.id == CompletedChallenge.user_id
+    ).filter(
+        User.is_public == True  # Only show public user completions
+    ).order_by(
+        CompletedChallenge.completed_at.desc()
+    ).limit(5).all()
     
     # Create forms for auth section
     login_form = LoginForm() if section == 'auth' else None
@@ -81,7 +113,9 @@ def game(section='challenges'):
                            section=section,
                            top_users=top_users,
                            user_progress=user_progress,
+                           user_rank=user_rank,
                            challenges=challenges_by_difficulty,
+                           recent_completed_challenges=recent_completed_challenges,
                            login_form=login_form,
                            signup_form=signup_form)
 
@@ -89,16 +123,29 @@ def game(section='challenges'):
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.game'))
+    
+    if request.method == 'POST':
+        print(f"Login form data: {request.form}")
+        username = request.form.get('username')
+        password = request.form.get('password')
+        remember_me = request.form.get('remember_me') == 'on'
         
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid email or password', 'error')
+        print(f"Username: {username}, Password provided: {'Yes' if password else 'No'}, Remember me: {remember_me}")
+        
+        # Basic validation
+        if not username or not password:
+            flash('Username and password are required', 'error')
+            return redirect(url_for('main.game', section='auth'))
+        
+        # Authenticate user
+        user = User.query.filter_by(username=username).first()
+        if user is None or not user.check_password(password):
+            flash('Invalid username or password', 'error')
             return redirect(url_for('main.game', section='auth'))
             
-        login_user(user)
-        flash('Successfully logged in!', 'success')
+        # Log in the user
+        login_user(user, remember=remember_me)
+        flash('Logged in successfully!', 'success')
         return redirect(url_for('main.game'))
         
     return redirect(url_for('main.game', section='auth'))
@@ -115,31 +162,55 @@ def signup_redirect():
 def signup():
     if current_user.is_authenticated:
         return redirect(url_for('main.game'))
+    
+    if request.method == 'POST':
+        print(f"Signup form data: {request.form}")
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
         
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        # Check if user already exists
-        existing_user = User.query.filter_by(email=form.email.data).first()
+        print(f"Username: {username}, Password provided: {'Yes' if password else 'No'}, Confirm provided: {'Yes' if confirm_password else 'No'}")
+        
+        # Basic validation
+        if not username or not password:
+            flash('Username and password are required', 'error')
+            return redirect(url_for('main.game', section='auth'))
+            
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return redirect(url_for('main.game', section='auth'))
+        
+        # Check if username already exists
+        existing_user = User.query.filter_by(username=username).first()
         if existing_user:
-            flash('Email already registered', 'error')
+            flash('Username already taken', 'error')
             return redirect(url_for('main.game', section='auth'))
             
         # Create new user
-        user = User(
-            username=form.username.data,
-            email=form.email.data,
-            is_public=True
-        )
-        user.set_password(form.password.data)
-        
-        # Save to database
-        db.session.add(user)
-        db.session.commit()
-        
-        # Log in the new user
-        login_user(user)
-        flash('Account created successfully!', 'success')
-        return redirect(url_for('main.game'))
+        try:
+            user = User(
+                username=username,
+                is_public=True
+            )
+            user.set_password(password)
+            
+            # Save to database
+            db.session.add(user)
+            db.session.commit()
+            print(f"User created with id: {user.id}")
+            
+            # Log in the new user
+            login_user(user)
+            flash('Account created successfully!', 'success')
+            return redirect(url_for('main.game'))
+        except Exception as e:
+            print(f"Error creating user: {str(e)}")
+            db.session.rollback()
+            flash('An error occurred during signup', 'error')
+            return redirect(url_for('main.game', section='auth'))
+    
+    # GET request
+    return redirect(url_for('main.game', section='auth'))
     return redirect(url_for('main.game', section='auth'))
 
 @bp.route('/logout')
@@ -328,7 +399,6 @@ def get_leaderboard():
 def get_profile():
     return jsonify({
         'username': current_user.username,
-        'email': current_user.email,
         'is_public': current_user.is_public,
         'points': current_user.points or 0,
         'top_sport': current_user.top_sport,
@@ -342,8 +412,6 @@ def update_profile():
     
     if 'username' in data:
         current_user.username = data['username']
-    if 'email' in data:
-        current_user.email = data['email']
     if 'is_public' in data:
         current_user.is_public = data['is_public']
     if 'password' in data and data['password']:
@@ -359,3 +427,31 @@ def delete_profile():
     db.session.commit()
     logout_user()
     return jsonify({'status': 'account_deleted'})
+
+@bp.route('/api/profile/delete-account', methods=['POST'])
+@login_required
+def delete_account():
+    if not current_user.is_authenticated:
+        return jsonify({'success': False, 'message': 'You must be logged in to perform this action'})
+        
+    try:
+        # Delete user's completed challenges
+        CompletedChallenge.query.filter_by(user_id=current_user.id).delete()
+        
+        # Delete user's in-progress challenges
+        InProgressChallenge.query.filter_by(user_id=current_user.id).delete()
+        
+        # Get user ID before logging out
+        user_id = current_user.id
+        
+        # Log the user out
+        logout_user()
+        
+        # Delete the user
+        User.query.filter_by(id=user_id).delete()
+        db.session.commit()
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)})

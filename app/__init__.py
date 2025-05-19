@@ -35,7 +35,7 @@ def create_app(config_class=Config):
 
     # Register blueprints
     from .routes import bp as main_bp
-    app.register_blueprint(main_bp)
+    app.register_blueprint(main_bp, url_prefix='')
 
     # Create tables
     with app.app_context():

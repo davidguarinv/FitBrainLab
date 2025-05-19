@@ -12,12 +12,16 @@ class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)  # Primary key
     username = db.Column(db.String(64), unique=True, nullable=False)  # Unique username
-    email = db.Column(db.String(120), unique=True, nullable=False)  # Email
     password_hash = db.Column(db.String(128))  # Hashed password
     is_public = db.Column(db.Boolean, default=True)  # Whether user profile is public
     top_sport = db.Column(db.String(50))  # Optional: most-played sport
     last_sport_update = db.Column(db.DateTime)  # Last update timestamp
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Creation timestamp
+    daily_streak = db.Column(db.Integer, default=0)  # Daily streak counter
+    last_challenge_date = db.Column(db.Date)  # Last challenge date
+    daily_e_count = db.Column(db.Integer, default=0)  # Daily easy challenge count
+    daily_m_count = db.Column(db.Integer, default=0)  # Daily medium challenge count
+    daily_h_count = db.Column(db.Integer, default=0)  # Daily hard challenge count
 
     # Relationships
     completed_challenges = db.relationship('CompletedChallenge', backref='user', lazy='dynamic')
@@ -76,6 +80,7 @@ class Challenge(db.Model):
     description = db.Column(db.String(500), nullable=False)
     difficulty = db.Column(db.String(1), nullable=False)  # 'E', 'M', 'H'
     points = db.Column(db.Integer, nullable=False)
+    regen_hours = db.Column(db.Integer, default=6)  # Hours before challenge regenerates
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationships

@@ -10,7 +10,7 @@
       --bg-third: #3B82F6;      /* blue */
       --bg-footer: #1E293B;      /* dark gray */
 
-      --ctext: #000000; /* Already by default if you do not change text color.  Black */
+      --ctext: #FFFFFF; /* Already by default if you do not change text color.  Black */
       --ctext-second: #6B7280; /* used for secondary text  gray-400 */
 
       --white: #FFFFFF;
@@ -57,7 +57,7 @@
       --accent-bg: #1E40AF;      /* Darker background for accent elements */
       --accent-300: #60A5FA;     /* A lighter blue for hover states, etc */
 
-      
+
       --background: 222.2 84% 4.9%;
       --foreground: 210 40% 98%;
       --card: 222.2 84% 4.9%;

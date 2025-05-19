@@ -25,6 +25,20 @@
       --input: 214.3 31.8% 91.4%;
       --ring: 221 83% 53%;
       --radius: 0.5rem;
+
+
+      --bg-first: #000000; /* greyish white  gray-50*/
+      --bg-second: #F3F4F6;    /* grey         gray-100*/
+      --bg-third: #3B82F6;      /* blue */
+      --bg-footer: #1E293B;      /* dark gray */
+
+      --ctext: #000000; /* Already by default if you do not change text color.  Black */
+      --ctext-second: #6B7280; /* used for secondary text  gray-400 */
+
+      --white: #FFFFFF;
+      --accent: #2563EB;
+      --accent-bg: #DBEAFE;
+      --accent-300: #93C5FD;
     }
   
     .dark {
@@ -47,6 +61,20 @@
       --border: 217.2 32.6% 17.5%;
       --input: 217.2 32.6% 17.5%;
       --ring: 224.3 76.3% 48%;
+      
+
+      --bg-first: #0F172A;       /* Very dark gray-blue (like slate-900) */
+      --bg-second: #1E293B;      /* Darker gray-blue (slate-800) */
+      --bg-third: #3B82F6;       /* Same blue, keep for accent contrast */
+      --bg-footer: #0F172A;      /* Match first bg for footer consistency */
+
+      --ctext: #F9FAFB;          /* Almost white for primary text (gray-50) */
+      --ctext-second: #9CA3AF;   /* Lighter gray for secondary text (gray-400) */
+
+      --white: #F9FAFB;          /* Lightest neutral for contrast on dark bg */
+      --accent: #3B82F6;         /* Same as light mode or tweak if needed */
+      --accent-bg: #1E40AF;      /* Darker background for accent elements */
+      --accent-300: #60A5FA;     /* A lighter blue for hover states, etc */
     }
   }
   
@@ -58,22 +86,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-@theme {
-
-/* HAVENT ACTUALLY CHANGED THE STYLING JUST BEGINNING TO BUILD THE THEME */
-/*REMEMBER TO ACTUALLY MAKE THESE WORK. */
-  --color-bg-first: #000000; /* greyish white  gray-50*/
-  --color-bg-second: #F3F4F6    /* grey         gray-100*/
-  --color-bg-third:   ;      /*  blue */
-  --color-bg-footer:   ;      /*  dunno */
-
-  --color-ctext:  #000000; /* Already by default if you do not change text color.  Black */
-  --color-ctext-second: #6B7280; /* used for secondary text  gray-400 */
-
-  --color-white: #FFFFFF;  /* often used in some button backgrounds and stuff     white */
-  --color-accent:#2563EB;      /* blue accent    blue-600 */
-  --color-accent-bg: #DBEAFE;      /* For the small labels    blue-100*/
-  --color-accent-300: #93C5FD;    /* used for some hovering buttons */
 }

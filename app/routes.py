@@ -29,7 +29,29 @@ def publications():
 
 @bp.route('/communities')
 def communities():
-    return render_template('communities.html')
+    return render_template('communities5.html')
+
+#RESEARCH PROJECT ROUTES
+
+@bp.route('/stay_fine')
+def stay_fine():
+    return render_template('/research/stay_fine.html')
+
+
+@bp.route('/brain_adaptations')
+def brain_adaptations():
+    return render_template('/research/brain_adaptations.html')
+
+
+@bp.route('/leopard_predict')
+def leopard_predict():
+    return render_template('/research/leopard_predict.html')
+
+
+@bp.route('/stride_4')
+def stride_4():
+    return render_template('/research/stride_4.html')
+
 
 @bp.route('/game')
 def game():

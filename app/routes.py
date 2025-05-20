@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
-from .models import User, Challenge, CompletedChallenge, InProgressChallenge
+from .models import User, Challenge, CompletedChallenge, InProgressChallenge, ChallengeRegeneration
 from .forms import LoginForm, RegistrationForm
 from datetime import datetime, timedelta
 from sqlalchemy import func
@@ -88,21 +88,71 @@ def game(section='challenges'):
     
     # Get in-progress challenges for the current user if authenticated
     in_progress_challenges = []
+    in_progress_count = 0
     if current_user.is_authenticated:
         in_progress = InProgressChallenge.query.filter_by(user_id=current_user.id).all()
+        in_progress_count = len(in_progress)
         in_progress_challenge_ids = [c.challenge_id for c in in_progress]
         in_progress_challenges = Challenge.query.filter(Challenge.id.in_(in_progress_challenge_ids)).all() if in_progress_challenge_ids else []
     
     # Filter out in-progress challenges from available challenges
     available_challenges = [c for c in challenges if current_user.is_authenticated and c.id not in [ic.id for ic in in_progress_challenges] or not current_user.is_authenticated]
     
-    # Limit challenges by difficulty according to specifications (3 easy, 2 medium, 1 hard)
+    # Get challenge regeneration timers
+    now = datetime.utcnow()
+    regeneration_timers = ChallengeRegeneration.query.all()
+    regeneration_by_difficulty = {
+        'E': sorted([r for r in regeneration_timers if r.difficulty == 'E'], key=lambda x: x.slot_number),
+        'M': sorted([r for r in regeneration_timers if r.difficulty == 'M'], key=lambda x: x.slot_number),
+        'H': sorted([r for r in regeneration_timers if r.difficulty == 'H'], key=lambda x: x.slot_number)
+    }
+    
+    # Prepare challenges by difficulty with regeneration timers
     import random
     challenges_by_difficulty = {
-        'E': random.sample([c for c in available_challenges if c.difficulty == 'E'], min(3, len([c for c in available_challenges if c.difficulty == 'E']))),
-        'M': random.sample([c for c in available_challenges if c.difficulty == 'M'], min(2, len([c for c in available_challenges if c.difficulty == 'M']))),
-        'H': random.sample([c for c in available_challenges if c.difficulty == 'H'], min(1, len([c for c in available_challenges if c.difficulty == 'H'])))
+        'E': [],
+        'M': [],
+        'H': []
     }
+    
+    # For each difficulty level, check regeneration timers and add available challenges
+    for difficulty in ['E', 'M', 'H']:
+        available_by_diff = [c for c in available_challenges if c.difficulty == difficulty]
+        slots_count = 3 if difficulty == 'E' else (2 if difficulty == 'M' else 1)
+        
+        for i in range(slots_count):
+            # Find the regeneration timer for this slot
+            regen_timer = next((r for r in regeneration_by_difficulty[difficulty] if r.slot_number == i+1), None)
+            
+            # If timer exists and regeneration time has passed, or no timer exists
+            if not regen_timer or regen_timer.regenerate_at <= now:
+                # If we have available challenges, add one
+                if available_by_diff:
+                    challenge = random.choice(available_by_diff)
+                    challenges_by_difficulty[difficulty].append({
+                        'challenge': challenge,
+                        'regenerating': False,
+                        'time_remaining': None
+                    })
+                    available_by_diff.remove(challenge)  # Remove to avoid duplicates
+                else:
+                    # No available challenge, show empty slot
+                    challenges_by_difficulty[difficulty].append({
+                        'challenge': None,
+                        'regenerating': False,
+                        'time_remaining': None
+                    })
+            else:
+                # Regeneration time hasn't passed, show timer
+                time_remaining = (regen_timer.regenerate_at - now).total_seconds()
+                hours = int(time_remaining // 3600)
+                minutes = int((time_remaining % 3600) // 60)
+                challenges_by_difficulty[difficulty].append({
+                    'challenge': None,
+                    'regenerating': True,
+                    'time_remaining': f"{hours}h {minutes}m",
+                    'slot_number': regen_timer.slot_number
+                })
     
     # Add in-progress challenges to the context
     challenges_by_difficulty['in_progress'] = in_progress_challenges

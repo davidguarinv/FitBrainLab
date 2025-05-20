@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 from datetime import datetime
 from . import db
-from .models import Challenge, CompletedChallenge, InProgressChallenge, User
+from .models import Challenge, CompletedChallenge, InProgressChallenge, User, ChallengeRegeneration
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -10,6 +10,7 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 @login_required
 def start_challenge(challenge_id):
     from flask import flash, redirect, url_for
+    from datetime import datetime, timedelta
     challenge = Challenge.query.get_or_404(challenge_id)
     
     # Check if user can take this challenge
@@ -40,6 +41,34 @@ def start_challenge(challenge_id):
         challenge_id=challenge_id
     )
     db.session.add(in_progress)
+    
+    # Set regeneration timer for this challenge slot
+    # First, find which slot this challenge was in
+    now = datetime.utcnow()
+    all_challenges = Challenge.query.filter_by(difficulty=challenge.difficulty).all()
+    available_challenges = [c for c in all_challenges if c.id != challenge_id]
+    
+    # Find the slot number for this difficulty
+    slot_count = 3 if challenge.difficulty == 'E' else (2 if challenge.difficulty == 'M' else 1)
+    
+    # Find an available slot or create a new one
+    regen_timer = ChallengeRegeneration.query.filter_by(
+        difficulty=challenge.difficulty
+    ).order_by(ChallengeRegeneration.slot_number).first()
+    
+    if not regen_timer:
+        # Create a new regeneration timer
+        slot_number = 1
+        regen_timer = ChallengeRegeneration(
+            difficulty=challenge.difficulty,
+            slot_number=slot_number,
+            regenerate_at=now + timedelta(hours=ChallengeRegeneration.get_regen_hours(challenge.difficulty))
+        )
+        db.session.add(regen_timer)
+    else:
+        # Update existing timer
+        regen_timer.regenerate_at = now + timedelta(hours=ChallengeRegeneration.get_regen_hours(challenge.difficulty))
+    
     db.session.commit()
     
     # Redirect to the challenges page with the active challenge

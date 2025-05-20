@@ -4,29 +4,31 @@
     {% if request.args.get('active') %}
         {% set active_id = request.args.get('active')|int %}
         {% for difficulty in ['E', 'M', 'H'] %}
-            {% for challenge in challenges[difficulty] %}
-                {% if challenge.id == active_id %}
+            {% for slot in challenges[difficulty] %}
+                {% if slot.challenge and slot.challenge.id == active_id %}
                     <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-primary">
                         <div class="flex justify-between items-start mb-4">
                             <div>
-                                <h2 class="text-2xl font-bold">{{ challenge.title }}</h2>
-                                <p class="text-gray-600">{{ challenge.description }}</p>
+                                <h2 class="text-2xl font-bold">{{ slot.challenge.title }}</h2>
+                                <p class="text-gray-600">{{ slot.challenge.description }}</p>
                             </div>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ 'bg-green-100 text-green-800' if challenge.difficulty == 'E' else 'bg-yellow-100 text-yellow-800' if challenge.difficulty == 'M' else 'bg-red-100 text-red-800' }}">
-                                {{ challenge.difficulty }}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ 'bg-green-100 text-green-800' if slot.challenge.difficulty == 'E' else 'bg-yellow-100 text-yellow-800' if slot.challenge.difficulty == 'M' else 'bg-red-100 text-red-800' }}">
+                                {{ slot.challenge.difficulty }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-primary font-medium">{{ challenge.points }} points</span>
+                            <span class="text-primary font-medium">{{ slot.challenge.points }} points</span>
                             <div class="space-x-4">
-                                <button @click="completeChallenge({{ challenge.id }})"
-                                        class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
-                                    Complete Challenge
-                                </button>
-                                <button @click="abandonChallenge({{ challenge.id }})"
-                                        class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
-                                    Abandon
-                                </button>
+                                <form action="/api/challenges/{{ slot.challenge.id }}/complete" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
+                                        Complete Challenge
+                                    </button>
+                                </form>
+                                <form action="/api/challenges/{{ slot.challenge.id }}/abandon" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
+                                        Abandon
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -73,59 +75,113 @@
     <!-- Challenge Categories -->
     <div class="space-y-6">
         <!-- Easy Challenges -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold">Easy Challenges</h3>
-                <span class="text-sm text-gray-600">{{ challenges.E|length }} available</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    E
+                </span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for challenge in challenges.E %}
-                    <div class="border rounded-lg p-4 hover:border-primary transition-colors">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-medium">{{ challenge.title }}</h4>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                E
-                            </span>
+                {% for slot in challenges.E %}
+                    {% if slot.regenerating %}
+                        <!-- Regenerating slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="animate-pulse mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">New challenge in</p>
+                                    <p class="text-lg font-bold text-primary">{{ slot.time_remaining }}</p>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">{{ challenge.description }}</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-primary">{{ challenge.points }} points</span>
-                            <form action="/api/challenges/{{ challenge.id }}/start" method="POST" style="display: inline;">
-                                <button type="submit" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                    Start
-                                </button>
-                            </form>
+                    {% elif slot.challenge %}
+                        <!-- Available challenge -->
+                        <div class="border rounded-lg p-4 hover:border-primary transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium">{{ slot.challenge.title }}</h4>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    E
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">{{ slot.challenge.description }}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-primary">{{ slot.challenge.points }} points</span>
+                                <form action="/api/challenges/{{ slot.challenge.id }}/start" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-3 py-1 {% if challenges.in_progress|length >= 2 %}bg-gray-300 cursor-not-allowed{% else %}bg-primary hover:bg-primary-dark{% endif %} text-white text-sm font-medium rounded transition-colors" {% if challenges.in_progress|length >= 2 %}disabled{% endif %}>
+                                        {% if challenges.in_progress|length >= 2 %}Slots Full{% else %}Start{% endif %}
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <!-- Empty slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="flex justify-center items-center h-24">
+                                <p class="text-gray-500">No challenge available</p>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
 
         <!-- Medium Challenges -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold">Medium Challenges</h3>
-                <span class="text-sm text-gray-600">{{ challenges.M|length }} available</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    M
+                </span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for challenge in challenges.M %}
-                    <div class="border rounded-lg p-4 hover:border-primary transition-colors">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-medium">{{ challenge.title }}</h4>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                M
-                            </span>
+                {% for slot in challenges.M %}
+                    {% if slot.regenerating %}
+                        <!-- Regenerating slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="animate-pulse mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">New challenge in</p>
+                                    <p class="text-lg font-bold text-primary">{{ slot.time_remaining }}</p>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">{{ challenge.description }}</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-primary">{{ challenge.points }} points</span>
-                            <form action="/api/challenges/{{ challenge.id }}/start" method="POST" style="display: inline;">
-                                <button type="submit" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                    Start
-                                </button>
-                            </form>
+                    {% elif slot.challenge %}
+                        <!-- Available challenge -->
+                        <div class="border rounded-lg p-4 hover:border-primary transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium">{{ slot.challenge.title }}</h4>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    M
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">{{ slot.challenge.description }}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-primary">{{ slot.challenge.points }} points</span>
+                                <form action="/api/challenges/{{ slot.challenge.id }}/start" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-3 py-1 {% if challenges.in_progress|length >= 2 %}bg-gray-300 cursor-not-allowed{% else %}bg-primary hover:bg-primary-dark{% endif %} text-white text-sm font-medium rounded transition-colors" {% if challenges.in_progress|length >= 2 %}disabled{% endif %}>
+                                        {% if challenges.in_progress|length >= 2 %}Slots Full{% else %}Start{% endif %}
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <!-- Empty slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="flex justify-center items-center h-24">
+                                <p class="text-gray-500">No challenge available</p>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
@@ -134,27 +190,54 @@
         <div class="bg-white rounded-lg shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold">Hard Challenges</h3>
-                <span class="text-sm text-gray-600">{{ challenges.H|length }} available</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                    H
+                </span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for challenge in challenges.H %}
-                    <div class="border rounded-lg p-4 hover:border-primary transition-colors">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-medium">{{ challenge.title }}</h4>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                H
-                            </span>
+                {% for slot in challenges.H %}
+                    {% if slot.regenerating %}
+                        <!-- Regenerating slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="animate-pulse mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">New challenge in</p>
+                                    <p class="text-lg font-bold text-primary">{{ slot.time_remaining }}</p>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">{{ challenge.description }}</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-primary">{{ challenge.points }} points</span>
-                            <form action="/api/challenges/{{ challenge.id }}/start" method="POST" style="display: inline;">
-                                <button type="submit" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                    Start
-                                </button>
-                            </form>
+                    {% elif slot.challenge %}
+                        <!-- Available challenge -->
+                        <div class="border rounded-lg p-4 hover:border-primary transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium">{{ slot.challenge.title }}</h4>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    H
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">{{ slot.challenge.description }}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-primary">{{ slot.challenge.points }} points</span>
+                                <form action="/api/challenges/{{ slot.challenge.id }}/start" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-3 py-1 {% if challenges.in_progress|length >= 2 %}bg-gray-300 cursor-not-allowed{% else %}bg-primary hover:bg-primary-dark{% endif %} text-white text-sm font-medium rounded transition-colors" {% if challenges.in_progress|length >= 2 %}disabled{% endif %}>
+                                        {% if challenges.in_progress|length >= 2 %}Slots Full{% else %}Start{% endif %}
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <!-- Empty slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="flex justify-center items-center h-24">
+                                <p class="text-gray-500">No challenge available</p>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>

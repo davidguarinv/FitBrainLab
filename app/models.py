@@ -111,3 +111,26 @@ class InProgressChallenge(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=False)
     started_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# -------------------------
+# Challenge Regeneration Model
+# -------------------------
+class ChallengeRegeneration(db.Model):
+    __tablename__ = 'challenge_regeneration'
+
+    id = db.Column(db.Integer, primary_key=True)
+    difficulty = db.Column(db.String(1), nullable=False)  # 'E', 'M', 'H'
+    regenerate_at = db.Column(db.DateTime, nullable=False)
+    slot_number = db.Column(db.Integer, nullable=False)  # Which slot (1-3 for easy, 1-2 for medium, 1 for hard)
+    
+    @staticmethod
+    def get_regen_hours(difficulty):
+        """Get the regeneration time in hours based on difficulty."""
+        if difficulty == 'E':
+            return 6  # Easy challenges regenerate in 6 hours
+        elif difficulty == 'M':
+            return 8  # Medium challenges regenerate in 8 hours
+        elif difficulty == 'H':
+            return 10  # Hard challenges regenerate in 10 hours
+        return 6  # Default to 6 hours

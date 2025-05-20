@@ -197,6 +197,61 @@ function startChallenge(challengeId) {
         alert('An error occurred while starting the challenge.');
     });
 }
+
+// Function to update all countdown timers on the page
+function updateCountdownTimers() {
+    // Get all timer elements in the challenges section
+    const timerElements = document.querySelectorAll('.text-lg.font-bold.text-primary[data-regenerate-at]');
+    
+    // Current time in UTC
+    const now = new Date();
+    
+    timerElements.forEach(timerElement => {
+        // Get the regeneration timestamp from the data attribute
+        const regenerateAtStr = timerElement.getAttribute('data-regenerate-at');
+        if (!regenerateAtStr) return;
+        
+        // Parse the regeneration timestamp
+        const regenerateAt = new Date(regenerateAtStr);
+        
+        // Calculate the time difference in seconds
+        const timeDiffSeconds = Math.max(0, Math.floor((regenerateAt - now) / 1000));
+        
+        if (timeDiffSeconds <= 0) {
+            // Time's up - reload the page to show the new challenge
+            window.location.reload();
+            return;
+        }
+        
+        // Calculate hours, minutes, seconds
+        const hours = Math.floor(timeDiffSeconds / 3600);
+        const minutes = Math.floor((timeDiffSeconds % 3600) / 60);
+        const seconds = timeDiffSeconds % 60;
+        
+        // Format the new time string
+        let newTimeText = '';
+        if (hours > 0) {
+            newTimeText = `${hours}h ${minutes}m`;
+        } else if (minutes > 0) {
+            newTimeText = `${minutes}m ${seconds}s`;
+        } else {
+            newTimeText = `${seconds}s`;
+        }
+        
+        // Update the timer text
+        timerElement.textContent = newTimeText;
+    });
+}
+
+// Update timers every second if there are any timers on the page
+const timerElements = document.querySelectorAll('.text-lg.font-bold.text-primary[data-regenerate-at]');
+if (timerElements.length > 0) {
+    // Initial update
+    updateCountdownTimers();
+    
+    // Set interval to update every second
+    setInterval(updateCountdownTimers, 1000);
+}
 </script>
 {% endblock %}
     </div>

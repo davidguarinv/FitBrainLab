@@ -45,31 +45,28 @@ def start_challenge(challenge_id):
     # Get the current time
     now = datetime.utcnow()
     
-    # Get the slot number from the request form data or query params
-    slot_number = request.form.get('slot') or request.args.get('slot')
+    # Get the slot number from the form data
+    slot_number = request.form.get('slot')
+    print(f'Form data received: {request.form}')
+    print(f'Slot from form: {slot_number}')
+    
     if slot_number and str(slot_number).isdigit():
         slot_number = int(slot_number)
+        print(f'Starting challenge {challenge_id} from slot {slot_number}')
     else:
         # Default to slot 1 if no slot parameter
         slot_number = 1
-        
-    print(f'Starting challenge {challenge_id} from slot {slot_number}')
+        print(f'No slot provided, defaulting to slot {slot_number}')
     
-    # For testing, use a short regeneration time (30 seconds)
-    # In production, use the proper hours based on difficulty
-    test_mode = True
-    
-    if test_mode:
-        # Testing: 30 seconds
-        regen_time = now + timedelta(seconds=30)
+    # Use the proper regeneration times based on difficulty
+    if challenge.difficulty == 'E':
+        regen_time = now + timedelta(hours=6)  # 6 hours for Easy
+    elif challenge.difficulty == 'M':
+        regen_time = now + timedelta(hours=8)  # 8 hours for Medium
     else:
-        # Production: proper hours
-        if challenge.difficulty == 'E':
-            regen_time = now + timedelta(hours=6)  # 6 hours for Easy
-        elif challenge.difficulty == 'M':
-            regen_time = now + timedelta(hours=8)  # 8 hours for Medium
-        else:
-            regen_time = now + timedelta(hours=10)  # 10 hours for Hard
+        regen_time = now + timedelta(hours=10)  # 10 hours for Hard
+        
+    print(f'Setting regeneration time for {challenge.difficulty} difficulty: {regen_time}')
     
     # Create or update the regeneration timer
     # First, check if a timer already exists for this slot

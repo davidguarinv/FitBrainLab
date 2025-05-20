@@ -39,7 +39,7 @@ def create_app(config_class=Config):
 
     # Register API blueprint
     from .api import bp as api_bp
-    app.register_blueprint(api_bp)
+    app.register_blueprint(api_bp, url_prefix='/api')
 
     # Create tables
     with app.app_context():

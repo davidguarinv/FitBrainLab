@@ -196,12 +196,14 @@ def game(section='challenges'):
                     time_str = f"{seconds}s"
                 
                 print(f'SHOWING TIMER for {difficulty} slot {slot_number}: {time_str}')
+                print(f'Timer will expire at: {regen_timer.regenerate_at}, current time: {now}')
                 
                 # Add regenerating slot
                 challenges_by_difficulty[difficulty].append({
                     'challenge': None,
                     'regenerating': True,
                     'time_remaining': time_str,
+                    'regenerate_at': regen_timer.regenerate_at.isoformat(),
                     'slot_number': slot_number
                 })
             else:
@@ -394,71 +396,7 @@ def list_challenges():
         'points': c.points
     } for c in challenges])
 
-@bp.route('/api/challenges/<int:challenge_id>/start', methods=['POST'])
-@login_required
-def start_challenge(challenge_id):
-    # Check if already in progress
-    existing = InProgressChallenge.query.filter_by(
-        user_id=current_user.id,
-        challenge_id=challenge_id
-    ).first()
-    
-    if existing:
-        return redirect(url_for('main.game', section='challenges', active=challenge_id))
-    
-    # Check if user already has 2 challenges in progress
-    in_progress_count = InProgressChallenge.query.filter_by(
-        user_id=current_user.id
-    ).count()
-    
-    if in_progress_count >= 2:
-        flash('You can only have 2 challenges in progress at once', 'error')
-        return redirect(url_for('main.game', section='challenges'))
-    
-    # Create new in-progress challenge
-    ip = InProgressChallenge(
-        user_id=current_user.id,
-        challenge_id=challenge_id,
-        started_at=datetime.utcnow()
-    )
-    db.session.add(ip)
-    db.session.commit()
-    
-    # Redirect to challenges page with active challenge
-    return redirect(url_for('main.game', section='challenges', active=challenge_id))
-
-@bp.route('/api/challenges/<int:challenge_id>/complete', methods=['POST'])
-@login_required
-def complete_challenge(challenge_id):
-    # Check if in progress
-    ip = InProgressChallenge.query.filter_by(
-        user_id=current_user.id,
-        challenge_id=challenge_id
-    ).first()
-    
-    if not ip:
-        flash('Challenge not started', 'error')
-        return redirect(url_for('main.game', section='challenges'))
-    
-    # Get challenge details
-    challenge = Challenge.query.get_or_404(challenge_id)
-    
-    # Mark as completed
-    completed = CompletedChallenge(
-        user_id=current_user.id,
-        challenge_id=challenge_id,
-        completed_at=datetime.utcnow(),
-        points_earned=challenge.points
-    )
-    
-    # Remove from in-progress and add completed challenge
-    db.session.delete(ip)
-    db.session.add(completed)
-    db.session.commit()
-    
-    # Flash a success message and redirect to progress page
-    flash('Challenge completed successfully!', 'success')
-    return redirect(url_for('main.game', section='progress'))
+# Challenge API routes are now in api.py
 
 @bp.route('/api/progress')
 @login_required

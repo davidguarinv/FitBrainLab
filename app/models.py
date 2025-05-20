@@ -66,7 +66,13 @@ class User(UserMixin, db.Model):
     @property
     def points(self):
         """Calculate total points from completed challenges."""
-        return sum(challenge.challenge.points for challenge in self.completed_challenges.all())
+        from sqlalchemy import func
+        from app import db
+        # Use SQL sum to calculate total points - more efficient than Python sum
+        total = db.session.query(func.sum(CompletedChallenge.points_earned)).filter(
+            CompletedChallenge.user_id == self.id
+        ).scalar()
+        return total or 0
 
 
 # -------------------------

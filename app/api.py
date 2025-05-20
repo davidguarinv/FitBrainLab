@@ -9,7 +9,7 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 @bp.route('/challenges/<int:challenge_id>/start', methods=['POST'])
 @login_required
 def start_challenge(challenge_id):
-    from flask import flash, redirect, url_for
+    from flask import flash, redirect, url_for, current_app, request
     from datetime import datetime, timedelta
     challenge = Challenge.query.get_or_404(challenge_id)
     
@@ -42,34 +42,62 @@ def start_challenge(challenge_id):
     )
     db.session.add(in_progress)
     
-    # Set regeneration timer for this challenge slot
-    # First, find which slot this challenge was in
+    # Get the current time
     now = datetime.utcnow()
-    all_challenges = Challenge.query.filter_by(difficulty=challenge.difficulty).all()
-    available_challenges = [c for c in all_challenges if c.id != challenge_id]
     
-    # Find the slot number for this difficulty
-    slot_count = 3 if challenge.difficulty == 'E' else (2 if challenge.difficulty == 'M' else 1)
-    
-    # Find an available slot or create a new one
-    regen_timer = ChallengeRegeneration.query.filter_by(
-        difficulty=challenge.difficulty
-    ).order_by(ChallengeRegeneration.slot_number).first()
-    
-    if not regen_timer:
-        # Create a new regeneration timer
+    # Get the slot number from the request form data or query params
+    slot_number = request.form.get('slot') or request.args.get('slot')
+    if slot_number and str(slot_number).isdigit():
+        slot_number = int(slot_number)
+    else:
+        # Default to slot 1 if no slot parameter
         slot_number = 1
-        regen_timer = ChallengeRegeneration(
+        
+    print(f'Starting challenge {challenge_id} from slot {slot_number}')
+    
+    # For testing, use a short regeneration time (30 seconds)
+    # In production, use the proper hours based on difficulty
+    test_mode = True
+    
+    if test_mode:
+        # Testing: 30 seconds
+        regen_time = now + timedelta(seconds=30)
+    else:
+        # Production: proper hours
+        if challenge.difficulty == 'E':
+            regen_time = now + timedelta(hours=6)  # 6 hours for Easy
+        elif challenge.difficulty == 'M':
+            regen_time = now + timedelta(hours=8)  # 8 hours for Medium
+        else:
+            regen_time = now + timedelta(hours=10)  # 10 hours for Hard
+    
+    # Create or update the regeneration timer
+    # First, check if a timer already exists for this slot
+    timer = ChallengeRegeneration.query.filter_by(
+        difficulty=challenge.difficulty,
+        slot_number=slot_number
+    ).first()
+    
+    if timer:
+        # Update existing timer
+        print(f'Updating timer for {challenge.difficulty} slot {slot_number}')
+        timer.regenerate_at = regen_time
+    else:
+        # Create new timer
+        print(f'Creating new timer for {challenge.difficulty} slot {slot_number}')
+        timer = ChallengeRegeneration(
             difficulty=challenge.difficulty,
             slot_number=slot_number,
-            regenerate_at=now + timedelta(hours=ChallengeRegeneration.get_regen_hours(challenge.difficulty))
+            regenerate_at=regen_time
         )
-        db.session.add(regen_timer)
-    else:
-        # Update existing timer
-        regen_timer.regenerate_at = now + timedelta(hours=ChallengeRegeneration.get_regen_hours(challenge.difficulty))
+        db.session.add(timer)
     
+    # Save changes
     db.session.commit()
+    
+    # Log the regeneration time
+    time_diff = (regen_time - now).total_seconds()
+    print(f'Challenge will regenerate at {regen_time} (in {time_diff:.1f} seconds)')
     
     # Redirect to the challenges page with the active challenge
     flash('Challenge started successfully!', 'success')

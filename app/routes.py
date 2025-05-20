@@ -37,20 +37,41 @@ def game(section='challenges'):
     if not current_user.is_authenticated and section not in ['leaderboard', None]:
         section = 'auth'
     
-    # Get top users for the leaderboard with their points
-    points_subq = db.session.query(
-        CompletedChallenge.user_id,
-        db.func.sum(Challenge.points).label('total_points')
-    ).join(
-        Challenge,
-        Challenge.id == CompletedChallenge.challenge_id
-    ).group_by(CompletedChallenge.user_id).subquery()
-
-    top_users = db.session.query(User, db.func.coalesce(points_subq.c.total_points, 0))\
-        .outerjoin(points_subq, User.id == points_subq.c.user_id)\
-        .filter(User.is_public == True)\
-        .order_by(db.desc('total_points'))\
-        .limit(10).all()
+    # Get top users for the all-time leaderboard
+    all_time_users = db.session.query(
+        User,
+        db.func.coalesce(db.func.sum(CompletedChallenge.points_earned), 0).label('total_points')
+    ).outerjoin(
+        CompletedChallenge,
+        User.id == CompletedChallenge.user_id
+    ).filter(
+        User.is_public == True
+    ).group_by(
+        User.id
+    ).order_by(
+        db.desc('total_points')
+    ).limit(10).all()
+    
+    # Get top users for the weekly leaderboard (challenges completed in the last 7 days)
+    from datetime import datetime, timedelta
+    one_week_ago = datetime.utcnow() - timedelta(days=7)
+    
+    weekly_users = db.session.query(
+        User,
+        db.func.coalesce(db.func.sum(CompletedChallenge.points_earned), 0).label('weekly_points')
+    ).outerjoin(
+        CompletedChallenge,
+        (User.id == CompletedChallenge.user_id) & (CompletedChallenge.completed_at >= one_week_ago)
+    ).filter(
+        User.is_public == True
+    ).group_by(
+        User.id
+    ).order_by(
+        db.desc('weekly_points')
+    ).limit(10).all()
+    
+    # Get active challenge ID from request args
+    active_challenge_id = request.args.get('active')
     
     # Get user's progress if authenticated
     user_progress = None
@@ -61,25 +82,29 @@ def game(section='challenges'):
             .order_by(CompletedChallenge.completed_at.desc())\
             .limit(5).all()
             
-        # Calculate user's rank based on points
-        user_points = sum(c.challenge.points for c in completed)
+        # Calculate user's rank based on points - use the same method as the leaderboard
+        # Get the user's total points
+        user_points = current_user.points
+        
+        # Count how many users have more points than the current user
         higher_ranked_users = db.session.query(db.func.count(User.id)).filter(
             User.id != current_user.id,
-            User.is_public == True,
-            # Subquery to get users with higher points
-            User.id.in_(
-                db.session.query(CompletedChallenge.user_id)
-                .group_by(CompletedChallenge.user_id)
-                .having(db.func.sum(Challenge.points) > user_points)
-                .join(Challenge, Challenge.id == CompletedChallenge.challenge_id)
-            )
-        ).scalar() or 0
+            User.is_public == True
+        ).join(
+            CompletedChallenge,
+            User.id == CompletedChallenge.user_id
+        ).group_by(
+            User.id
+        ).having(
+            db.func.sum(CompletedChallenge.points_earned) > user_points
+        ).count()
         
         user_rank = higher_ranked_users + 1  # User's rank (1-based)
             
         user_progress = {
             'completed_challenges': completed,
             'total_points': user_points,
+            'rank': user_rank,
             'daily_streak': current_user.daily_streak
         }
     
@@ -101,11 +126,26 @@ def game(section='challenges'):
     # Get challenge regeneration timers
     now = datetime.utcnow()
     regeneration_timers = ChallengeRegeneration.query.all()
-    regeneration_by_difficulty = {
-        'E': sorted([r for r in regeneration_timers if r.difficulty == 'E'], key=lambda x: x.slot_number),
-        'M': sorted([r for r in regeneration_timers if r.difficulty == 'M'], key=lambda x: x.slot_number),
-        'H': sorted([r for r in regeneration_timers if r.difficulty == 'H'], key=lambda x: x.slot_number)
-    }
+    
+    # Debug: Print all regeneration timers
+    print(f'Found {len(regeneration_timers)} regeneration timers:')
+    for timer in regeneration_timers:
+        time_remaining = (timer.regenerate_at - now).total_seconds()
+        print(f'  - {timer.difficulty} slot {timer.slot_number}: regenerates in {time_remaining:.0f} seconds')
+    
+    # Organize regeneration timers by difficulty and slot number
+    regeneration_by_slot = {}
+    for timer in regeneration_timers:
+        key = (timer.difficulty, timer.slot_number)
+        regeneration_by_slot[key] = timer
+        
+    # Debug: Print all active regeneration timers
+    print(f'Found {len(regeneration_timers)} regeneration timers:')
+    for key, timer in regeneration_by_slot.items():
+        difficulty, slot = key
+        time_remaining = (timer.regenerate_at - now).total_seconds()
+        if time_remaining > 0:
+            print(f'  - Active timer: {difficulty} slot {slot}: regenerates in {time_remaining:.0f} seconds')
     
     # Prepare challenges by difficulty with regeneration timers
     import random
@@ -115,44 +155,89 @@ def game(section='challenges'):
         'H': []
     }
     
-    # For each difficulty level, check regeneration timers and add available challenges
+    # For each difficulty level, prepare the slots
     for difficulty in ['E', 'M', 'H']:
+        # Get available challenges for this difficulty
         available_by_diff = [c for c in available_challenges if c.difficulty == difficulty]
+        
+        # Determine number of slots for this difficulty
         slots_count = 3 if difficulty == 'E' else (2 if difficulty == 'M' else 1)
         
-        for i in range(slots_count):
-            # Find the regeneration timer for this slot
-            regen_timer = next((r for r in regeneration_by_difficulty[difficulty] if r.slot_number == i+1), None)
+        # Track which challenges have been assigned to slots
+        assigned_challenges = []
+        
+        # Fill each slot
+        for slot_number in range(1, slots_count + 1):
+            # Check if this slot has a regeneration timer
+            timer_key = (difficulty, slot_number)
+            regen_timer = regeneration_by_slot.get(timer_key)
             
-            # If timer exists and regeneration time has passed, or no timer exists
-            if not regen_timer or regen_timer.regenerate_at <= now:
-                # If we have available challenges, add one
-                if available_by_diff:
-                    challenge = random.choice(available_by_diff)
-                    challenges_by_difficulty[difficulty].append({
-                        'challenge': challenge,
-                        'regenerating': False,
-                        'time_remaining': None
-                    })
-                    available_by_diff.remove(challenge)  # Remove to avoid duplicates
-                else:
-                    # No available challenge, show empty slot
-                    challenges_by_difficulty[difficulty].append({
-                        'challenge': None,
-                        'regenerating': False,
-                        'time_remaining': None
-                    })
-            else:
-                # Regeneration time hasn't passed, show timer
+            # Debug
+            print(f'Checking slot {difficulty}-{slot_number}')
+            if regen_timer:
+                print(f'  Found timer, regenerates at {regen_timer.regenerate_at}')
+                time_diff = (regen_timer.regenerate_at - now).total_seconds()
+                print(f'  Time remaining: {time_diff:.1f} seconds')
+            
+            # If there's a timer and it hasn't expired yet, show regeneration timer
+            if regen_timer and regen_timer.regenerate_at > now:
+                # Calculate remaining time
                 time_remaining = (regen_timer.regenerate_at - now).total_seconds()
                 hours = int(time_remaining // 3600)
                 minutes = int((time_remaining % 3600) // 60)
+                seconds = int(time_remaining % 60)
+                
+                # Format time remaining
+                if hours > 0:
+                    time_str = f"{hours}h {minutes}m"
+                elif minutes > 0:
+                    time_str = f"{minutes}m {seconds}s"
+                else:
+                    time_str = f"{seconds}s"
+                
+                print(f'SHOWING TIMER for {difficulty} slot {slot_number}: {time_str}')
+                
+                # Add regenerating slot
                 challenges_by_difficulty[difficulty].append({
                     'challenge': None,
                     'regenerating': True,
-                    'time_remaining': f"{hours}h {minutes}m",
-                    'slot_number': regen_timer.slot_number
+                    'time_remaining': time_str,
+                    'slot_number': slot_number
                 })
+            else:
+                # If timer has expired or doesn't exist, show a challenge
+                if available_by_diff:
+                    # Pick a random challenge that hasn't been assigned yet
+                    available_for_slot = [c for c in available_by_diff if c not in assigned_challenges]
+                    if available_for_slot:
+                        challenge = random.choice(available_for_slot)
+                        assigned_challenges.append(challenge)
+                        
+                        print(f'Showing challenge {challenge.id} in slot {difficulty}-{slot_number}')
+                        
+                        # Add challenge to slot
+                        challenges_by_difficulty[difficulty].append({
+                            'challenge': challenge,
+                            'regenerating': False,
+                            'time_remaining': None,
+                            'slot_number': slot_number
+                        })
+                    else:
+                        # No more unique challenges available
+                        challenges_by_difficulty[difficulty].append({
+                            'challenge': None,
+                            'regenerating': False,
+                            'time_remaining': None,
+                            'slot_number': slot_number
+                        })
+                else:
+                    # No challenges available for this difficulty
+                    challenges_by_difficulty[difficulty].append({
+                        'challenge': None,
+                        'regenerating': False,
+                        'time_remaining': None,
+                        'slot_number': slot_number
+                    })
     
     # Add in-progress challenges to the context
     challenges_by_difficulty['in_progress'] = in_progress_challenges
@@ -174,13 +259,14 @@ def game(section='challenges'):
     login_form = LoginForm() if section == 'auth' else None
     signup_form = RegistrationForm() if section == 'auth' else None
 
-    return render_template('game.html',
-                           section=section,
-                           top_users=top_users,
+    return render_template('game.html', 
+                           section=section, 
                            user_progress=user_progress,
-                           user_rank=user_rank,
+                           top_users=all_time_users,
+                           weekly_users=weekly_users,
                            challenges=challenges_by_difficulty,
-                           recent_completed_challenges=recent_completed_challenges,
+                           active_challenge_id=active_challenge_id,
+                           in_progress_challenges=in_progress_challenges,
                            login_form=login_form,
                            signup_form=signup_form)
 

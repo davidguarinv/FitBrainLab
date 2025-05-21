@@ -12,8 +12,7 @@
 
       --ctext: #FFFFFF; /* Already by default if you do not change text color.  Black */
       --ctext-second: #6B7280; /* used for secondary text  gray-400 */
-
-      --white: #FFFFFF;
+      
       --accent: #2563EB;
       --accent-bg: #DBEAFE;
       --accent-300: #93C5FD;
@@ -51,8 +50,6 @@
 
       --ctext: #F9FAFB;          /* Almost white for primary text (gray-50) */
       --ctext-second: #9CA3AF;   /* Lighter gray for secondary text (gray-400) */
-
-      --white: #F9FAFB;          /* Lightest neutral for contrast on dark bg */
       --accent: #3B82F6;         /* Same as light mode or tweak if needed */
       --accent-bg: #1E40AF;      /* Darker background for accent elements */
       --accent-300: #60A5FA;     /* A lighter blue for hover states, etc */

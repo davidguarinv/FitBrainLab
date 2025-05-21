@@ -31,6 +31,22 @@ def publications():
 def communities():
     return render_template('communities5.html')
 
+@bp.route('/research/stayfine')
+def stayfine():
+    return render_template('/research/stay_fine.html')
+
+@bp.route('/research/stride4')
+def stride4():
+    return render_template('/research/stride-4.html')
+
+@bp.route('/research/brain_adaptations')
+def brain_adaptations():
+    return render_template('/research/brain_adaptations.html')
+
+@bp.route('/research/leopard_predict')
+def leopard_predict():
+    return render_template('/research/leopard_predict.html')
+
 @bp.route('/game')
 @bp.route('/game/<section>')
 def game(section='challenges'):

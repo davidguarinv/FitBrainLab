@@ -117,12 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Search functionality
-        const searchButton = document.getElementById('search-button');
-        searchButton.addEventListener('click', () => {
-            handleFilterChange();
-        });
-
         // Reset filters
         resetFiltersButton.addEventListener('click', handleResetFilters);
 
@@ -250,10 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <a href="${doiLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full gap-2 ${!publication.doi ? 'opacity-50 pointer-events-none' : ''}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="h-4 w-4"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
                             <span>Journal Website</span>
-                        </a>
-                        <a href="${pdfLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-50 h-10 px-4 py-2 w-full gap-2 ${pdfLink === '#' ? 'opacity-50 pointer-events-none' : ''}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="h-4 w-4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
-                            <span>PDF</span>
                         </a>
                     </div>
                 </div>

@@ -22,7 +22,6 @@ module.exports = {
         bg_footer: "rgb(var(--bg-footer))",
         ctext: "rgb(var(--ctext))",
         ctext_second: "rgb(var(--ctext-second))",
-        white: "rgb(var(--white))",
         accent: "rgb(var(--accent))",
         accent_bg: "rgb(var(--accent-bg))",
         accent_300: "rgb(var(--accent-300))",

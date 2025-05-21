@@ -550,3 +550,12 @@ def delete_account():
     except Exception as e:
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
+
+@app.route("/communities")
+def communities():
+    csv_path = os.path.join("data", "migrations", "List of Communities - Sheet1 (2).csv")
+    df = pd.read_csv(csv_path)
+    df.columns = df.columns.str.strip()  # clean up any trailing spaces in column names
+    return render_template("communities.html", communities=df.to_dict(orient="records"))
+
+

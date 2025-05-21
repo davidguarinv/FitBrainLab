@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+{% block title %}Research - Leopard Predict{% endblock %}
+{% block content %}
+
+<main class="flex-1">
+<!-- Project Header -->
+    <section class="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-muted/50 to-muted">
+        <div class="container px-4 md:px-6">
+        <div class="flex flex-col space-y-4">
+            <a
+            href="/research"
+            class="flex items-center text-primary hover:text-primary/80 transition-colors mb-2"
+            >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                class="mr-2 h-4 w-4"
+            >
+                <path d="m12 19-7-7 7-7"></path>
+                <path d="M19 12H5"></path>
+            </svg>
+            Back to Research Projects
+            </a>
+
+            <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+            <div class="space-y-4">
+                <div class="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
+                Human Research Project
+                </div>
+                <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">LEOPARD PREDICT</h1>
+                <p class="text-xl text-muted-foreground">
+                Predicting antidepressant treatment response using neuroimaging and physical activity data
+                </p>
+            </div>
+            <div class="relative h-[300px] rounded-xl overflow-hidden">
+                <Image
+                src="/placeholder.svg?height=300&width=600&text=LEOPARD+PREDICT"
+                alt="LEOPARD PREDICT Project"
+                fill
+                class="object-cover"
+                />
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="w-full py-12 md:py-24 bg-background">
+        <div class="container px-4 md:px-6">
+        <div class="grid gap-10 lg:grid-cols-3">
+            <div class="lg:col-span-2 space-y-8">
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Project Overview</h2>
+                <p class="text-muted-foreground">
+                It usually takes around eight weeks to determine if an antidepressant drug is effective in depressed
+                patients. Furthermore, after one year, treatment with antidepressants is effective in about half of
+                all treated depressed patients. In the LEOPARD PREDICT study, we will determine if we can predict
+                antidepressant-treatment response in depressed patients (18-60 years) within two weeks of starting
+                with antidepressant treatment using resting-state functional MRI (rsfMRI) data.
+                </p>
+                <p class="text-muted-foreground">
+                We will explore if integration of physical activity parameters can improve prediction of
+                antidepressant treatment effectivity using rsfMRI data. This approach could significantly reduce the
+                time needed to identify effective treatments for individual patients, leading to faster symptom
+                relief and improved outcomes.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Research Methodology</h2>
+                <p class="text-muted-foreground">
+                Our research methodology combines advanced neuroimaging with physical activity monitoring:
+                </p>
+                <ul class="space-y-2 text-muted-foreground">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Resting-state functional MRI (rsfMRI) to assess brain connectivity patterns before and after
+                    treatment initiation
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                    </div>
+                    <span>Wearable accelerometers to continuously monitor physical activity levels and patterns</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Standardized clinical assessments to measure depression severity and treatment response
+                    </span>
+                </li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Current Progress</h2>
+                <p class="text-muted-foreground">
+                The LEOPARD PREDICT study is currently in its implementation phase. We have successfully:
+                </p>
+                <ul class="space-y-2 text-muted-foreground">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    </div>
+                    <span>Developed the neuroimaging protocols and analysis pipelines for rsfMRI data</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    </div>
+                    <span>
+                    Established the physical activity monitoring methodology using validated wearable devices
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    </div>
+                    <span>Initiated participant recruitment across multiple clinical sites</span>
+                </li>
+                </ul>
+                <p class="text-muted-foreground">
+                We are currently collecting baseline data from the first cohort of participants and developing the
+                machine learning algorithms that will be used to predict treatment response.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Expected Outcomes</h2>
+                <p class="text-muted-foreground">Through this research, we aim to:</p>
+                <ul class="space-y-2 text-muted-foreground">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Develop a predictive model that can identify likely responders to antidepressant treatment
+                    within two weeks of initiation
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Determine how physical activity patterns interact with brain function to influence treatment
+                    response
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Create clinical guidelines for incorporating physical activity assessments into depression
+                    treatment planning
+                    </span>
+                </li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Significance</h2>
+                <p class="text-muted-foreground">
+                If successful, this research could transform the treatment approach for depression by:
+                </p>
+                <ul class="space-y-2 text-muted-foreground">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Reducing the trial-and-error period in antidepressant treatment from 8+ weeks to just 2 weeks
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Providing objective biomarkers for treatment response that complement clinical assessments
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>Highlighting the role of physical activity in depression treatment and recovery</span>
+                </li>
+                </ul>
+            </div>
+            </div>
+
+            <div class="space-y-6">
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div class="p-6 space-y-4">
+                <h3 class="text-xl font-bold">Project Details</h3>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                    <span class="text-sm font-medium">Status:</span>
+                    <span class="text-sm text-muted-foreground">Ongoing</span>
+                    </div>
+                    <div class="flex justify-between">
+                    <span class="text-sm font-medium">Timeline:</span>
+                    <span class="text-sm text-muted-foreground">2021-2025</span>
+                    </div>
+                    <div class="flex justify-between">
+                    <span class="text-sm font-medium">Participants:</span>
+                    <span class="text-sm text-muted-foreground">Adults (18-60 years)</span>
+                    </div>
+                    <div class="flex justify-between">
+                    <span class="text-sm font-medium">Sample Size:</span>
+                    <span class="text-sm text-muted-foreground">Target N=200</span>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t">
+                    <h4 class="text-sm font-medium mb-2">Project Partners:</h4>
+                    <ul class="space-y-1 text-sm text-muted-foreground">
+                    <li>Amsterdam UMC (Reneman)</li>
+                    <li>RadboudUMC (Ruhe)</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div class="p-6 space-y-4">
+                <h3 class="text-xl font-bold">Related Publications</h3>
+
+                <div class="space-y-4">
+                    <div class="space-y-1">
+                    <p class="text-sm font-medium">Neuroimaging Predictors of Antidepressant Response</p>
+                    <p class="text-xs text-muted-foreground">Journal of Psychiatric Research, 2022</p>
+                    </div>
+                    <div class="space-y-1">
+                    <p class="text-sm font-medium">Physical Activity and Depression Treatment Outcomes</p>
+                    <p class="text-xs text-muted-foreground">Frontiers in Psychiatry, 2021</p>
+                    </div>
+                </div>
+
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-2">
+                    View All Publications
+                </button>
+                </div>
+            </div>
+
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div class="p-6 space-y-4">
+                <h3 class="text-xl font-bold">Research Team</h3>
+
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
+                        <Image
+                        src="/placeholder.svg?height=40&width=40&text=AR"
+                        alt="Dr. Alex Rodriguez"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Dr. Alex Rodriguez</p>
+                        <p class="text-xs text-muted-foreground">Principal Investigator</p>
+                    </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
+                        <Image
+                        src="/placeholder.svg?height=40&width=40&text=LT"
+                        alt="Dr. Lisa Thompson"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Dr. Lisa Thompson</p>
+                        <p class="text-xs text-muted-foreground">Neuroimaging Specialist</p>
+                    </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
+                        <Image
+                        src="/placeholder.svg?height=40&width=40&text=JC"
+                        alt="James Chen"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">James Chen, MSc</p>
+                        <p class="text-xs text-muted-foreground">Data Scientist</p>
+                    </div>
+                    </div>
+                </div>
+
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-2">
+                    View Full Team
+                </button>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Related Projects -->
+    <section class="w-full py-12 md:py-24 bg-muted/30">
+        <div class="container px-4 md:px-6">
+        <div class="flex flex-col items-center text-center space-y-4 mb-8">
+            <h2 class="text-2xl font-bold tracking-tighter">Related Projects</h2>
+            <p class="max-w-[800px] text-muted-foreground">
+            Explore other research projects from our lab that complement the LEOPARD PREDICT study.
+            </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+            <a href="/research/stayfine" class="group">
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm h-full transition-all group-hover:shadow-md">
+                <div class="p-6 space-y-4">
+                <div class="relative h-40 w-full rounded-md overflow-hidden">
+                    <Image
+                    src="/placeholder.svg?height=160&width=320&text=StayFine"
+                    alt="StayFine Project"
+                    fill
+                    class="object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold group-hover:text-primary transition-colors">StayFine Project</h3>
+                    <p class="text-sm text-muted-foreground mt-2">
+                    A longitudinal study assessing the efficacy of a personalized app to prevent relapse in
+                    adolescents with depression and anxiety.
+                    </p>
+                </div>
+                </div>
+            </div>
+            </a>
+
+            <a href="/research/stride-4" class="group">
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm h-full transition-all group-hover:shadow-md">
+                <div class="p-6 space-y-4">
+                <div class="relative h-40 w-full rounded-md overflow-hidden">
+                    <Image
+                    src="/placeholder.svg?height=160&width=320&text=STRIDE-4"
+                    alt="STRIDE-4-Mental Health Project"
+                    fill
+                    class="object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold group-hover:text-primary transition-colors">
+                    STRIDE-4-Mental Health
+                    </h3>
+                    <p class="text-sm text-muted-foreground mt-2">
+                    Applying a network approach to uncover factors influencing exercise persistence in students.
+                    </p>
+                </div>
+                </div>
+            </div>
+            </a>
+        </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

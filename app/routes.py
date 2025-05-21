@@ -550,3 +550,22 @@ def delete_account():
     except Exception as e:
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
+
+import os
+import pandas as pd
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route("/communities")
+def communities():
+    # This path matches your current setup
+    path = os.path.join("data", "migrations", "List of Communities - Sheet1 (2).csv")
+    df = pd.read_csv(path)
+    df.columns = df.columns.str.strip()
+    return render_template("communities.html", communities=df.to_dict(orient="records"))
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+

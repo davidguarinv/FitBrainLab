@@ -49,11 +49,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchPublications() {
-        const response = await fetch(PUBLICATIONS_JSON_PATH);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status} - Failed to fetch ${PUBLICATIONS_JSON_PATH}`);
+        try {
+            const response = await fetch(PUBLICATIONS_JSON_PATH);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status} - Failed to fetch ${PUBLICATIONS_JSON_PATH}`);
+            }
+            const data = await response.json();
+            if (!data || !data.publications || !Array.isArray(data.publications)) {
+                throw new Error('Invalid JSON structure: missing publications array');
+            }
+            return data.publications;
+        } catch (error) {
+            console.error('Error fetching publications:', error);
+            throw error;
         }
-        return await response.json();
     }
 
     // --- Populate UI Elements ---
@@ -100,20 +109,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners Setup ---
     function setupEventListeners() {
-        searchInput.addEventListener('input', handleFilterChange);
-        yearFilter.addEventListener('change', handleFilterChange);
-        categoryFilter.addEventListener('change', handleFilterChange);
-        affiliationFilter.addEventListener('change', handleFilterChange);
-        
-        resetFiltersButton.addEventListener('click', handleResetFilters);
-        loadMoreButton.addEventListener('click', handleLoadMore);
-
+        // Tab switching
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 setActiveTab(button.dataset.type);
                 handleFilterChange(); // Re-filter and render for the new tab
             });
         });
+
+        // Search functionality
+        const searchButton = document.getElementById('search-button');
+        searchButton.addEventListener('click', () => {
+            handleFilterChange();
+        });
+
+        // Reset filters
+        resetFiltersButton.addEventListener('click', handleResetFilters);
+
+        searchInput.addEventListener('input', handleFilterChange);
+        yearFilter.addEventListener('change', handleFilterChange);
+        categoryFilter.addEventListener('change', handleFilterChange);
+        affiliationFilter.addEventListener('change', handleFilterChange);
+        loadMoreButton.addEventListener('click', handleLoadMore);
     }
 
     // --- Filtering Logic ---
@@ -124,17 +141,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedAffiliation = affiliationFilter.value;
 
         currentlyDisplayedPublications = allPublications.filter(pub => {
+            // Tab type matching
             const typeMatch = activeTabType === 'research_article' ?
                 pub.type === 'data_article' :
-                ['review_article', 'opinion_piece', 'book_chapter'].includes(pub.type);
+                pub.type === 'review_articles_opinion_pieces_book_chapters';
 
+            // Search across all text fields
             const searchMatch = !searchTerm ||
                 pub.title.toLowerCase().includes(searchTerm) ||
                 pub.authors.toLowerCase().includes(searchTerm) ||
-                (pub.research_area && pub.research_area.toLowerCase().includes(searchTerm));
+                (pub.research_area && pub.research_area.toLowerCase().includes(searchTerm)) ||
+                pub.journal.toLowerCase().includes(searchTerm) ||
+                (pub.year && pub.year.toString().includes(searchTerm));
 
+            // Filter by year
             const yearMatch = selectedYear === 'all' || pub.year.toString() === selectedYear;
+
+            // Filter by research area
             const categoryMatch = selectedCategory === 'all' || pub.research_area === selectedCategory;
+
+            // Filter by affiliation
             const affiliationMatch = selectedAffiliation === 'all' || pub.project_affiliation === selectedAffiliation;
 
             return typeMatch && searchMatch && yearMatch && categoryMatch && affiliationMatch;
@@ -187,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const pdfLink = publication.pdf_url || '#'; // Use provided pdf_url or fallback
+        const abstract = publication.abstract || ""; // Use empty string if no abstract
 
         div.innerHTML = `
             <div class="p-6">
@@ -210,9 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <span class="font-medium">Journal:</span> ${publication.journal}
                             </p>
                         </div>
-                        ${publication.abstract ? `
+                        ${abstract ? `
                         <p class="text-sm text-gray-500 line-clamp-3">
-                            ${publication.abstract}
+                            ${abstract}
                         </p>` : ''}
                     </div>
                     <div class="flex flex-col justify-center gap-3 md:border-l md:pl-6">

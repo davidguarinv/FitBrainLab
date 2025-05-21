@@ -1,230 +1,192 @@
-class PublicationsManager {
-    constructor() {
-        this.publications = [];
-        this.filteredPublications = [];
-        this.currentType = 'research_article';
-        this.currentPage = 0;
-        this.itemsPerPage = 10;
-        this.searchQuery = '';
-        this.filters = {
-            year: 'all',
-            category: 'all',
-            author: 'all'
-        };
-        
-        this.init();
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    // Configuration
+    const PUBLICATIONS_JSON_PATH = '/static/data/publications.json'; // Adjust if your JSON is elsewhere
+    const ITEMS_PER_PAGE = 5; // Number of items to load at a time
 
-    async init() {
+    // DOM Elements
+    const publicationsListContainer = document.getElementById('publications-list');
+    const searchInput = document.getElementById('search');
+    const yearFilter = document.getElementById('year');
+    const categoryFilter = document.getElementById('category'); // Research Area
+    const affiliationFilter = document.getElementById('affiliation');
+    const resetFiltersButton = document.getElementById('reset-filters');
+    const loadMoreButton = document.getElementById('load-more');
+    const resultsCountElement = document.getElementById('results-count');
+    const sectionTitleElement = document.getElementById('section-title');
+    const tabButtons = document.querySelectorAll('.tab-button');
+
+    // State Variables
+    let allPublications = []; // Stores all fetched publications, original sort order
+    let currentlyDisplayedPublications = []; // Stores currently filtered and sorted publications for display
+    let currentPage = 1;
+    let activeTabType = 'research_article'; // Default active tab: 'research_article' for 'data_article' type
+
+    // --- Initialization ---
+    async function initializeApp() {
         try {
-            await this.loadPublications();
-            this.setupEventListeners();
-            this.populateFilters();
-            this.filterAndDisplay();
+            const rawData = await fetchPublications();
+            // Sort publications by year (descending) then title (ascending) as a default
+            allPublications = rawData.sort((a, b) => {
+                if (b.year !== a.year) {
+                    return b.year - a.year;
+                }
+                return a.title.localeCompare(b.title);
+            });
+
+            populateDropdowns();
+            setupEventListeners();
+            setActiveTab(activeTabType); // Set initial active tab styles and title
+            applyFiltersAndRender();
         } catch (error) {
-            console.error('Error initializing publications:', error);
-            document.getElementById('results-count').textContent = 'Error loading publications';
+            console.error("Error initializing app:", error);
+            if (publicationsListContainer) {
+                publicationsListContainer.innerHTML = "<p class='text-red-500'>Failed to load publications. Please try again later.</p>";
+            }
+             if (resultsCountElement) {
+                resultsCountElement.textContent = "Error loading data";
+            }
         }
     }
 
-    async loadPublications() {
-        const response = await fetch('/static/json/publications.json');
-        this.publications = await response.json();
+    async function fetchPublications() {
+        const response = await fetch(PUBLICATIONS_JSON_PATH);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} - Failed to fetch ${PUBLICATIONS_JSON_PATH}`);
+        }
+        return await response.json();
     }
 
-    setupEventListeners() {
-        // Tab buttons
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                this.switchTab(e.target.dataset.type, e.target);
-            });
-        });
+    // --- Populate UI Elements ---
+    function populateDropdowns() {
+        const years = [...new Set(allPublications.map(p => p.year))].sort((a, b) => b - a);
+        const researchAreas = [...new Set(allPublications.map(p => p.research_area).filter(Boolean))].sort();
+        const affiliations = [...new Set(allPublications.map(p => p.project_affiliation).filter(Boolean))].sort();
 
-        // Search input
-        const searchInput = document.getElementById('search');
-        searchInput.addEventListener('input', (e) => {
-            this.searchQuery = e.target.value.toLowerCase();
-            this.currentPage = 0;
-            this.filterAndDisplay();
-        });
-
-        // Filter selects
-        document.getElementById('year').addEventListener('change', (e) => {
-            this.filters.year = e.target.value;
-            this.currentPage = 0;
-            this.filterAndDisplay();
-        });
-
-        document.getElementById('category').addEventListener('change', (e) => {
-            this.filters.category = e.target.value;
-            this.currentPage = 0;
-            this.filterAndDisplay();
-        });
-
-        document.getElementById('author').addEventListener('change', (e) => {
-            this.filters.author = e.target.value;
-            this.currentPage = 0;
-            this.filterAndDisplay();
-        });
-
-        // Reset filters button
-        document.getElementById('reset-filters').addEventListener('click', () => {
-            this.resetFilters();
-        });
-
-        // Load more button
-        document.getElementById('load-more').addEventListener('click', () => {
-            this.currentPage++;
-            this.displayPublications(false);
-        });
-    }
-
-    populateFilters() {
-        // Populate year filter
-        const years = [...new Set(this.publications.map(p => p.year))]
-            .sort((a, b) => b - a);
-        const yearSelect = document.getElementById('year');
         years.forEach(year => {
             const option = document.createElement('option');
             option.value = year;
             option.textContent = year;
-            yearSelect.appendChild(option);
+            yearFilter.appendChild(option);
         });
 
-        // Populate category filter
-        const categories = [...new Set(
-            this.publications.flatMap(p => p.research_area || [])
-        )].sort();
-        const categorySelect = document.getElementById('category');
-        categories.forEach(category => {
+        researchAreas.forEach(area => {
             const option = document.createElement('option');
-            option.value = category;
-            option.textContent = this.formatCategoryName(category);
-            categorySelect.appendChild(option);
+            option.value = area;
+            option.textContent = area;
+            categoryFilter.appendChild(option);
         });
 
-        // Populate author filter
-        const authors = [...new Set(
-            this.publications.flatMap(p => p.authors)
-        )].sort();
-        const authorSelect = document.getElementById('author');
-        authors.forEach(author => {
+        affiliations.forEach(affiliation => {
             const option = document.createElement('option');
-            option.value = author;
-            option.textContent = author;
-            authorSelect.appendChild(option);
+            option.value = affiliation;
+            option.textContent = affiliation.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            affiliationFilter.appendChild(option);
         });
     }
 
-    formatCategoryName(category) {
-        return category.split('_').map(word => 
-            word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
-    }
-
-    switchTab(type, button) {
-        // Update tab appearance
-        document.querySelectorAll('.tab-button').forEach(btn => {
-            btn.className = 'px-4 py-2 text-sm font-medium border-b-2 border-transparent hover:text-blue-600 hover:border-blue-600 tab-button';
-        });
-        button.className = 'px-4 py-2 text-sm font-medium border-b-2 border-blue-600 text-blue-600 tab-button';
-
-        // Update current type and reset pagination
-        this.currentType = type;
-        this.currentPage = 0;
-        
-        // Update section title
-        const titles = {
-            'research_article': 'Journal Articles',
-            'review_article': 'Reviews',
-            'book_chapter': 'Book Chapters',
-            'preprint': 'Preprints'
-        };
-        document.getElementById('section-title').textContent = titles[type];
-
-        this.filterAndDisplay();
-    }
-
-    filterAndDisplay() {
-        this.filteredPublications = this.publications.filter(pub => {
-            // Filter by type
-            if (pub.type !== this.currentType) return false;
-
-            // Filter by search query
-            if (this.searchQuery) {
-                const searchText = `${pub.title} ${pub.authors.join(' ')} ${(pub.research_area || []).join(' ')}`.toLowerCase();
-                if (!searchText.includes(this.searchQuery)) return false;
+    function setActiveTab(activeType) {
+        activeTabType = activeType;
+        tabButtons.forEach(button => {
+            if (button.dataset.type === activeType) {
+                button.classList.add('border-blue-600', 'text-blue-600');
+                button.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300'); // Adjusted hover classes
+                if (sectionTitleElement) sectionTitleElement.textContent = button.textContent.trim();
+            } else {
+                button.classList.remove('border-blue-600', 'text-blue-600');
+                button.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300'); // Adjusted hover classes
             }
-
-            // Filter by year
-            if (this.filters.year !== 'all' && pub.year.toString() !== this.filters.year) return false;
-
-            // Filter by category
-            if (this.filters.category !== 'all' && !(pub.research_area || []).includes(this.filters.category)) return false;
-
-            // Filter by author
-            if (this.filters.author !== 'all' && !pub.authors.includes(this.filters.author)) return false;
-
-            return true;
         });
-
-        this.displayPublications(true);
     }
 
-    displayPublications(clearExisting = true) {
-        const container = document.getElementById('publications-list');
-        const loadMoreButton = document.getElementById('load-more');
+    // --- Event Listeners Setup ---
+    function setupEventListeners() {
+        searchInput.addEventListener('input', handleFilterChange);
+        yearFilter.addEventListener('change', handleFilterChange);
+        categoryFilter.addEventListener('change', handleFilterChange);
+        affiliationFilter.addEventListener('change', handleFilterChange);
+        
+        resetFiltersButton.addEventListener('click', handleResetFilters);
+        loadMoreButton.addEventListener('click', handleLoadMore);
 
-        if (clearExisting) {
-            container.innerHTML = '';
-            this.currentPage = 0;
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                setActiveTab(button.dataset.type);
+                handleFilterChange(); // Re-filter and render for the new tab
+            });
+        });
+    }
+
+    // --- Filtering Logic ---
+    function filterPublications() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedYear = yearFilter.value;
+        const selectedCategory = categoryFilter.value;
+        const selectedAffiliation = affiliationFilter.value;
+
+        currentlyDisplayedPublications = allPublications.filter(pub => {
+            const typeMatch = activeTabType === 'research_article' ?
+                pub.type === 'data_article' :
+                ['review_article', 'opinion_piece', 'book_chapter'].includes(pub.type);
+
+            const searchMatch = !searchTerm ||
+                pub.title.toLowerCase().includes(searchTerm) ||
+                pub.authors.toLowerCase().includes(searchTerm) ||
+                (pub.research_area && pub.research_area.toLowerCase().includes(searchTerm));
+
+            const yearMatch = selectedYear === 'all' || pub.year.toString() === selectedYear;
+            const categoryMatch = selectedCategory === 'all' || pub.research_area === selectedCategory;
+            const affiliationMatch = selectedAffiliation === 'all' || pub.project_affiliation === selectedAffiliation;
+
+            return typeMatch && searchMatch && yearMatch && categoryMatch && affiliationMatch;
+        });
+    }
+
+    // --- Rendering Logic ---
+    function applyFiltersAndRender() {
+        currentPage = 1; // Reset to first page on any filter change
+        filterPublications();
+        renderPublicationItems();
+        updateResultsCount();
+        updateLoadMoreButtonVisibility();
+    }
+    
+    function renderPublicationItems() {
+        if (currentPage === 1) {
+            publicationsListContainer.innerHTML = ''; // Clear previous items for a new filter/page 1
         }
 
-        const startIndex = this.currentPage * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const publicationsToShow = this.filteredPublications.slice(startIndex, endIndex);
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const itemsToRender = currentlyDisplayedPublications.slice(startIndex, endIndex);
 
-        publicationsToShow.forEach(pub => {
-            const pubElement = this.createPublicationElement(pub);
-            container.appendChild(pubElement);
-        });
-
-        // Update results count
-        const totalResults = this.filteredPublications.length;
-        const currentCount = Math.min(endIndex, totalResults);
-        document.getElementById('results-count').textContent = 
-            `Showing ${currentCount} of ${totalResults} ${this.getTypeName()}`;
-
-        // Show/hide load more button
-        if (endIndex < totalResults) {
-            loadMoreButton.style.display = 'block';
+        if (itemsToRender.length === 0 && currentPage === 1) {
+            publicationsListContainer.innerHTML = "<p>No publications found matching your criteria.</p>";
         } else {
-            loadMoreButton.style.display = 'none';
+            itemsToRender.forEach(pub => {
+                const pubElement = createPublicationElement(pub);
+                publicationsListContainer.appendChild(pubElement);
+            });
         }
     }
 
-    getTypeName() {
-        const typeNames = {
-            'research_article': 'articles',
-            'review_article': 'reviews',
-            'book_chapter': 'chapters',
-            'preprint': 'preprints'
-        };
-        return typeNames[this.currentType] || 'publications';
-    }
-
-    createPublicationElement(pub) {
+    function createPublicationElement(publication) {
         const div = document.createElement('div');
-        div.className = 'rounded-lg border bg-white shadow-sm overflow-hidden transition-all hover:border-blue-300';
+        div.className = "rounded-lg border bg-white shadow-sm overflow-hidden transition-all hover:border-blue-300";
 
-        const researchAreas = (pub.research_area || []).map(area => 
-            `<span class="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-medium text-blue-600">
-                ${this.formatCategoryName(area)}
-            </span>`
-        ).join(' ');
+        let doiLink = '#';
+        let pubMedLink = '#';
+        if (publication.doi) {
+            if (publication.doi.startsWith('http')) {
+                doiLink = publication.doi;
+            } else {
+                doiLink = `https://doi.org/${publication.doi}`;
+            }
+            // Basic extraction for PubMed link, assumes DOI is the part after "doi.org/" or the whole string if not a URL
+            const doiIdentifier = publication.doi.includes('doi.org/') ? publication.doi.split('doi.org/')[1] : publication.doi;
+            pubMedLink = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(doiIdentifier)}`;
+        }
 
-        const abstract = pub.abstract ? 
-            `<p class="text-sm text-gray-500 line-clamp-3">${pub.abstract}</p>` : '';
+        const pdfLink = publication.pdf_url || '#'; // Use provided pdf_url or fallback
 
         div.innerHTML = `
             <div class="p-6">
@@ -233,82 +195,87 @@ class PublicationsManager {
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
                                 <span class="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-medium text-blue-600">
-                                    ${pub.year}
+                                    ${publication.year}
                                 </span>
-                                ${researchAreas}
+                                ${publication.research_area ? `
+                                <span class="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-medium text-blue-600">
+                                    ${publication.research_area}
+                                </span>` : ''}
                             </div>
-                            <h3 class="text-xl font-bold">${pub.title}</h3>
+                            <h3 class="text-xl font-bold">${publication.title}</h3>
                             <p class="text-sm text-gray-500">
-                                <span class="font-medium">Authors:</span> ${pub.authors.join(', ')}
+                                <span class="font-medium">Authors:</span> ${publication.authors}
                             </p>
                             <p class="text-sm text-gray-500">
-                                <span class="font-medium">Journal:</span> ${pub.journal}${pub.volume ? `, ${pub.volume}` : ''}${pub.pages ? `, ${pub.pages}` : ''}
+                                <span class="font-medium">Journal:</span> ${publication.journal}
                             </p>
                         </div>
-                        ${abstract}
+                        ${publication.abstract ? `
+                        <p class="text-sm text-gray-500 line-clamp-3">
+                            ${publication.abstract}
+                        </p>` : ''}
                     </div>
-
                     <div class="flex flex-col justify-center gap-3 md:border-l md:pl-6">
-                        ${pub.pubmed_url ? `
-                        <a href="${pub.pubmed_url}" target="_blank" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="h-4 w-4">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                                <polyline points="15 3 21 3 21 9"></polyline>
-                                <line x1="10" x2="21" y1="14" y2="3"></line>
-                            </svg>
+                        <a href="${pubMedLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full gap-2 ${!publication.doi ? 'opacity-50 pointer-events-none' : ''}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="h-4 w-4"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
                             <span>View on PubMed</span>
-                        </a>` : ''}
-                        
-                        ${pub.doi ? `
-                        <a href="${pub.doi}" target="_blank" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="h-4 w-4">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                                <polyline points="15 3 21 3 21 9"></polyline>
-                                <line x1="10" x2="21" y1="14" y2="3"></line>
-                            </svg>
+                        </a>
+                        <a href="${doiLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full gap-2 ${!publication.doi ? 'opacity-50 pointer-events-none' : ''}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="h-4 w-4"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
                             <span>Journal Website</span>
-                        </a>` : ''}
-                        
-                        <a href="#" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-50 h-10 px-4 py-2 w-full gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="h-4 w-4">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" x2="12" y1="15" y2="3"></line>
-                            </svg>
+                        </a>
+                        <a href="${pdfLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-50 h-10 px-4 py-2 w-full gap-2 ${pdfLink === '#' ? 'opacity-50 pointer-events-none' : ''}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="h-4 w-4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
                             <span>PDF</span>
                         </a>
                     </div>
                 </div>
             </div>
         `;
-
         return div;
     }
 
-    resetFilters() {
-        // Reset search input
-        document.getElementById('search').value = '';
-        this.searchQuery = '';
-
-        // Reset filter selects
-        document.getElementById('year').value = 'all';
-        document.getElementById('category').value = 'all';
-        document.getElementById('author').value = 'all';
-
-        // Reset filter values
-        this.filters = {
-            year: 'all',
-            category: 'all',
-            author: 'all'
-        };
-
-        // Reset pagination and display
-        this.currentPage = 0;
-        this.filterAndDisplay();
+    // --- UI Updates ---
+    function updateResultsCount() {
+        const totalFiltered = currentlyDisplayedPublications.length;
+        const currentlyShown = Math.min(totalFiltered, currentPage * ITEMS_PER_PAGE);
+        if (resultsCountElement) {
+            resultsCountElement.textContent = `Showing ${currentlyShown} of ${totalFiltered} results`;
+        }
     }
-}
 
-// Initialize the publications manager when the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new PublicationsManager();
+    function updateLoadMoreButtonVisibility() {
+        const totalFiltered = currentlyDisplayedPublications.length;
+        if (currentPage * ITEMS_PER_PAGE >= totalFiltered) {
+            loadMoreButton.style.display = 'none';
+        } else {
+            loadMoreButton.style.display = 'inline-flex';
+        }
+    }
+
+    // --- Event Handlers ---
+    function handleFilterChange() {
+        applyFiltersAndRender();
+    }
+
+    function handleLoadMore() {
+        currentPage++;
+        renderPublicationItems(); // Append next page items
+        updateResultsCount();
+        updateLoadMoreButtonVisibility();
+    }
+
+    function handleResetFilters() {
+        searchInput.value = '';
+        yearFilter.value = 'all';
+        categoryFilter.value = 'all';
+        affiliationFilter.value = 'all';
+        // activeTabType remains the same unless you want to reset it too.
+        // If you want to reset to the default tab:
+        // setActiveTab('research_article'); 
+        applyFiltersAndRender();
+    }
+
+    // Start the application
+    initializeApp();
 });

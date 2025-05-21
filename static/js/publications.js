@@ -117,12 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Search functionality
-        const searchButton = document.getElementById('search-button');
-        searchButton.addEventListener('click', () => {
-            handleFilterChange();
-        });
-
         // Reset filters
         resetFiltersButton.addEventListener('click', handleResetFilters);
 

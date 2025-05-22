@@ -22,9 +22,14 @@
                 
                 <!-- User Avatar -->
                 <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                    <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
+                    {% if user.top_sport_category %}
+                        {% set category_slug = user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
+                        <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ user.top_sport_category }}" class="w-8 h-8">
+                    {% else %}
+                        <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    {% endif %}
                 </div>
                 
                 <!-- User Info -->
@@ -43,10 +48,20 @@
             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div class="flex items-center space-x-4">
                     <span class="font-medium text-gray-500 w-8">{{ loop.index + 3 }}</span>
+                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                        {% if user.top_sport_category %}
+                            {% set category_slug = user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
+                            <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ user.top_sport_category }}" class="w-5 h-5">
+                        {% else %}
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        {% endif %}
+                    </div>
                     <div>
                         <h4 class="font-medium">{{ user.username }}</h4>
-                        {% if user.top_sport %}
-                            <p class="text-sm text-gray-600">{{ user.top_sport }}</p>
+                        {% if user.top_sport_category %}
+                            <p class="text-sm text-gray-600">{{ user.top_sport_category }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -75,16 +90,21 @@
                     
                     <!-- User Avatar -->
                     <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                        <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
+                        {% if user.top_sport_category %}
+                            {% set category_slug = user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
+                            <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ user.top_sport_category }}" class="w-8 h-8">
+                        {% else %}
+                            <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        {% endif %}
                     </div>
                     
                     <!-- User Info -->
                     <h3 class="font-bold text-lg mb-1">{{ user.username }}</h3>
                     <p class="text-primary font-medium mb-2">{{ points|int }} points</p>
-                    {% if user.top_sport %}
-                        <p class="text-sm text-gray-600">{{ user.top_sport }}</p>
+                    {% if user.top_sport_category %}
+                        <p class="text-sm text-gray-600">{{ user.top_sport_category }}</p>
                     {% endif %}
                 </div>
             {% endfor %}
@@ -96,10 +116,20 @@
                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                     <div class="flex items-center space-x-4">
                         <span class="font-medium text-gray-500 w-8">{{ loop.index + 3 }}</span>
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                            {% if user.top_sport_category %}
+                                {% set category_slug = user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
+                                <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ user.top_sport_category }}" class="w-5 h-5">
+                            {% else %}
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                            {% endif %}
+                        </div>
                         <div>
                             <h4 class="font-medium">{{ user.username }}</h4>
-                            {% if user.top_sport %}
-                                <p class="text-sm text-gray-600">{{ user.top_sport }}</p>
+                            {% if user.top_sport_category %}
+                                <p class="text-sm text-gray-600">{{ user.top_sport_category }}</p>
                             {% endif %}
                         </div>
                     </div>

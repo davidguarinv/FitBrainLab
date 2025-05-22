@@ -5,29 +5,7 @@ import os
 from datetime import datetime
 from flask import current_app
 
-# Configuration functions
-# The email address that will appear in the 'From' field of the email
-# Must be a valid UvA email address since we're using UvA's SMTP server
-def get_email_user():
-    return current_app.config.get('EMAIL_USER', 'david.guarin.vasquez@student.uva.nl')
-
-# The email address where the form submissions will be sent
-# This can be any email address you want to receive the submissions
-def get_recipient_email():
-    return current_app.config.get('RECIPIENT_EMAIL', 'davidguarinv@gmail.com')
-
-# SMTP server configuration
-def get_smtp_server():
-    return current_app.config.get('SMTP_SERVER', 'smtp.uva.nl')
-
-def get_smtp_port():
-    return current_app.config.get('SMTP_PORT', 587)
-
-# For UvA SMTP server, you can use these settings:
-# SMTP_SERVER = 'smtp.uva.nl'
-# SMTP_PORT = 587
-# EMAIL_USER = 'your_uva_email@uva.nl'
-# No password needed for UvA's SMTP server
+# Email handling functions for form submissions
 
 def format_email_content(form_data):
     """Format the form data into a professional email"""
@@ -110,12 +88,12 @@ def format_email_content(form_data):
 def send_email(form_data):
     """Send email with form data"""
     try:
-        # Get configuration values
-        email_user = get_email_user()
-        recipient_email = get_recipient_email()
-        smtp_server = get_smtp_server()
-        smtp_port = get_smtp_port()
-        email_password = current_app.config.get('EMAIL_PASSWORD')
+        # Get configuration values directly from Flask config
+        email_user = current_app.config['EMAIL_USER']
+        recipient_email = current_app.config['RECIPIENT_EMAIL']
+        smtp_server = current_app.config['SMTP_SERVER']
+        smtp_port = current_app.config['SMTP_PORT']
+        email_password = current_app.config['EMAIL_PASSWORD']
         
         # Validate email configuration
         if not email_user or not email_password:

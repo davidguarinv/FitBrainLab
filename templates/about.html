@@ -282,121 +282,126 @@
 
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <!-- Marene Hardonk -->
-            <div class="rounded-lg border bg-white shadow-sm">
-            <div class="p-6">
-                <div class="flex items-center gap-4">
-                <div class="relative h-16 w-16 rounded-full overflow-hidden">
-                    <img
-                    src="{{ url_for('static', filename='images/team_pictures/m_hardonk.jpg') }}"
-                    alt="Marene Hardonk"
-                    fill
-                    class="object-cover"
-                    />
+
+            <div class="rounded-lg border bg-white shadow-sm flex flex-col h-auto w-full max-w-sm mx-auto">
+                <div class="p-6 flex justify-center">
+                    <div class="relative h-48 w-72 rounded-lg overflow-hidden shadow-md">
+                        <img
+                        src="{{ url_for('static', filename='images/team_pictures/m_hardonk.jpg') }}"
+                        alt="Marene Hardonk"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
                 </div>
-                <div>
+
+                <div class="px-6 pb-4 text-center">
                     <h3 class="text-xl font-semibold">Marene Hardonk, MSc</h3>
                     <p class="text-sm text-gray-500">Ph.D.-plus student, 02/2022 – 04/2026</p>
                 </div>
+
+                <hr class="mx-6">
+
+                <div class="p-6 flex-1">
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Education</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>B.Sc. University of Amsterdam</li>
+                                <li>M.Sc. University of Amsterdam</li>
+                            </ul>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Supervision</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                                <li>Co-supervisor: Prof. dr. Paul Lucassen (FNWI-UvA)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="p-6 flex-1">
-                <div class="space-y-4">
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Education</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>B.Sc. University of Amsterdam</li>
-                    <li>M.Sc. University of Amsterdam</li>
-                    </ul>
-                </div>
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Supervision</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
-                    <li>Co-supervisor: Prof. dr. Paul Lucassen (FNWI-UvA)</li>
-                    </ul>
-                </div>
-                </div>
-            </div>
             </div>
 
-            <!-- Anneke Vuuregge -->
-            <div class="rounded-lg border bg-white shadow-sm">
-            <div class="p-6">
-                <div class="flex items-center gap-4">
-                <div class="relative h-16 w-16 rounded-full overflow-hidden">
-                    <img
-                    src="{{ url_for('static', filename='images/team_pictures/a_vuuregge.jpg') }}"
-                    alt="Anneke Vuuregge"
-                    fill
-                    class="object-cover"
-                    />
+            <div class="rounded-lg border bg-white shadow-sm flex flex-col h-auto w-full max-w-sm mx-auto ">
+                <div class="p-6 flex justify-center">
+                    <div class="relative h-48 w-72 rounded-lg overflow-hidden shadow-md">
+                        <img
+                        src="{{ url_for('static', filename='images/team_pictures/a_vuuregge.jpg') }}"
+                        alt="Anneke Vuuregge"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
                 </div>
-                <div>
+
+                <div class="px-6 pb-4 text-center">
                     <h3 class="text-xl font-semibold">Anneke Vuuregge, MSc</h3>
                     <p class="text-sm text-gray-500">Ph.D. student, 04/2022 – 07/2026</p>
                 </div>
+
+                <hr class="mx-6">
+
+                <div class="p-6 flex-1">
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Education</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>B.Sc. University of Amsterdam</li>
+                                <li>M.Sc. University of Amsterdam</li>
+                            </ul>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Supervision</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                                <li>Co-supervisors: Dr. Anouk Schrantee (Amsterdam UMC)</li>
+                                <li>Prof. dr. Paul Lucassen (SILS-UvA)</li>
+                                <li>Prof. dr. Claudi Bockting (Amsterdam UMC)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="p-6 flex-1">
-                <div class="space-y-4">
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Education</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>B.Sc. University of Amsterdam</li>
-                    <li>M.Sc. University of Amsterdam</li>
-                    </ul>
-                </div>
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Supervision</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
-                    <li>Co-supervisors: Dr. Anouk Schrantee (Amsterdam UMC)</li>
-                    <li>Prof. dr. Paul Lucassen (SILS-UvA)</li>
-                    <li>Prof. dr. Claudi Bockting (Amsterdam UMC)</li>
-                    </ul>
-                </div>
-                </div>
-            </div>
             </div>
 
-            <!-- Katarzyna Lasek -->
-            <div class="rounded-lg border bg-white shadow-sm">
-            <div class="p-6">
-                <div class="flex items-center gap-4">
-                <div class="relative h-16 w-16 rounded-full overflow-hidden">
-                    <img
-                    src="{{ url_for('static', filename='images/team_pictures/k_lasek.jpeg') }}"
-                    alt="Katarzyna Lasek"
-                    fill
-                    class="object-cover"
-                    />
+            <div class="rounded-lg border bg-white shadow-sm flex flex-col h-auto w-full max-w-sm mx-auto "> 
+                <div class="p-6 flex justify-center">
+                    <div class="relative h-48 w-48 rounded-lg overflow-hidden shadow-md">
+                        <img
+                        src="{{ url_for('static', filename='images/team_pictures/k_lasek.jpeg') }}"
+                        alt="Katarzyna Lasek"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
                 </div>
-                <div>
+
+                <div class="px-6 pb-4 text-center">
                     <h3 class="text-xl font-semibold">Katarzyna (Kasia) Lasek, MSc</h3>
                     <p class="text-sm text-gray-500">Ph.D. student, 01/2025 – 01/2029</p>
                 </div>
+
+                <hr class="mx-6">
+
+                <div class="p-6 flex-1">
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Education</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>B.Sc. Tilburg University</li>
+                                <li>M.Sc. Maastricht University</li>
+                            </ul>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Supervision</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                                <li>Co-supervisors: Dr. Sanne de Wit (FMG-UvA)</li>
+                                <li>Dr. Sascha Struijs (VU)</li>
+                                <li>Prof. dr. Paul Lucassen (FNWI-UvA)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="p-6 flex-1">
-                <div class="space-y-4">
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Education</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>B.Sc. Tilburg University</li>
-                    <li>M.Sc. Maastricht University</li>
-                    </ul>
-                </div>
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Supervision</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
-                    <li>Co-supervisors: Dr. Sanne de Wit (FMG-UvA)</li>
-                    <li>Dr. Sascha Struijs (VU)</li>
-                    <li>Prof. dr. Paul Lucassen (FNWI-UvA)</li>
-                    </ul>
-                </div>
-                </div>
-            </div>
             </div>
         </div>
         </div>
@@ -592,72 +597,6 @@
                 </li>
                 </ul>
             </div>
-            <div class="space-y-2">
-                <h3 class="text-xl font-semibold">Current Opportunities</h3>
-                <ul class="space-y-2 text-gray-500">
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <!-- Graduation cap icon -->
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-                    </svg>
-                    </div>
-                    <span>Master's thesis projects in exercise neuroscience</span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-                    </svg>
-                    </div>
-                    <span>Bachelor's internships in laboratory techniques and data analysis</span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-                    </svg>
-                    </div>
-                    <span>Research assistant positions for recent graduates</span>
-                </li>
-                </ul>
-            </div>
             </div>
 
             <div class="space-y-4">
@@ -753,45 +692,7 @@
                 </button>
                 </div>
             </div>
-            <div class="flex items-center justify-center gap-4 text-sm text-gray-500">
-                <div class="flex items-center gap-1">
-                <!-- Mail icon -->
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4"
-                >
-                    <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                </svg>
-                <span>fitbrainlab@uva.nl</span>
-                </div>
-                <div class="flex items-center gap-1">
-                <!-- Phone icon -->
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4"
-                >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
-                <span>+31 20 123 4567</span>
-                </div>
-            </div>
+            
             </div>
         </div>
         </div>

@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
-from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timedelta
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
+from flask_login import login_user, login_required, logout_user, current_user
+from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
-from .models import User, Challenge, CompletedChallenge, InProgressChallenge, ChallengeRegeneration
+from .models import User, Challenge, CompletedChallenge, InProgressChallenge, ChallengeRegeneration, UserChallenge, WeeklyChallengeSet, UserWeeklyOrder, WeeklyHabitChallenge
 from .forms import LoginForm, RegistrationForm
 from datetime import datetime, timedelta
 from sqlalchemy import func
@@ -108,138 +109,225 @@ def game(section='challenges'):
             'daily_streak': current_user.daily_streak
         }
     
-    # Get available challenges
-    challenges = Challenge.query.all()
+    # Import weekly challenge utilities
+    from utils.scheduler import get_current_week_info, create_user_weekly_order, populate_weekly_challenge_set
+    
+    # Get current week info
+    current_week = get_current_week_info()
+    
+    # Check if we need to populate the weekly challenge set
+    populate_weekly_challenge_set()
+    
+    # Check if this is the user's first visit this week and handle weekly setup
+    show_habit_modal = False
+    if current_user.is_authenticated and current_user.is_first_visit_of_week():
+        # Create user's weekly challenge order if it doesn't exist
+        create_user_weekly_order(current_user.id)
+        
+        # Check if user completed challenges last week for habit selection
+        prev_week_challenges = current_user.get_previous_week_completed_challenges()
+        if prev_week_challenges:
+            show_habit_modal = True
+        
+        # Update the user's last visit week
+        current_user.update_last_visit_week()
     
     # Get in-progress challenges for the current user if authenticated
     in_progress_challenges = []
     in_progress_count = 0
     if current_user.is_authenticated:
-        in_progress = InProgressChallenge.query.filter_by(user_id=current_user.id).all()
+        # Get challenges that are currently in progress (from UserChallenge with status 'pending')
+        in_progress = UserChallenge.query.filter_by(
+            user_id=current_user.id,
+            status='pending',
+            week_number=current_week['week_number'],
+            year=current_week['year']
+        ).all()
+        
         in_progress_count = len(in_progress)
         in_progress_challenge_ids = [c.challenge_id for c in in_progress]
         in_progress_challenges = Challenge.query.filter(Challenge.id.in_(in_progress_challenge_ids)).all() if in_progress_challenge_ids else []
-    
-    # Filter out in-progress challenges from available challenges
-    available_challenges = [c for c in challenges if current_user.is_authenticated and c.id not in [ic.id for ic in in_progress_challenges] or not current_user.is_authenticated]
     
     # Get challenge regeneration timers
     now = datetime.utcnow()
     regeneration_timers = ChallengeRegeneration.query.all()
     
-    # Debug: Print all regeneration timers
-    print(f'Found {len(regeneration_timers)} regeneration timers:')
+    # Debug: Print all regeneration timers in detail
+    print("\n==== REGENERATION TIMER DEBUGGING ====")
+    print(f'Found {len(regeneration_timers)} regeneration timers at {now}:')
     for timer in regeneration_timers:
         time_remaining = (timer.regenerate_at - now).total_seconds()
-        print(f'  - {timer.difficulty} slot {timer.slot_number}: regenerates in {time_remaining:.0f} seconds')
+        status = 'ACTIVE' if time_remaining > 0 else 'EXPIRED'
+        print(f'  - {timer.difficulty} slot {timer.slot_number}: {status} - regenerates in {time_remaining:.0f} seconds - at {timer.regenerate_at}')
     
     # Organize regeneration timers by difficulty and slot number
     regeneration_by_slot = {}
     for timer in regeneration_timers:
         key = (timer.difficulty, timer.slot_number)
         regeneration_by_slot[key] = timer
+    
+    # Never force test timers in production
+    force_test_timers = False
+    
+    # Debug information about in-progress challenges
+    if current_user.is_authenticated:
+        print("\n==== DEBUG: IN-PROGRESS CHALLENGES ====")
+        for challenge in in_progress_challenges:
+            print(f"  - Challenge {challenge.id}: {challenge.title} ({challenge.difficulty})")
+        print(f"Total in-progress: {len(in_progress_challenges)}")
+    
+    if force_test_timers:
+        print("\n==== FORCING TEST TIMERS ====")
+        # Create test timers if none exist or force them to be active
+        test_regeneration_time = now + timedelta(minutes=2)
+        for diff, slots in {'E': 3, 'M': 2, 'H': 1}.items():
+            for slot in range(1, slots + 1):
+                key = (diff, slot)
+                timer = regeneration_by_slot.get(key)
+                if timer:
+                    # Update existing timer to be active
+                    timer.regenerate_at = test_regeneration_time
+                    print(f'  - Updated timer for {diff} slot {slot} to regenerate in 2 minutes')
+                else:
+                    # Create new timer
+                    new_timer = ChallengeRegeneration(
+                        difficulty=diff,
+                        slot_number=slot,
+                        regenerate_at=test_regeneration_time
+                    )
+                    db.session.add(new_timer)
+                    regeneration_by_slot[key] = new_timer
+                    print(f'  - Created timer for {diff} slot {slot} to regenerate in 2 minutes')
+        db.session.commit()
         
-    # Debug: Print all active regeneration timers
-    print(f'Found {len(regeneration_timers)} regeneration timers:')
+    # Print active timer details
+    print("\n==== ACTIVE TIMERS FOR TEMPLATE RENDERING ====")
+    active_timer_count = 0
     for key, timer in regeneration_by_slot.items():
         difficulty, slot = key
         time_remaining = (timer.regenerate_at - now).total_seconds()
         if time_remaining > 0:
+            active_timer_count += 1
             print(f'  - Active timer: {difficulty} slot {slot}: regenerates in {time_remaining:.0f} seconds')
+    print(f'Total active timers: {active_timer_count}')
+    print("====================================")
     
-    # Prepare challenges by difficulty with regeneration timers
-    import random
+    # Prepare challenges by difficulty with weekly ordering
     challenges_by_difficulty = {
         'E': [],
         'M': [],
         'H': []
     }
     
-    # For each difficulty level, prepare the slots
-    for difficulty in ['E', 'M', 'H']:
-        # Get available challenges for this difficulty
-        available_by_diff = [c for c in available_challenges if c.difficulty == difficulty]
+    # Define display counts for each difficulty
+    display_counts = {'E': 3, 'M': 2, 'H': 1}
+    
+    # Define weekly caps for each difficulty
+    weekly_caps = {'E': 9, 'M': 6, 'H': 3}
+    
+    if current_user.is_authenticated:
+        # Get the user's weekly challenge counts
+        weekly_counts = current_user.get_weekly_challenge_counts()
         
-        # Determine number of slots for this difficulty
-        slots_count = 3 if difficulty == 'E' else (2 if difficulty == 'M' else 1)
-        
-        # Track which challenges have been assigned to slots
-        assigned_challenges = []
-        
-        # Fill each slot
-        for slot_number in range(1, slots_count + 1):
-            # Check if this slot has a regeneration timer
-            timer_key = (difficulty, slot_number)
-            regen_timer = regeneration_by_slot.get(timer_key)
+        # For each difficulty level, prepare the slots
+        for difficulty in ['E', 'M', 'H']:
+            # Check if user has reached the weekly cap for this difficulty
+            if weekly_counts.get(difficulty, 0) >= weekly_caps[difficulty]:
+                # User has reached the cap, show 'All done for this week!'
+                for slot_number in range(1, display_counts[difficulty] + 1):
+                    challenges_by_difficulty[difficulty].append({
+                        'challenge': None,
+                        'regenerating': False,
+                        'time_remaining': None,
+                        'slot_number': slot_number,
+                        'all_done': True  # Flag to show 'All done for this week!' message
+                    })
+                continue
             
-            # Debug
-            print(f'Checking slot {difficulty}-{slot_number}')
-            if regen_timer:
-                print(f'  Found timer, regenerates at {regen_timer.regenerate_at}')
-                time_diff = (regen_timer.regenerate_at - now).total_seconds()
-                print(f'  Time remaining: {time_diff:.1f} seconds')
+            # Get the user's weekly order for this difficulty
+            user_order = UserWeeklyOrder.query.filter_by(
+                user_id=current_user.id,
+                week_number=current_week['week_number'],
+                year=current_week['year'],
+                difficulty=difficulty
+            ).order_by(UserWeeklyOrder.order_position).all()
             
-            # If there's a timer and it hasn't expired yet, show regeneration timer
-            if regen_timer and regen_timer.regenerate_at > now:
-                # Calculate remaining time
-                time_remaining = (regen_timer.regenerate_at - now).total_seconds()
-                hours = int(time_remaining // 3600)
-                minutes = int((time_remaining % 3600) // 60)
-                seconds = int(time_remaining % 60)
+            # Get challenges that the user has already attempted this week
+            attempted_challenges = UserChallenge.query.filter_by(
+                user_id=current_user.id,
+                week_number=current_week['week_number'],
+                year=current_week['year']
+            ).all()
+            attempted_ids = [c.challenge_id for c in attempted_challenges if c.status != 'abandoned']
+            
+            # Filter out challenges that are already in progress
+            in_progress_ids = [c.id for c in in_progress_challenges]
+            
+            # Find the next challenges to display (that aren't attempted or in progress)
+            available_challenges = []
+            for order in user_order:
+                if order.challenge_id not in attempted_ids and order.challenge_id not in in_progress_ids:
+                    challenge = Challenge.query.get(order.challenge_id)
+                    if challenge:
+                        available_challenges.append(challenge)
+                        if len(available_challenges) >= display_counts[difficulty]:
+                            break
+            
+            # Fill slots with available challenges
+            for slot_number in range(1, display_counts[difficulty] + 1):
+                # First, check if there's a regeneration timer active for this slot
+                timer_key = (difficulty, slot_number)
+                regen_timer = regeneration_by_slot.get(timer_key)
                 
-                # Format time remaining
-                if hours > 0:
-                    time_str = f"{hours}h {minutes}m"
-                elif minutes > 0:
-                    time_str = f"{minutes}m {seconds}s"
-                else:
-                    time_str = f"{seconds}s"
-                
-                print(f'SHOWING TIMER for {difficulty} slot {slot_number}: {time_str}')
-                print(f'Timer will expire at: {regen_timer.regenerate_at}, current time: {now}')
-                
-                # Add regenerating slot
-                challenges_by_difficulty[difficulty].append({
-                    'challenge': None,
-                    'regenerating': True,
-                    'time_remaining': time_str,
-                    'regenerate_at': regen_timer.regenerate_at.isoformat(),
-                    'slot_number': slot_number
-                })
-            else:
-                # If timer has expired or doesn't exist, show a challenge
-                if available_by_diff:
-                    # Pick a random challenge that hasn't been assigned yet
-                    available_for_slot = [c for c in available_by_diff if c not in assigned_challenges]
-                    if available_for_slot:
-                        challenge = random.choice(available_for_slot)
-                        assigned_challenges.append(challenge)
-                        
-                        print(f'Showing challenge {challenge.id} in slot {difficulty}-{slot_number}')
-                        
-                        # Add challenge to slot
-                        challenges_by_difficulty[difficulty].append({
-                            'challenge': challenge,
-                            'regenerating': False,
-                            'time_remaining': None,
-                            'slot_number': slot_number
-                        })
+                # Show the timer if it's active and not expired
+                if regen_timer and regen_timer.regenerate_at > now:
+                    # Calculate remaining time
+                    time_remaining = (regen_timer.regenerate_at - now).total_seconds()
+                    hours = int(time_remaining // 3600)
+                    minutes = int((time_remaining % 3600) // 60)
+                    
+                    # Format time remaining - only show hours and minutes
+                    if hours > 0:
+                        time_str = f"{hours}h {minutes}m"
                     else:
-                        # No more unique challenges available
-                        challenges_by_difficulty[difficulty].append({
-                            'challenge': None,
-                            'regenerating': False,
-                            'time_remaining': None,
-                            'slot_number': slot_number
-                        })
+                        time_str = f"{minutes}m"
+                        
+                    # Show regeneration timer in this specific slot
+                    print(f'Displaying regeneration timer for {difficulty} slot {slot_number}, expires at {regen_timer.regenerate_at}')
+                    challenges_by_difficulty[difficulty].append({
+                        'challenge': None,
+                        'regenerating': True,
+                        'time_remaining': time_str,
+                        'regenerate_at': regen_timer.regenerate_at.isoformat(),
+                        'slot_number': slot_number
+                    })
+                # If no timer or timer expired, try to show a challenge if available
+                elif slot_number <= len(available_challenges):
+                    challenge = available_challenges[slot_number - 1]
+                    challenges_by_difficulty[difficulty].append({
+                        'challenge': challenge,
+                        'regenerating': False,
+                        'time_remaining': None,
+                        'slot_number': slot_number
+                    })
                 else:
-                    # No challenges available for this difficulty
+                    # Empty slot with no timer and no challenge available
                     challenges_by_difficulty[difficulty].append({
                         'challenge': None,
                         'regenerating': False,
                         'time_remaining': None,
                         'slot_number': slot_number
                     })
+    else:
+        # For non-authenticated users, just show empty slots
+        for difficulty in ['E', 'M', 'H']:
+            for slot_number in range(1, display_counts[difficulty] + 1):
+                challenges_by_difficulty[difficulty].append({
+                    'challenge': None,
+                    'regenerating': False,
+                    'time_remaining': None,
+                    'slot_number': slot_number
+                })
     
     # Add in-progress challenges to the context
     challenges_by_difficulty['in_progress'] = in_progress_challenges

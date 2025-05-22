@@ -84,9 +84,24 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges.E %}
-                    {% if slot.regenerating %}
+                    {% if slot.all_done %}
+                        <!-- All done for the week -->
+                        <div class="border rounded-lg p-4 bg-green-50 border-green-200">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">All done for this week!</p>
+                                    <p class="text-xs text-gray-500 mt-1">You've completed your weekly Easy challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif slot.regenerating %}
                         <!-- Regenerating slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-full">
                                 <div class="text-center">
                                     <div class="animate-pulse mb-2">
@@ -94,7 +109,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <p class="text-sm font-medium text-gray-600">New challenge in</p>
+                                    <p class="text-sm font-medium text-gray-600 timer-label">New challenge in</p>
                                     <p class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.time_remaining }}</p>
                                 </div>
                             </div>
@@ -121,7 +136,7 @@
                         </div>
                     {% else %}
                         <!-- Empty slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-24">
                                 <p class="text-gray-500">No challenge available</p>
                             </div>
@@ -141,9 +156,24 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges.M %}
-                    {% if slot.regenerating %}
+                    {% if slot.all_done %}
+                        <!-- All done for the week -->
+                        <div class="border rounded-lg p-4 bg-green-50 border-green-200">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">All done for this week!</p>
+                                    <p class="text-xs text-gray-500 mt-1">You've completed your weekly Medium challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif slot.regenerating %}
                         <!-- Regenerating slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-full">
                                 <div class="text-center">
                                     <div class="animate-pulse mb-2">
@@ -151,7 +181,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <p class="text-sm font-medium text-gray-600">New challenge in</p>
+                                    <p class="text-sm font-medium text-gray-600 timer-label">New challenge in</p>
                                     <p class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.time_remaining }}</p>
                                 </div>
                             </div>
@@ -178,7 +208,7 @@
                         </div>
                     {% else %}
                         <!-- Empty slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-24">
                                 <p class="text-gray-500">No challenge available</p>
                             </div>
@@ -198,9 +228,24 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges.H %}
-                    {% if slot.regenerating %}
+                    {% if slot.all_done %}
+                        <!-- All done for the week -->
+                        <div class="border rounded-lg p-4 bg-green-50 border-green-200">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">All done for this week!</p>
+                                    <p class="text-xs text-gray-500 mt-1">You've completed your weekly Hard challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif slot.regenerating %}
                         <!-- Regenerating slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-full">
                                 <div class="text-center">
                                     <div class="animate-pulse mb-2">
@@ -208,7 +253,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <p class="text-sm font-medium text-gray-600">New challenge in</p>
+                                    <p class="text-sm font-medium text-gray-600 timer-label">New challenge in</p>
                                     <p class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.time_remaining }}</p>
                                 </div>
                             </div>
@@ -235,7 +280,7 @@
                         </div>
                     {% else %}
                         <!-- Empty slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-24">
                                 <p class="text-gray-500">No challenge available</p>
                             </div>

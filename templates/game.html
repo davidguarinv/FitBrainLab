@@ -21,6 +21,19 @@
     <!-- Game Content -->
     <section class="w-full py-12 md:py-24 bg-white">
         <div class="container mx-auto px-4 md:px-6">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mb-6">
+                        {% for category, message in messages %}
+                            <div class="{{ 'bg-red-100 border-red-400 text-red-700' if category == 'error' else 'bg-green-100 border-green-400 text-green-700' }} px-4 py-3 rounded relative border mb-2" role="alert">
+                                <span class="block sm:inline">{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
     <!-- Navigation Tabs with Alpine.js -->
     <div x-data="{ activeTab: '{{ section }}', loadContent: function(tab) { this.activeTab = tab; } }">
         <nav class="flex space-x-4 mb-8 border-b border-gray-200">
@@ -105,6 +118,55 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Weekly Habit Challenge Card -->
+                {% set habit_challenge = current_user.get_weekly_habit_challenge() %}
+                {% if habit_challenge %}
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-green-500">
+                    <h3 class="text-lg font-semibold mb-2">Weekly Habit Challenge</h3>
+                    <div class="mb-3">
+                        <h4 class="font-medium text-primary">{{ habit_challenge.challenge.title }}</h4>
+                        <p class="text-sm text-gray-600 mt-1">{{ habit_challenge.challenge.description }}</p>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="mb-2">
+                        <div class="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>Progress: {{ habit_challenge.days_completed }}/7 days</span>
+                            <span>
+                                {% if habit_challenge.days_completed >= 4 %}
+                                    {% if habit_challenge.days_completed == 7 %}
+                                        +{{ habit_challenge.challenge.points }} bonus points
+                                    {% else %}
+                                        +{{ (habit_challenge.challenge.points * 0.5)|int }} bonus points
+                                    {% endif %}
+                                {% else %}
+                                    Complete 4 days for bonus points
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full" style="height: 0.625rem;">
+                            <div class="bg-green-600 rounded-full" style="height: 0.625rem; width: {{ (habit_challenge.days_completed / 7 * 100)|int }}%;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Day Indicators -->
+                    <div class="flex justify-between mb-3">
+                        {% for day in range(1, 8) %}
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center {{ 'bg-green-100 text-green-800' if day <= habit_challenge.days_completed else 'bg-gray-100 text-gray-400' }}">
+                            {{ day }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Complete Today Button (if not already completed today) -->
+                    <form action="/api/challenges/{{ habit_challenge.challenge_id }}/complete" method="POST" class="mt-2">
+                        <button type="submit" class="w-full px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
+                            Complete Today
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
             {% endif %}
 
             <!-- In Progress Challenges -->
@@ -173,6 +235,58 @@
         </div>
     </div>
 </div>
+</section>
+
+<!-- Weekly Habit Challenge Selection Modal -->
+{% if show_habit_modal %}
+<div id="habitChallengeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-data="{ open: true }" x-show="open">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden" @click.away="open = false">
+        <div class="bg-primary text-white px-6 py-4">
+            <h3 class="text-lg font-semibold">Make Your Favorite Challenge a Habit</h3>
+            <p class="text-sm opacity-90">Complete it daily to earn bonus points!</p>
+        </div>
+        
+        <div class="p-6">
+            <p class="mb-4">Select one of your completed challenges from last week to make it your weekly habit challenge:</p>
+            
+            <form action="/api/habit-challenge/select" method="POST">
+                <div class="space-y-3 mb-6 max-h-60 overflow-y-auto">
+                    {% for user_challenge, challenge in current_user.get_previous_week_completed_challenges() %}
+                    <label class="block p-3 border rounded-lg hover:border-primary cursor-pointer transition-colors">
+                        <div class="flex items-start">
+                            <input type="radio" name="challenge_id" value="{{ challenge.id }}" class="mt-1 mr-3">
+                            <div>
+                                <h4 class="font-medium">{{ challenge.title }}</h4>
+                                <p class="text-sm text-gray-600">{{ challenge.description }}</p>
+                                <div class="flex items-center mt-1">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if challenge.difficulty == 'E' else 'bg-yellow-100 text-yellow-800' }}">
+                                        {{ challenge.difficulty }} · {{ challenge.points }} points
+                                    </span>
+                                    <span class="text-xs text-gray-500 ml-2">
+                                        Completed on {{ user_challenge.completed_at.strftime('%b %d, %Y') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+                
+                <div class="bg-gray-50 -mx-6 -mb-6 px-6 py-4 flex justify-between">
+                    <button type="button" class="px-4 py-2 text-gray-600 font-medium rounded-md hover:bg-gray-200 transition-colors" @click="open = false">
+                        Skip for Now
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-primary-dark transition-colors">
+                        Make it a Habit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+</main>
+{% endblock content %}
 
 <!-- JavaScript for handling challenge interactions -->
 {% block scripts %}
@@ -198,13 +312,17 @@ function startChallenge(challengeId) {
     });
 }
 
-// Function to update all countdown timers on the page
+// Function to update all countdown timers on the page - only updates when minutes change
 function updateCountdownTimers() {
     // Get all timer elements in the challenges section
     const timerElements = document.querySelectorAll('.text-lg.font-bold.text-primary[data-regenerate-at]');
+    if (timerElements.length === 0) return; // No timers to update
     
     // Current time in UTC
     const now = new Date();
+    
+    // Track if any timer needs a refresh (we'll only refresh once at the end)
+    let needsRefresh = false;
     
     timerElements.forEach(timerElement => {
         // Get the regeneration timestamp from the data attribute
@@ -217,30 +335,41 @@ function updateCountdownTimers() {
         // Calculate the time difference in seconds
         const timeDiffSeconds = Math.max(0, Math.floor((regenerateAt - now) / 1000));
         
+        // If timer has expired, mark for refresh but don't refresh immediately
         if (timeDiffSeconds <= 0) {
-            // Time's up - reload the page to show the new challenge
-            window.location.reload();
+            needsRefresh = true;
             return;
         }
         
         // Calculate hours, minutes, seconds
         const hours = Math.floor(timeDiffSeconds / 3600);
         const minutes = Math.floor((timeDiffSeconds % 3600) / 60);
-        const seconds = timeDiffSeconds % 60;
         
-        // Format the new time string
+        // Format the time string - only showing hours and minutes (not seconds)
         let newTimeText = '';
         if (hours > 0) {
             newTimeText = `${hours}h ${minutes}m`;
-        } else if (minutes > 0) {
-            newTimeText = `${minutes}m ${seconds}s`;
         } else {
-            newTimeText = `${seconds}s`;
+            newTimeText = `${minutes}m`;
         }
         
-        // Update the timer text
-        timerElement.textContent = newTimeText;
+        // Only update if the displayed text is different (avoid constant DOM updates)
+        if (timerElement.textContent !== newTimeText) {
+            timerElement.textContent = newTimeText;
+        }
     });
+    
+    // Only refresh the page once every 30 seconds if timers have expired
+    if (needsRefresh) {
+        // Use localStorage to prevent constant refreshing
+        const lastRefresh = localStorage.getItem('lastTimerRefresh');
+        const now = new Date().getTime();
+        
+        if (!lastRefresh || (now - parseInt(lastRefresh)) > 30000) { // 30 seconds
+            localStorage.setItem('lastTimerRefresh', now);
+            window.location.reload();
+        }
+    }
 }
 
 // Update timers every second if there are any timers on the page
@@ -253,8 +382,4 @@ if (timerElements.length > 0) {
     setInterval(updateCountdownTimers, 1000);
 }
 </script>
-{% endblock %}
-    </div>
-</section>
-</main>
-{% endblock %}
+{% endblock scripts %}

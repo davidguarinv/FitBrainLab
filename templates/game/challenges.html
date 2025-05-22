@@ -19,11 +19,9 @@
                         <div class="flex items-center justify-between">
                             <span class="text-primary font-medium">{{ slot.challenge.points }} points</span>
                             <div class="space-x-4">
-                                <form action="/api/challenges/{{ slot.challenge.id }}/complete" method="POST" style="display: inline;">
-                                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
-                                        Complete Challenge
-                                    </button>
-                                </form>
+                                <button onclick="launchConfetti(); completeChallenge({{ slot.challenge.id }});" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
+                                    Complete Challenge
+                                </button>
                                 <form action="/api/challenges/{{ slot.challenge.id }}/abandon" method="POST" style="display: inline;">
                                     <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
                                         Abandon
@@ -56,7 +54,7 @@
                     <div class="flex justify-between items-center">
                         <span class="text-sm font-medium text-primary">{{ challenge.points }} points</span>
                         <div class="space-x-2">
-                            <button onclick="completeChallenge('{{ challenge.id }}')"
+                            <button onclick="launchConfetti(); completeChallenge('{{ challenge.id }}');"
                                     class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
                                 Complete
                             </button>
@@ -317,6 +315,17 @@ function startChallenge(challengeId) {
 function completeChallenge(challengeId) {
     console.log('Completing challenge:', challengeId);
     
+    // Trigger confetti celebration immediately for instant feedback
+    if (typeof launchConfetti === 'function') {
+        launchConfetti();
+    } else {
+        console.log('Confetti function not found, looking for it in parent window');
+        // Try to call the function from the parent window if it exists there
+        if (window.parent && typeof window.parent.launchConfetti === 'function') {
+            window.parent.launchConfetti();
+        }
+    }
+    
     // Create a form and submit it
     const form = document.createElement('form');
     form.method = 'POST';
@@ -354,5 +363,156 @@ function abandonChallenge(challengeId) {
         document.body.appendChild(form);
         form.submit();
     }
+}
+// UPDATED Confetti animation function with cache-busting v1.0
+function launchConfetti() {
+    // Force immediate execution 
+    console.log('Launching confetti celebration v1.0');
+    
+    // Higher intensity with longer duration
+    var duration = 4 * 1000;
+    var end = Date.now() + duration;
+    var colors = ['#ff6b6b', '#feca57', '#1dd1a1', '#54a0ff', '#5f27cd'];
+    
+    // Initial massive burst from all directions
+    // Top left
+    confetti({
+        particleCount: 15,
+        angle: 135,
+        spread: 90,
+        origin: { x: 0, y: 0 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: -0.5
+    });
+    
+    // Top center
+    confetti({
+        particleCount: 15,
+        angle: 90,
+        spread: 90,
+        origin: { x: 0.5, y: 0 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0
+    });
+    
+    // Top right
+    confetti({
+        particleCount: 15,
+        angle: 45,
+        spread: 90,
+        origin: { x: 1, y: 0 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0.5
+    });
+    
+    // Middle left
+    confetti({
+        particleCount: 15,
+        angle: 180,
+        spread: 90,
+        origin: { x: 0, y: 0.5 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: -0.2
+    });
+    
+    // Middle right
+    confetti({
+        particleCount: 15,
+        angle: 0,
+        spread: 90,
+        origin: { x: 1, y: 0.5 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0.2
+    });
+    
+    // Bottom left
+    confetti({
+        particleCount: 15,
+        angle: 225,
+        spread: 90,
+        origin: { x: 0, y: 1 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: -0.5
+    });
+    
+    // Bottom center
+    confetti({
+        particleCount: 15,
+        angle: 270,
+        spread: 90,
+        origin: { x: 0.5, y: 1 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0
+    });
+    
+    // Bottom right
+    confetti({
+        particleCount: 15,
+        angle: 315,
+        spread: 90,
+        origin: { x: 1, y: 1 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0.5
+    });
+    
+    // Continue with ongoing confetti for the duration
+    setTimeout(function() {
+        var confettiInterval = setInterval(function() {
+            // Randomize origins for ongoing effect
+            var randomSide = Math.floor(Math.random() * 8);
+            var origins = [
+                { x: 0, y: 0 },      // Top left
+                { x: 0.5, y: 0 },    // Top center
+                { x: 1, y: 0 },      // Top right
+                { x: 0, y: 0.5 },    // Middle left
+                { x: 1, y: 0.5 },    // Middle right
+                { x: 0, y: 1 },      // Bottom left
+                { x: 0.5, y: 1 },    // Bottom center
+                { x: 1, y: 1 }       // Bottom right
+            ];
+            
+            var angles = [135, 90, 45, 180, 0, 225, 270, 315];
+            
+            confetti({
+                particleCount: 5,
+                angle: angles[randomSide],
+                spread: 80,
+                origin: origins[randomSide],
+                colors: colors,
+                gravity: 0.1,  // Even less gravity
+                ticks: 450,
+                scalar: 1.1,
+                drift: 0.2
+            });
+            
+            if (Date.now() > end) {
+                clearInterval(confettiInterval);
+            }
+        }, 150);  // Fire more frequently
+    }, 0);  // Start immediately
 }
 </script>

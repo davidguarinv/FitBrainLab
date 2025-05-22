@@ -1303,6 +1303,11 @@ body {
   border-color: transparent;
 }
 
+.border-red-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));
+}
+
 .bg-amber-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(217 119 6 / var(--tw-bg-opacity, 1));
@@ -1423,6 +1428,11 @@ body {
 .bg-yellow-400 {
   --tw-bg-opacity: 1;
   background-color: rgb(250 204 21 / var(--tw-bg-opacity, 1));
+}
+
+.bg-red-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));
 }
 
 .bg-gradient-to-b {
@@ -2115,6 +2125,10 @@ body {
 @supports ((-webkit-backdrop-filter: var(--tw)) or (backdrop-filter: var(--tw))) {
   .supports-\[backdrop-filter\]\:bg-white\/60 {
     background-color: rgb(255 255 255 / 0.6);
+  }
+
+  .supports-\[backdrop-filter\]\:bg-white\/90 {
+    background-color: rgb(255 255 255 / 0.9);
   }
 }
 

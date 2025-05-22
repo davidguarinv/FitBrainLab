@@ -113,7 +113,7 @@
 
         <div class="grid gap-8 md:grid-cols-3 items-start">
             <div class="md:col-span-1">
-            <div class="relative h-[470px] w-full rounded-xl overflow-hidden">
+            <div class="relative h-128 w-full rounded-xl overflow-hidden">
                 <img
                 src="{{ url_for('static', filename='images/team_pictures/j_mul.jpg') }}"
                 alt="Dr. Joram Mul"
@@ -600,102 +600,114 @@
             </div>
 
             <div class="space-y-4">
-            <div class="rounded-lg border bg-white shadow-sm">
-                <div class="p-6">
-                <h3 class="text-xl font-semibold">Contact Us</h3>
-                <p class="text-sm text-gray-500">
-                    Fill out this form to express your interest in joining our lab. We will get back to you as soon as
-                    possible.
-                </p>
+                <div class="rounded-lg border bg-white shadow-sm">
+                    <div class="p-6">
+                    <h3 class="text-xl font-semibold">Contact Us</h3>
+                    <p class="text-sm text-gray-500">
+                        Fill out this form to express your interest in joining our lab. We will get back to you as soon as
+                        possible.
+                    </p>
+                    </div>
+                    <div class="max-w-2xl mx-auto">
+                        <div class="p-6">
+                            <form class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label for="first-name" class="text-sm font-medium">
+                                            First Name
+                                        </label>
+                                        <input
+                                            id="first-name"
+                                            name="first_name"
+                                            placeholder="Enter your first name"
+                                            class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label for="last-name" class="text-sm font-medium">
+                                            Last Name
+                                        </label>
+                                        <input
+                                            id="last-name"
+                                            name="last_name"
+                                            placeholder="Enter your last name"
+                                            class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="email" class="text-sm font-medium">
+                                        Email
+                                    </label>
+                                    <input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        placeholder="Enter your email"
+                                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="phone" class="text-sm font-medium">
+                                        Phone (optional)
+                                    </label>
+                                    <input
+                                        id="phone"
+                                        name="phone"
+                                        placeholder="Enter your phone number"
+                                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="education" class="text-sm font-medium">
+                                        Current Education/Position
+                                    </label>
+                                    <input
+                                        id="education"
+                                        name="education"
+                                        placeholder="e.g., BSc Student, MSc Student, PhD Candidate"
+                                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="interest" class="text-sm font-medium">
+                                        Area of Interest
+                                    </label>
+                                    <input
+                                        id="interest"
+                                        name="interest"
+                                        placeholder="e.g., Exercise Neuroscience, Mental Health"
+                                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="message" class="text-sm font-medium">
+                                        Message
+                                    </label>
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        placeholder="Tell us about your background, research interests, and why you want to join our lab"
+                                        rows="4"
+                                        class="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    ></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="p-6">
+                            <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2 w-full">
+                                Submit Application
+                            </button>
+                        </div>
+                        
+                    </div>
                 </div>
-                <div class="p-6">
-                <form class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label htmlFor="first-name" class="text-sm font-medium">
-                        First Name
-                        </label>
-                        <input
-                        id="first-name"
-                        placeholder="Enter your first name"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        />
-                    </div>
-                    <div class="space-y-2">
-                        <label htmlFor="last-name" class="text-sm font-medium">
-                        Last Name
-                        </label>
-                        <input
-                        id="last-name"
-                        placeholder="Enter your last name"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        />
-                    </div>
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="email" class="text-sm font-medium">
-                        Email
-                    </label>
-                    <input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="phone" class="text-sm font-medium">
-                        Phone (optional)
-                    </label>
-                    <input
-                        id="phone"
-                        placeholder="Enter your phone number"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="education" class="text-sm font-medium">
-                        Current Education/Position
-                    </label>
-                    <input
-                        id="education"
-                        placeholder="e.g., BSc Student, MSc Student, PhD Candidate"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="interest" class="text-sm font-medium">
-                        Area of Interest
-                    </label>
-                    <input
-                        id="interest"
-                        placeholder="e.g., Exercise Neuroscience, Mental Health"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="message" class="text-sm font-medium">
-                        Message
-                    </label>
-                    <textarea
-                        id="message"
-                        placeholder="Tell us about your background, research interests, and why you want to join our lab"
-                        rows={4}
-                        class="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    ></textarea>
-                    </div>
-                </form>
-                </div>
-                <div class="p-6">
-                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2 w-full">
-                    Submit Application
-                </button>
-                </div>
-            </div>
             
             </div>
         </div>
         </div>
     </section>
 </main>
+
+<script src="{{ url_for('static', filename='form-handler.js') }}"></script>
 {% endblock %}

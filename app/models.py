@@ -14,7 +14,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), unique=True, nullable=False)  # Unique username
     password_hash = db.Column(db.String(128))  # Hashed password
     is_public = db.Column(db.Boolean, default=True)  # Whether user profile is public
-    top_sport = db.Column(db.String(50))  # Optional: most-played sport
+    top_sport_category = db.Column(db.String(50))  # Optional: sport category
     last_sport_update = db.Column(db.DateTime)  # Last update timestamp
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Creation timestamp
     daily_streak = db.Column(db.Integer, default=0)  # Daily streak counter

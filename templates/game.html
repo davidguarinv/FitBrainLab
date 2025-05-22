@@ -102,7 +102,17 @@
             {% if current_user.is_authenticated %}
                 <!-- User Stats Card -->
                 <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h3 class="text-lg font-semibold mb-4">Your Stats</h3>
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 mr-3 bg-gray-100 rounded-full flex items-center justify-center">
+                            {% if current_user.top_sport_category %}
+                                {% set category_slug = current_user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
+                                <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ current_user.top_sport_category }}" class="w-6 h-6">
+                            {% else %}
+                                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            {% endif %}
+                        </div>
+                        <h3 class="text-lg font-semibold">Your Stats</h3>
+                    </div>
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
                             <span class="text-gray-600">Total Points</span>

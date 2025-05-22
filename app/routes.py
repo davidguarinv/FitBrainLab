@@ -615,6 +615,18 @@ def update_profile():
     db.session.commit()
     return jsonify({'status': 'success'})
 
+@bp.route('/update_profile', methods=['POST'])
+@login_required
+def update_profile_form():
+    # Handle form submission from profile page
+    if 'top_sport_category' in request.form:
+        current_user.top_sport_category = request.form.get('top_sport_category')
+        current_user.last_sport_update = datetime.utcnow()
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+    
+    return redirect(url_for('main.game', section='profile'))
+
 @bp.route('/api/profile', methods=['DELETE'])
 @login_required
 def delete_profile():

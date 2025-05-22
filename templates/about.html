@@ -49,9 +49,9 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     class="h-5 w-5 text-blue-600"
                 >
                     <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
@@ -68,9 +68,9 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     class="h-5 w-5 text-blue-600"
                 >
                     <rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect>
@@ -113,7 +113,7 @@
 
         <div class="grid gap-8 md:grid-cols-3 items-start">
             <div class="md:col-span-1">
-            <div class="relative h-[470px] w-full rounded-xl overflow-hidden">
+            <div class="relative h-128 w-full rounded-xl overflow-hidden">
                 <img
                 src="{{ url_for('static', filename='images/team_pictures/j_mul.jpg') }}"
                 alt="Dr. Joram Mul"
@@ -147,9 +147,9 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
                     >
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
@@ -165,9 +165,9 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
                     >
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
@@ -185,9 +185,9 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
                     >
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
@@ -203,9 +203,9 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
                     >
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
@@ -221,9 +221,9 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
                     >
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
@@ -239,9 +239,9 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"
                     >
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
@@ -282,121 +282,126 @@
 
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <!-- Marene Hardonk -->
-            <div class="rounded-lg border bg-white shadow-sm">
-            <div class="p-6">
-                <div class="flex items-center gap-4">
-                <div class="relative h-16 w-16 rounded-full overflow-hidden">
-                    <img
-                    src="{{ url_for('static', filename='images/team_pictures/m_hardonk.jpg') }}"
-                    alt="Marene Hardonk"
-                    fill
-                    class="object-cover"
-                    />
+
+            <div class="rounded-lg border bg-white shadow-sm flex flex-col h-auto w-full max-w-sm mx-auto">
+                <div class="p-6 flex justify-center">
+                    <div class="relative h-48 w-72 rounded-lg overflow-hidden shadow-md">
+                        <img
+                        src="{{ url_for('static', filename='images/team_pictures/m_hardonk.jpg') }}"
+                        alt="Marene Hardonk"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
                 </div>
-                <div>
+
+                <div class="px-6 pb-4 text-center">
                     <h3 class="text-xl font-semibold">Marene Hardonk, MSc</h3>
                     <p class="text-sm text-gray-500">Ph.D.-plus student, 02/2022 – 04/2026</p>
                 </div>
+
+                <hr class="mx-6">
+
+                <div class="p-6 flex-1">
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Education</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>B.Sc. University of Amsterdam</li>
+                                <li>M.Sc. University of Amsterdam</li>
+                            </ul>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Supervision</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                                <li>Co-supervisor: Prof. dr. Paul Lucassen (FNWI-UvA)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="p-6 flex-1">
-                <div class="space-y-4">
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Education</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>B.Sc. University of Amsterdam</li>
-                    <li>M.Sc. University of Amsterdam</li>
-                    </ul>
-                </div>
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Supervision</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
-                    <li>Co-supervisor: Prof. dr. Paul Lucassen (FNWI-UvA)</li>
-                    </ul>
-                </div>
-                </div>
-            </div>
             </div>
 
-            <!-- Anneke Vuuregge -->
-            <div class="rounded-lg border bg-white shadow-sm">
-            <div class="p-6">
-                <div class="flex items-center gap-4">
-                <div class="relative h-16 w-16 rounded-full overflow-hidden">
-                    <img
-                    src="{{ url_for('static', filename='images/team_pictures/a_vuuregge.jpg') }}"
-                    alt="Anneke Vuuregge"
-                    fill
-                    class="object-cover"
-                    />
+            <div class="rounded-lg border bg-white shadow-sm flex flex-col h-auto w-full max-w-sm mx-auto ">
+                <div class="p-6 flex justify-center">
+                    <div class="relative h-48 w-72 rounded-lg overflow-hidden shadow-md">
+                        <img
+                        src="{{ url_for('static', filename='images/team_pictures/a_vuuregge.jpg') }}"
+                        alt="Anneke Vuuregge"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
                 </div>
-                <div>
+
+                <div class="px-6 pb-4 text-center">
                     <h3 class="text-xl font-semibold">Anneke Vuuregge, MSc</h3>
                     <p class="text-sm text-gray-500">Ph.D. student, 04/2022 – 07/2026</p>
                 </div>
+
+                <hr class="mx-6">
+
+                <div class="p-6 flex-1">
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Education</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>B.Sc. University of Amsterdam</li>
+                                <li>M.Sc. University of Amsterdam</li>
+                            </ul>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Supervision</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                                <li>Co-supervisors: Dr. Anouk Schrantee (Amsterdam UMC)</li>
+                                <li>Prof. dr. Paul Lucassen (SILS-UvA)</li>
+                                <li>Prof. dr. Claudi Bockting (Amsterdam UMC)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="p-6 flex-1">
-                <div class="space-y-4">
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Education</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>B.Sc. University of Amsterdam</li>
-                    <li>M.Sc. University of Amsterdam</li>
-                    </ul>
-                </div>
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Supervision</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
-                    <li>Co-supervisors: Dr. Anouk Schrantee (Amsterdam UMC)</li>
-                    <li>Prof. dr. Paul Lucassen (SILS-UvA)</li>
-                    <li>Prof. dr. Claudi Bockting (Amsterdam UMC)</li>
-                    </ul>
-                </div>
-                </div>
-            </div>
             </div>
 
-            <!-- Katarzyna Lasek -->
-            <div class="rounded-lg border bg-white shadow-sm">
-            <div class="p-6">
-                <div class="flex items-center gap-4">
-                <div class="relative h-16 w-16 rounded-full overflow-hidden">
-                    <img
-                    src="{{ url_for('static', filename='images/team_pictures/k_lasek.jpeg') }}"
-                    alt="Katarzyna Lasek"
-                    fill
-                    class="object-cover"
-                    />
+            <div class="rounded-lg border bg-white shadow-sm flex flex-col h-auto w-full max-w-sm mx-auto "> 
+                <div class="p-6 flex justify-center">
+                    <div class="relative h-48 w-48 rounded-lg overflow-hidden shadow-md">
+                        <img
+                        src="{{ url_for('static', filename='images/team_pictures/k_lasek.jpeg') }}"
+                        alt="Katarzyna Lasek"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
                 </div>
-                <div>
+
+                <div class="px-6 pb-4 text-center">
                     <h3 class="text-xl font-semibold">Katarzyna (Kasia) Lasek, MSc</h3>
                     <p class="text-sm text-gray-500">Ph.D. student, 01/2025 – 01/2029</p>
                 </div>
+
+                <hr class="mx-6">
+
+                <div class="p-6 flex-1">
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Education</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>B.Sc. Tilburg University</li>
+                                <li>M.Sc. Maastricht University</li>
+                            </ul>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Supervision</h4>
+                            <ul class="text-sm text-gray-500 space-y-1 list-disc list-inside">
+                                <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
+                                <li>Co-supervisors: Dr. Sanne de Wit (FMG-UvA)</li>
+                                <li>Dr. Sascha Struijs (VU)</li>
+                                <li>Prof. dr. Paul Lucassen (FNWI-UvA)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="p-6 flex-1">
-                <div class="space-y-4">
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Education</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>B.Sc. Tilburg University</li>
-                    <li>M.Sc. Maastricht University</li>
-                    </ul>
-                </div>
-                <div class="space-y-2">
-                    <h4 class="text-sm font-medium">Supervision</h4>
-                    <ul class="text-sm text-gray-500 space-y-1">
-                    <li>Direct supervisor: Dr. Joram Mul (FNWI-UvA)</li>
-                    <li>Co-supervisors: Dr. Sanne de Wit (FMG-UvA)</li>
-                    <li>Dr. Sascha Struijs (VU)</li>
-                    <li>Prof. dr. Paul Lucassen (FNWI-UvA)</li>
-                    </ul>
-                </div>
-                </div>
-            </div>
             </div>
         </div>
         </div>
@@ -526,9 +531,9 @@
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                         class="h-4 w-4 text-blue-600"
                     >
                         <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
@@ -553,9 +558,9 @@
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                         class="h-4 w-4 text-blue-600"
                     >
                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -576,9 +581,9 @@
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                         class="h-4 w-4 text-blue-600"
                     >
                         <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
@@ -592,209 +597,117 @@
                 </li>
                 </ul>
             </div>
-            <div class="space-y-2">
-                <h3 class="text-xl font-semibold">Current Opportunities</h3>
-                <ul class="space-y-2 text-gray-500">
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <!-- Graduation cap icon -->
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-                    </svg>
-                    </div>
-                    <span>Master's thesis projects in exercise neuroscience</span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-                    </svg>
-                    </div>
-                    <span>Bachelor's internships in laboratory techniques and data analysis</span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-                    </svg>
-                    </div>
-                    <span>Research assistant positions for recent graduates</span>
-                </li>
-                </ul>
-            </div>
             </div>
 
             <div class="space-y-4">
-            <div class="rounded-lg border bg-white shadow-sm">
-                <div class="p-6">
-                <h3 class="text-xl font-semibold">Contact Us</h3>
-                <p class="text-sm text-gray-500">
-                    Fill out this form to express your interest in joining our lab. We will get back to you as soon as
-                    possible.
-                </p>
+                <div class="rounded-lg border bg-white shadow-sm">
+                    <div class="p-6">
+                    <h3 class="text-xl font-semibold">Contact Us</h3>
+                    <p class="text-sm text-gray-500">
+                        Fill out this form to express your interest in joining our lab. We will get back to you as soon as
+                        possible.
+                    </p>
+                    </div>
+                    <div class="max-w-2xl mx-auto">
+                        <div class="p-6">
+                            <form class="space-y-4" action="/submit-application" method="POST">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label for="first-name" class="text-sm font-medium">
+                                            First Name
+                                        </label>
+                                        <input
+                                            id="first-name"
+                                            name="first_name"
+                                            placeholder="Enter your first name"
+                                            class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label for="last-name" class="text-sm font-medium">
+                                            Last Name
+                                        </label>
+                                        <input
+                                            id="last-name"
+                                            name="last_name"
+                                            placeholder="Enter your last name"
+                                            class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="email" class="text-sm font-medium">
+                                        Email
+                                    </label>
+                                    <input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        placeholder="Enter your email"
+                                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="phone" class="text-sm font-medium">
+                                        Phone (optional)
+                                    </label>
+                                    <input
+                                        id="phone"
+                                        name="phone"
+                                        placeholder="Enter your phone number"
+                                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="education" class="text-sm font-medium">
+                                        Current Education/Position
+                                    </label>
+                                    <input
+                                        id="education"
+                                        name="education"
+                                        placeholder="e.g., BSc Student, MSc Student, PhD Candidate"
+                                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="interest" class="text-sm font-medium">
+                                        Area of Interest
+                                    </label>
+                                    <input
+                                        id="interest"
+                                        name="interest"
+                                        placeholder="e.g., Exercise Neuroscience, Mental Health"
+                                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="message" class="text-sm font-medium">
+                                        Message
+                                    </label>
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        placeholder="Tell us about your background, research interests, and why you want to join our lab"
+                                        rows="4"
+                                        class="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    ></textarea>
+                                </div>
+                                <div class="space-y-2">
+                                    <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2 w-full">
+                                        Submit Application
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                    </div>
                 </div>
-                <div class="p-6">
-                <form class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label htmlFor="first-name" class="text-sm font-medium">
-                        First Name
-                        </label>
-                        <input
-                        id="first-name"
-                        placeholder="Enter your first name"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        />
-                    </div>
-                    <div class="space-y-2">
-                        <label htmlFor="last-name" class="text-sm font-medium">
-                        Last Name
-                        </label>
-                        <input
-                        id="last-name"
-                        placeholder="Enter your last name"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        />
-                    </div>
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="email" class="text-sm font-medium">
-                        Email
-                    </label>
-                    <input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="phone" class="text-sm font-medium">
-                        Phone (optional)
-                    </label>
-                    <input
-                        id="phone"
-                        placeholder="Enter your phone number"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="education" class="text-sm font-medium">
-                        Current Education/Position
-                    </label>
-                    <input
-                        id="education"
-                        placeholder="e.g., BSc Student, MSc Student, PhD Candidate"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="interest" class="text-sm font-medium">
-                        Area of Interest
-                    </label>
-                    <input
-                        id="interest"
-                        placeholder="e.g., Exercise Neuroscience, Mental Health"
-                        class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    </div>
-                    <div class="space-y-2">
-                    <label htmlFor="message" class="text-sm font-medium">
-                        Message
-                    </label>
-                    <textarea
-                        id="message"
-                        placeholder="Tell us about your background, research interests, and why you want to join our lab"
-                        rows={4}
-                        class="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    ></textarea>
-                    </div>
-                </form>
-                </div>
-                <div class="p-6">
-                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2 w-full">
-                    Submit Application
-                </button>
-                </div>
-            </div>
-            <div class="flex items-center justify-center gap-4 text-sm text-gray-500">
-                <div class="flex items-center gap-1">
-                <!-- Mail icon -->
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    class="h-4 w-4"
-                >
-                    <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                </svg>
-                <span>fitbrainlab@uva.nl</span>
-                </div>
-                <div class="flex items-center gap-1">
-                <!-- Phone icon -->
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    class="h-4 w-4"
-                >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
-                <span>+31 20 123 4567</span>
-                </div>
-            </div>
+            
             </div>
         </div>
         </div>
     </section>
 </main>
+
+<script src="{{ url_for('static', filename='form-handler.js') }}"></script>
 {% endblock %}

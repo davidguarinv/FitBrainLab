@@ -1,0 +1,590 @@
+{% extends "base.html" %}
+{% block title %}Research - Leopard Predict{% endblock %}
+{% block content %}
+
+<main class="flex-1">
+<!-- Project Header -->
+    <section class="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-muted/50 to-muted">
+        <div class="container px-4 md:px-6">
+        <div class="flex flex-col space-y-4">
+            <a
+            href="/research"
+            class="flex items-center text-primary hover:text-primary/80 transition-colors mb-2"
+            >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                class="mr-2 h-4 w-4"
+            >
+                <path d="m12 19-7-7 7-7"></path>
+                <path d="M19 12H5"></path>
+            </svg>
+            Back to Research Projects
+            </a>
+
+            <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+            <div class="space-y-4">
+                <div class="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
+                Research Project
+                </div>
+                <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                STRIDE-4-Mental Health
+                </h1>
+                <p class="text-xl text-muted-foreground">
+                Promoting exercise persistence and mental wellbeing in university students
+                </p>
+            </div>
+            <div class="relative h-[300px] rounded-xl overflow-hidden">
+                <Image
+                src="/placeholder.svg?height=300&width=600&text=STRIDE-4"
+                alt="STRIDE-4-Mental Health Project"
+                fill
+                class="object-cover"
+                />
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="w-full py-12 md:py-24 bg-background">
+        <div class="container px-4 md:px-6">
+        <div class="grid gap-10 lg:grid-cols-3">
+            <div class="lg:col-span-2 space-y-8">
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Project Overview</h2>
+                <p class="text-muted-foreground">
+                Many young adults face significant lifestyle changes and experience stress when starting a
+                university education, increasing their risk for mental health issues like anxiety and depression.
+                Regular exercise is a simple, low-cost way to boost mental well-being, reduce anxiety and
+                depression, and even enhance academic performance.
+                </p>
+                <p class="text-muted-foreground">
+                The STRIDE-4-Mental Health project will apply a comprehensive network approach to uncover the
+                factors influencing exercise persistence in students and its relationships to mental health,
+                personality, and lifestyle (e.g., urbanicity). In collaboration with Caring Universities and the
+                University Sports Centre, we will conduct large-scale assessment on physical activity patterns,
+                factors influencing lasting exercise routines and their impact on (first year) student's stress,
+                mental health and academic performance.
+                </p>
+                <p class="text-muted-foreground">
+                Insights will shape an online behaviour-change intervention combining psychoeducation, strategic
+                planning, and a buddy system, which will be evaluated through a randomized controlled trial.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Research Methodology</h2>
+                <p class="text-muted-foreground">Our research methodology employs a multi-faceted approach:</p>
+                <ul class="space-y-2 text-muted-foreground">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M22 2H2v20"></path>
+                        <path d="M6 16l4-4 4 4 8-8"></path>
+                        <path d="M18 6h4v4"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Network analysis to map the complex relationships between exercise habits, mental health, and
+                    academic performance
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Large-scale surveys and ecological momentary assessments to capture real-time data on student
+                    behaviors and experiences
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Randomized controlled trial to evaluate the effectiveness of our behavior-change intervention
+                    </span>
+                </li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Current Progress</h2>
+                <p class="text-muted-foreground">
+                The STRIDE-4-Mental Health project is currently in its initial phase. We have successfully:
+                </p>
+                <ul class="space-y-2 text-muted-foreground">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    </div>
+                    <span>Established partnerships with university sports centers and student health services</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    </div>
+                    <span>
+                    Developed comprehensive assessment protocols for measuring exercise habits, mental health, and
+                    academic performance
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    </div>
+                    <span>Designed the framework for our online behavior-change intervention</span>
+                </li>
+                </ul>
+                <p class="text-muted-foreground">
+                We are currently recruiting first-year university students for the initial assessment phase and
+                finalizing the development of our intervention platform.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Expected Outcomes</h2>
+                <p class="text-muted-foreground">Through this research, we aim to:</p>
+                <ul class="space-y-2 text-muted-foreground">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>Identify the key factors that influence exercise persistence in university students</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Map the complex relationships between exercise habits, mental health, and academic performance
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Develop and validate an effective online intervention to promote exercise persistence and mental
+                    wellbeing
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path>
+                        <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 14.5 2Z"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Create implementation guidelines for universities to support student mental health through
+                    exercise promotion
+                    </span>
+                </li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold tracking-tighter">Practical Applications</h2>
+                <p class="text-muted-foreground">
+                The findings from this project will have direct applications for:
+                </p>
+                <ul class="space-y-2 text-muted-foreground">
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    University student health services seeking to implement evidence-based mental health promotion
+                    strategies
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+                    </svg>
+                    </div>
+                    <span>University sports centers aiming to increase student engagement and retention</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        class="h-4 w-4 text-primary"
+                    >
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+                    </svg>
+                    </div>
+                    <span>Student support services developing orientation programs for first-year students</span>
+                </li>
+                </ul>
+            </div>
+            </div>
+
+            <div class="space-y-6">
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div class="p-6 space-y-4">
+                <h3 class="text-xl font-bold">Project Details</h3>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                    <span class="text-sm font-medium">Status:</span>
+                    <span class="text-sm text-muted-foreground">Ongoing</span>
+                    </div>
+                    <div class="flex justify-between">
+                    <span class="text-sm font-medium">Timeline:</span>
+                    <span class="text-sm text-muted-foreground">2022-2026</span>
+                    </div>
+                    <div class="flex justify-between">
+                    <span class="text-sm font-medium">Participants:</span>
+                    <span class="text-sm text-muted-foreground">University students</span>
+                    </div>
+                    <div class="flex justify-between">
+                    <span class="text-sm font-medium">Sample Size:</span>
+                    <span class="text-sm text-muted-foreground">Target N=1000</span>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t">
+                    <h4 class="text-sm font-medium mb-2">Project Partners:</h4>
+                    <ul class="space-y-1 text-sm text-muted-foreground">
+                    <li>University Sport Center (USC) Amsterdam</li>
+                    <li>Vrije Universiteit Sport Center</li>
+                    <li>Hogeschool van Amsterdam</li>
+                    <li>ROCs Amsterdam en Flevoland</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div class="p-6 space-y-4">
+                <h3 class="text-xl font-bold">Related Publications</h3>
+
+                <div class="space-y-4">
+                    <div class="space-y-1">
+                    <p class="text-sm font-medium">Exercise Persistence in University Students</p>
+                    <p class="text-xs text-muted-foreground">Journal of Health Psychology, 2023</p>
+                    </div>
+                    <div class="space-y-1">
+                    <p class="text-sm font-medium">Network Analysis of Exercise and Mental Health</p>
+                    <p class="text-xs text-muted-foreground">Preventive Medicine, 2022</p>
+                    </div>
+                </div>
+
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-2">
+                    View All Publications
+                </button>
+                </div>
+            </div>
+
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div class="p-6 space-y-4">
+                <h3 class="text-xl font-bold">Research Team</h3>
+
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
+                        <Image
+                        src="/placeholder.svg?height=40&width=40&text=EM"
+                        alt="Dr. Emma Martinez"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Dr. Emma Martinez</p>
+                        <p class="text-xs text-muted-foreground">Principal Investigator</p>
+                    </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
+                        <Image
+                        src="/placeholder.svg?height=40&width=40&text=DK"
+                        alt="Dr. David Kim"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Dr. David Kim</p>
+                        <p class="text-xs text-muted-foreground">Network Analysis Specialist</p>
+                    </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
+                        <Image
+                        src="/placeholder.svg?height=40&width=40&text=RP"
+                        alt="Rachel Patel"
+                        fill
+                        class="object-cover"
+                        />
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Rachel Patel, MSc</p>
+                        <p class="text-xs text-muted-foreground">PhD Candidate</p>
+                    </div>
+                    </div>
+                </div>
+
+                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-2">
+                    View Full Team
+                </button>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Related Projects -->
+    <section class="w-full py-12 md:py-24 bg-muted/30">
+        <div class="container px-4 md:px-6">
+        <div class="flex flex-col items-center text-center space-y-4 mb-8">
+            <h2 class="text-2xl font-bold tracking-tighter">Related Projects</h2>
+            <p class="max-w-[800px] text-muted-foreground">
+            Explore other research projects from our lab that complement the STRIDE-4-Mental Health study.
+            </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+            <a href="/research/stayfine" class="group">
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm h-full transition-all group-hover:shadow-md">
+                <div class="p-6 space-y-4">
+                <div class="relative h-40 w-full rounded-md overflow-hidden">
+                    <Image
+                    src="/placeholder.svg?height=160&width=320&text=StayFine"
+                    alt="StayFine Project"
+                    fill
+                    class="object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold group-hover:text-primary transition-colors">StayFine Project</h3>
+                    <p class="text-sm text-muted-foreground mt-2">
+                    A longitudinal study assessing the efficacy of a personalized app to prevent relapse in
+                    adolescents with depression and anxiety.
+                    </p>
+                </div>
+                </div>
+            </div>
+            </a>
+
+            <a href="/research/leopard-predict" class="group">
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm h-full transition-all group-hover:shadow-md">
+                <div class="p-6 space-y-4">
+                <div class="relative h-40 w-full rounded-md overflow-hidden">
+                    <Image
+                    src="/placeholder.svg?height=160&width=320&text=LEOPARD"
+                    alt="LEOPARD PREDICT Project"
+                    fill
+                    class="object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold group-hover:text-primary transition-colors">LEOPARD PREDICT</h3>
+                    <p class="text-sm text-muted-foreground mt-2">
+                    Predicting antidepressant-treatment response in depressed patients using rsfMRI data and
+                    physical activity parameters.
+                    </p>
+                </div>
+                </div>
+            </div>
+            </a>
+        </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

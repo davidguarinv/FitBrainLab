@@ -17,12 +17,14 @@
       <div class="grid gap-6 md:grid-cols-3">
         {% for row in communities %}
         <div class="rounded-xl border bg-gray-50 shadow-sm p-6 text-center">
-          <img src="https://placehold.co/160x160" alt="{{ row.Name }}" class="mx-auto mb-4 rounded-md">
+          <img src="https://placehold.co/160x160" alt="{{ row.Name }}" class="mx-auto mb-4 rounded-md h-40 w-40 object-cover">
           <h3 class="text-xl font-semibold">{{ row.Name }}</h3>
           <p class="text-sm text-gray-500 mt-2 mb-4">
-            {{ row.Sport }}<br>{{ row.Location }}<br>{{ row.Cost or "—" }}
+            {{ row.Sport or "Sport not listed" }}<br>
+            {{ row.Location or "Location not listed" }}<br>
+            {{ row.Cost or "—" }}
           </p>
-          <a href="{{ row['website '] or '#' }}" class="text-blue-600 hover:underline text-sm font-medium" target="_blank">
+          <a href="{{ row.website or '#' }}" class="text-blue-600 hover:underline text-sm font-medium" target="_blank">
             Visit Website →
           </a>
         </div>

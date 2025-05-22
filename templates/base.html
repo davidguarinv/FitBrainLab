@@ -41,12 +41,12 @@
       <span class="text-xl font-semibold">Fit Brain Lab</span>
     </div>
     <nav class="hidden md:flex items-center gap-6">
-      <a href="/" class="text-sm font-medium text-blue-600">Home</a>
-      <a href="/research" class="text-sm font-medium transition-colors hover:text-blue-600">Research</a>
-      <a href="/publications" class="text-sm font-medium transition-colors hover:text-blue-600">Publications</a>
-      <a href="/about" class="text-sm font-medium transition-colors hover:text-blue-600">About Us</a>
-      <a href="{{ url_for('main.communities') }}" class="text-sm font-medium transition-colors hover:text-blue-600">Communities</a>
-      <a href="{{ url_for('main.game') }}" class="text-sm font-medium transition-colors hover:text-blue-600">Game</a>
+      <a href="/" class="text-sm font-medium {% if request.path == '/' %}text-blue-600{% else %}text-gray-500 transition-colors hover:text-blue-600{% endif %}">Home</a>
+      <a href="/research" class="text-sm font-medium {% if request.path.startswith('/research') %}text-blue-600{% else %}text-gray-500 transition-colors hover:text-blue-600{% endif %}">Research</a>
+      <a href="/publications" class="text-sm font-medium {% if request.path == '/publications' %}text-blue-600{% else %}text-gray-500 transition-colors hover:text-blue-600{% endif %}">Publications</a>
+      <a href="/about" class="text-sm font-medium {% if request.path == '/about' %}text-blue-600{% else %}text-gray-500 transition-colors hover:text-blue-600{% endif %}">About Us</a>
+      <a href="{{ url_for('main.communities') }}" class="text-sm font-medium {% if request.path == url_for('main.communities') %}text-blue-600{% else %}text-gray-500 transition-colors hover:text-blue-600{% endif %}">Communities</a>
+      <a href="{{ url_for('main.game') }}" class="text-sm font-medium {% if request.path == url_for('main.game') %}text-blue-600{% else %}text-gray-500 transition-colors hover:text-blue-600{% endif %}">Game</a>
     </nav>
     <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-9 px-4 py-2 md:hidden">
       Menu

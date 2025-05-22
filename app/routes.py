@@ -27,10 +27,6 @@ def research():
 def publications():
     return render_template('publications.html')
 
-@bp.route('/communities')
-def communities():
-    return render_template('communities5.html')
-
 @bp.route('/research/stayfine')
 def stayfine():
     return render_template('/research/stay_fine.html')
@@ -573,15 +569,14 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route("/communities")
+import os
+import pandas as pd
+
+@bp.route('/communities')
 def communities():
-    # This path matches your current setup
     path = os.path.join("data", "migrations", "List of Communities - Sheet1 (2).csv")
     df = pd.read_csv(path)
-    df.columns = df.columns.str.strip()
+    df.columns = df.columns.str.strip()  # Clean column headers
     return render_template("communities.html", communities=df.to_dict(orient="records"))
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
 

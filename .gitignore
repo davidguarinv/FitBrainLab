@@ -19,7 +19,6 @@ var/
 .installed.cfg
 *.egg
 instance/
-.env
 .venv
 venv/
 ENV/

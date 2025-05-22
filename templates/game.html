@@ -381,5 +381,40 @@ if (timerElements.length > 0) {
     // Set interval to update every second
     setInterval(updateCountdownTimers, 1000);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Update countdown timers immediately and then every second
+    updateCountdownTimers();
+    setInterval(updateCountdownTimers, 1000);
+    
+    // Check for success messages that indicate challenge completion
+    const successMessages = document.querySelectorAll('.bg-green-100.border-green-400.text-green-700');
+    for (const message of successMessages) {
+        if (message.textContent.trim().includes('Challenge completed successfully') || 
+            message.textContent.trim().includes('Habit challenge completed')) {
+            launchConfetti();
+            break;
+        }
+    }
+});
+
+// Function that launches confetti animation
+function launchConfetti() {
+    var duration = 3 * 1000;
+    var end = Date.now() + duration;
+
+    (function frame() {
+        confetti({
+            particleCount: 5,
+            angle: 90,
+            spread: 70,
+            origin: { y: 0 },
+            colors: ['#ff6b6b', '#feca57', '#1dd1a1', '#54a0ff', '#5f27cd'],
+        });
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    })();
+}
 </script>
 {% endblock scripts %}

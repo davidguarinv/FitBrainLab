@@ -19,11 +19,9 @@
                         <div class="flex items-center justify-between">
                             <span class="text-primary font-medium">{{ slot.challenge.points }} points</span>
                             <div class="space-x-4">
-                                <form action="/api/challenges/{{ slot.challenge.id }}/complete" method="POST" style="display: inline;">
-                                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
-                                        Complete Challenge
-                                    </button>
-                                </form>
+                                <button onclick="launchConfetti(); completeChallenge({{ slot.challenge.id }});" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
+                                    Complete Challenge
+                                </button>
                                 <form action="/api/challenges/{{ slot.challenge.id }}/abandon" method="POST" style="display: inline;">
                                     <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
                                         Abandon
@@ -56,7 +54,7 @@
                     <div class="flex justify-between items-center">
                         <span class="text-sm font-medium text-primary">{{ challenge.points }} points</span>
                         <div class="space-x-2">
-                            <button onclick="completeChallenge('{{ challenge.id }}')"
+                            <button onclick="launchConfetti(); completeChallenge('{{ challenge.id }}');"
                                     class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
                                 Complete
                             </button>
@@ -84,9 +82,24 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges.E %}
-                    {% if slot.regenerating %}
+                    {% if slot.all_done %}
+                        <!-- All done for the week -->
+                        <div class="border rounded-lg p-4 bg-green-50 border-green-200">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">All done for this week!</p>
+                                    <p class="text-xs text-gray-500 mt-1">You've completed your weekly Easy challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif slot.regenerating %}
                         <!-- Regenerating slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-full">
                                 <div class="text-center">
                                     <div class="animate-pulse mb-2">
@@ -94,7 +107,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <p class="text-sm font-medium text-gray-600">New challenge in</p>
+                                    <p class="text-sm font-medium text-gray-600 timer-label">New challenge in</p>
                                     <p class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.time_remaining }}</p>
                                 </div>
                             </div>
@@ -121,7 +134,7 @@
                         </div>
                     {% else %}
                         <!-- Empty slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-24">
                                 <p class="text-gray-500">No challenge available</p>
                             </div>
@@ -141,9 +154,24 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges.M %}
-                    {% if slot.regenerating %}
+                    {% if slot.all_done %}
+                        <!-- All done for the week -->
+                        <div class="border rounded-lg p-4 bg-green-50 border-green-200">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">All done for this week!</p>
+                                    <p class="text-xs text-gray-500 mt-1">You've completed your weekly Medium challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif slot.regenerating %}
                         <!-- Regenerating slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-full">
                                 <div class="text-center">
                                     <div class="animate-pulse mb-2">
@@ -151,7 +179,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <p class="text-sm font-medium text-gray-600">New challenge in</p>
+                                    <p class="text-sm font-medium text-gray-600 timer-label">New challenge in</p>
                                     <p class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.time_remaining }}</p>
                                 </div>
                             </div>
@@ -178,7 +206,7 @@
                         </div>
                     {% else %}
                         <!-- Empty slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-24">
                                 <p class="text-gray-500">No challenge available</p>
                             </div>
@@ -198,9 +226,24 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges.H %}
-                    {% if slot.regenerating %}
+                    {% if slot.all_done %}
+                        <!-- All done for the week -->
+                        <div class="border rounded-lg p-4 bg-green-50 border-green-200">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">All done for this week!</p>
+                                    <p class="text-xs text-gray-500 mt-1">You've completed your weekly Hard challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif slot.regenerating %}
                         <!-- Regenerating slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-full">
                                 <div class="text-center">
                                     <div class="animate-pulse mb-2">
@@ -208,7 +251,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <p class="text-sm font-medium text-gray-600">New challenge in</p>
+                                    <p class="text-sm font-medium text-gray-600 timer-label">New challenge in</p>
                                     <p class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.time_remaining }}</p>
                                 </div>
                             </div>
@@ -235,7 +278,7 @@
                         </div>
                     {% else %}
                         <!-- Empty slot -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
                             <div class="flex justify-center items-center h-24">
                                 <p class="text-gray-500">No challenge available</p>
                             </div>
@@ -271,6 +314,17 @@ function startChallenge(challengeId) {
 
 function completeChallenge(challengeId) {
     console.log('Completing challenge:', challengeId);
+    
+    // Trigger confetti celebration immediately for instant feedback
+    if (typeof launchConfetti === 'function') {
+        launchConfetti();
+    } else {
+        console.log('Confetti function not found, looking for it in parent window');
+        // Try to call the function from the parent window if it exists there
+        if (window.parent && typeof window.parent.launchConfetti === 'function') {
+            window.parent.launchConfetti();
+        }
+    }
     
     // Create a form and submit it
     const form = document.createElement('form');
@@ -309,5 +363,156 @@ function abandonChallenge(challengeId) {
         document.body.appendChild(form);
         form.submit();
     }
+}
+// UPDATED Confetti animation function with cache-busting v1.0
+function launchConfetti() {
+    // Force immediate execution 
+    console.log('Launching confetti celebration v1.0');
+    
+    // Higher intensity with longer duration
+    var duration = 4 * 1000;
+    var end = Date.now() + duration;
+    var colors = ['#ff6b6b', '#feca57', '#1dd1a1', '#54a0ff', '#5f27cd'];
+    
+    // Initial massive burst from all directions
+    // Top left
+    confetti({
+        particleCount: 15,
+        angle: 135,
+        spread: 90,
+        origin: { x: 0, y: 0 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: -0.5
+    });
+    
+    // Top center
+    confetti({
+        particleCount: 15,
+        angle: 90,
+        spread: 90,
+        origin: { x: 0.5, y: 0 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0
+    });
+    
+    // Top right
+    confetti({
+        particleCount: 15,
+        angle: 45,
+        spread: 90,
+        origin: { x: 1, y: 0 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0.5
+    });
+    
+    // Middle left
+    confetti({
+        particleCount: 15,
+        angle: 180,
+        spread: 90,
+        origin: { x: 0, y: 0.5 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: -0.2
+    });
+    
+    // Middle right
+    confetti({
+        particleCount: 15,
+        angle: 0,
+        spread: 90,
+        origin: { x: 1, y: 0.5 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0.2
+    });
+    
+    // Bottom left
+    confetti({
+        particleCount: 15,
+        angle: 225,
+        spread: 90,
+        origin: { x: 0, y: 1 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: -0.5
+    });
+    
+    // Bottom center
+    confetti({
+        particleCount: 15,
+        angle: 270,
+        spread: 90,
+        origin: { x: 0.5, y: 1 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0
+    });
+    
+    // Bottom right
+    confetti({
+        particleCount: 15,
+        angle: 315,
+        spread: 90,
+        origin: { x: 1, y: 1 },
+        colors: colors,
+        gravity: 0.2,
+        ticks: 500,
+        scalar: 1.2,
+        drift: 0.5
+    });
+    
+    // Continue with ongoing confetti for the duration
+    setTimeout(function() {
+        var confettiInterval = setInterval(function() {
+            // Randomize origins for ongoing effect
+            var randomSide = Math.floor(Math.random() * 8);
+            var origins = [
+                { x: 0, y: 0 },      // Top left
+                { x: 0.5, y: 0 },    // Top center
+                { x: 1, y: 0 },      // Top right
+                { x: 0, y: 0.5 },    // Middle left
+                { x: 1, y: 0.5 },    // Middle right
+                { x: 0, y: 1 },      // Bottom left
+                { x: 0.5, y: 1 },    // Bottom center
+                { x: 1, y: 1 }       // Bottom right
+            ];
+            
+            var angles = [135, 90, 45, 180, 0, 225, 270, 315];
+            
+            confetti({
+                particleCount: 5,
+                angle: angles[randomSide],
+                spread: 80,
+                origin: origins[randomSide],
+                colors: colors,
+                gravity: 0.1,  // Even less gravity
+                ticks: 450,
+                scalar: 1.1,
+                drift: 0.2
+            });
+            
+            if (Date.now() > end) {
+                clearInterval(confettiInterval);
+            }
+        }, 150);  // Fire more frequently
+    }, 0);  // Start immediately
 }
 </script>

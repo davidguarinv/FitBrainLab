@@ -24,3 +24,13 @@ instance/
 venv/
 ENV/
 .DS_Store
+
+# SQLite database files
+*.db
+
+# Helper scripts
+create_test_timers.py
+direct_timer_fix.py
+simple_run.py
+test_server.py
+timer_fix.py

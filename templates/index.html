@@ -11,7 +11,7 @@
         <div class="space-y-4">
             <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600">Research Lab</div>
             <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            Exercise & Stress Resilience Research
+            Fit Brain Lab
             </h1>
             <p class="max-w-[600px] text-gray-500 md:text-xl">
             Exploring how physical activity enhances stress resilience in students through evidence-based research
@@ -41,16 +41,16 @@
                 </svg>
             </a>
             <a
-                href="#community"
+                href="/about"
                 class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2"
             >
-                Join Our Community
+                Meet the Team
             </a>
             </div>
         </div>
         <div class="relative h-[300px] lg:h-[400px] rounded-xl overflow-hidden">
             <img
-            src="/placeholder.svg?height=400&width=600"
+            src="{{ url_for('static', filename='images/team_pictures/lab.jpg') }}"
             alt="Students exercising in a research setting"
             class="object-cover"
             style="width: 100%; height: 100%;"
@@ -420,7 +420,7 @@
 
         <div class="flex justify-center mt-8">
             <a
-            href="#game"
+            href="/game"
             class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 group"
             >
             <span>Want more challenges like these?</span>
@@ -530,10 +530,10 @@
 
             <div class="flex flex-col gap-2 sm:flex-row">
                 <a
-                href="#"
+                href="/game"
                 class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2"
                 >
-                Try the Habit Builder
+                Try Fit Quest
                 <!-- Arrow right icon -->
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -550,12 +550,6 @@
                     <path d="M5 12h14"></path>
                     <path d="m12 5 7 7-7 7"></path>
                 </svg>
-                </a>
-                <a
-                href="#try-this"
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2"
-                >
-                See Sample Challenges
                 </a>
             </div>
 
@@ -762,25 +756,23 @@
             </div>
         </div>
         <div class="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-3">
-            {[1, 2, 3].map((i) => (
-            <div key={i} class="flex flex-col items-center space-y-4">
+            <div class="flex flex-col items-center space-y-4">
                 <div class="relative h-40 w-40 overflow-hidden rounded-full">
                 <img
-                    src={`/placeholder.svg?height=160&width=160&text=Team Member ${i}`}
-                    alt={`Team member ${i}`}
+                    src=""
+                    alt=""
                     fill
                     class="object-cover"
                 />
                 </div>
                 <div class="space-y-2 text-center">
-                <h3 class="text-xl font-bold">Dr. Jane Smith</h3>
+                <h3 class="text-xl font-bold">Joram D Mul</h3>
                 <p class="text-sm text-gray-500">Principal Investigator</p>
                 <p class="text-sm text-gray-500">
                     Specializing in exercise physiology and stress neurobiology.
                 </p>
                 </div>
             </div>
-            ))}
         </div>
         <div class="flex justify-center">
             <a

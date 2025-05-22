@@ -42,8 +42,8 @@
                 </p>
             </div>
             <div class="relative h-[300px] rounded-xl overflow-hidden">
-                <Image
-                src="/placeholder.svg?height=300&width=600&text=STRIDE-4"
+                <img
+                src="https://www.uscsport.nl/wp-content/uploads/24-USC-Universum-Science-Park-306-e1724686521112.jpg"
                 alt="STRIDE-4-Mental Health Project"
                 fill
                 class="object-cover"
@@ -454,75 +454,23 @@
 
                 <div class="space-y-4">
                     <div class="space-y-1">
-                    <p class="text-sm font-medium">Exercise Persistence in University Students</p>
-                    <p class="text-xs text-muted-foreground">Journal of Health Psychology, 2023</p>
+                    <p class="text-sm font-medium">Exercise Persistence in University Students (title)</p>
+                    <p class="text-xs text-muted-foreground">Journal of Health Psychology, 2023 (jouranl and date)</p>
                     </div>
                     <div class="space-y-1">
                     <p class="text-sm font-medium">Network Analysis of Exercise and Mental Health</p>
                     <p class="text-xs text-muted-foreground">Preventive Medicine, 2022</p>
                     </div>
                 </div>
+                <a href="/publications">
+                    <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-2">
+                        View All Publications
+                    </button>
 
-                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-2">
-                    View All Publications
-                </button>
+                </a>
                 </div>
             </div>
 
-            <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
-                <div class="p-6 space-y-4">
-                <h3 class="text-xl font-bold">Research Team</h3>
-
-                <div class="space-y-4">
-                    <div class="flex items-center gap-3">
-                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
-                        <Image
-                        src="/placeholder.svg?height=40&width=40&text=EM"
-                        alt="Dr. Emma Martinez"
-                        fill
-                        class="object-cover"
-                        />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium">Dr. Emma Martinez</p>
-                        <p class="text-xs text-muted-foreground">Principal Investigator</p>
-                    </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
-                        <Image
-                        src="/placeholder.svg?height=40&width=40&text=DK"
-                        alt="Dr. David Kim"
-                        fill
-                        class="object-cover"
-                        />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium">Dr. David Kim</p>
-                        <p class="text-xs text-muted-foreground">Network Analysis Specialist</p>
-                    </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
-                        <Image
-                        src="/placeholder.svg?height=40&width=40&text=RP"
-                        alt="Rachel Patel"
-                        fill
-                        class="object-cover"
-                        />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium">Rachel Patel, MSc</p>
-                        <p class="text-xs text-muted-foreground">PhD Candidate</p>
-                    </div>
-                    </div>
-                </div>
-
-                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-2">
-                    View Full Team
-                </button>
-                </div>
-            </div>
             </div>
         </div>
         </div>
@@ -543,8 +491,8 @@
             <div class="rounded-lg border bg-card text-card-foreground shadow-sm h-full transition-all group-hover:shadow-md">
                 <div class="p-6 space-y-4">
                 <div class="relative h-40 w-full rounded-md overflow-hidden">
-                    <Image
-                    src="/placeholder.svg?height=160&width=320&text=StayFine"
+                    <img
+                    src="https://stayfine.nl/wp-content/uploads/2020/06/Outro-Stayfine-V2_no_lline.png"
                     alt="StayFine Project"
                     fill
                     class="object-cover"
@@ -561,12 +509,12 @@
             </div>
             </a>
 
-            <a href="/research/leopard-predict" class="group">
+            <a href="/research/leopard_predict" class="group">
             <div class="rounded-lg border bg-card text-card-foreground shadow-sm h-full transition-all group-hover:shadow-md">
                 <div class="p-6 space-y-4">
                 <div class="relative h-40 w-full rounded-md overflow-hidden">
-                    <Image
-                    src="/placeholder.svg?height=160&width=320&text=LEOPARD"
+                    <img
+                    src="{{ url_for('static', filename='images/mri_image.jpg') }}"
                     alt="LEOPARD PREDICT Project"
                     fill
                     class="object-cover"

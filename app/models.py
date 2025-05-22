@@ -258,9 +258,13 @@ class ChallengeRegeneration(db.Model):
     __tablename__ = 'challenge_regeneration'
 
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Add user_id as foreign key
     difficulty = db.Column(db.String(1), nullable=False)  # 'E', 'M', 'H'
     regenerate_at = db.Column(db.DateTime, nullable=False)
     slot_number = db.Column(db.Integer, nullable=False)  # Which slot (1-3 for easy, 1-2 for medium, 1 for hard)
+    
+    # Relationship with User model
+    user = db.relationship('User', backref=db.backref('regeneration_timers', lazy='dynamic'))
     
     @staticmethod
     def get_regen_hours(difficulty):

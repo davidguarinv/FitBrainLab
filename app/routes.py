@@ -160,9 +160,13 @@ def game(section='challenges'):
         in_progress_challenge_ids = [c.challenge_id for c in in_progress]
         in_progress_challenges = Challenge.query.filter(Challenge.id.in_(in_progress_challenge_ids)).all() if in_progress_challenge_ids else []
     
-    # Get challenge regeneration timers
+    # Get challenge regeneration timers - now user specific
     now = datetime.utcnow()
-    regeneration_timers = ChallengeRegeneration.query.all()
+    
+    # Get user-specific regeneration timers if authenticated, or empty list if not
+    regeneration_timers = []
+    if current_user.is_authenticated:
+        regeneration_timers = ChallengeRegeneration.query.filter_by(user_id=current_user.id).all()
     
     # Debug: Print all regeneration timers in detail
     print("\n==== REGENERATION TIMER DEBUGGING ====")
@@ -201,8 +205,9 @@ def game(section='challenges'):
                     timer.regenerate_at = test_regeneration_time
                     print(f'  - Updated timer for {diff} slot {slot} to regenerate in 2 minutes')
                 else:
-                    # Create new timer
+                    # Create new timer with user_id
                     new_timer = ChallengeRegeneration(
+                        user_id=current_user.id,
                         difficulty=diff,
                         slot_number=slot,
                         regenerate_at=test_regeneration_time

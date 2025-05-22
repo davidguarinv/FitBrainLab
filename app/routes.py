@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
 from .models import User, Challenge, CompletedChallenge, InProgressChallenge, ChallengeRegeneration, UserChallenge, WeeklyChallengeSet, UserWeeklyOrder, WeeklyHabitChallenge
 from .forms import LoginForm, RegistrationForm
+from .email_handler import send_email
 from datetime import datetime, timedelta
 from sqlalchemy import func
 
@@ -19,6 +20,56 @@ def index():
 @bp.route('/about')
 def about():
     return render_template('about.html')
+
+@bp.route('/submit-application', methods=['POST'])
+def submit_application():
+    """Handle form submission"""
+    try:
+        # Check email configuration
+        if not current_app.config.get('EMAIL_USER'):
+            return jsonify({
+                'success': False,
+                'message': 'Email configuration is not set up. Please contact the administrator.'
+            }), 500
+            
+        # Get form data
+        form_data = {
+            'first_name': request.form.get('first_name'),
+            'last_name': request.form.get('last_name'),
+            'email': request.form.get('email'),
+            'phone': request.form.get('phone'),
+            'education': request.form.get('education'),
+            'interest': request.form.get('interest'),
+            'message': request.form.get('message')
+        }
+        
+        # Validate required fields
+        required_fields = ['first_name', 'last_name', 'email', 'education', 'interest', 'message']
+        for field in required_fields:
+            if not form_data.get(field):
+                return jsonify({
+                    'success': False, 
+                    'message': f'{field.replace("_", " ").title()} is required'
+                }), 400
+        
+        # Send email
+        if send_email(form_data):
+            return jsonify({
+                'success': True, 
+                'message': 'Application submitted successfully!'
+            })
+        else:
+            return jsonify({
+                'success': False, 
+                'message': 'Failed to send application. Please try again.'
+            }), 500
+            
+    except Exception as e:
+        current_app.logger.error(f"Error processing application: {e}")
+        return jsonify({
+            'success': False, 
+            'message': 'An error occurred. Please try again.'
+        }), 500
 
 @bp.route('/research')
 def research():

@@ -70,18 +70,24 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 showMessage(data.message, 'success');
                 form.reset();
             } else {
-                showMessage(data.message, 'error');
+                showMessage(data.message || 'Failed to submit application. Please try again.', 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showMessage('An error occurred. Please try again.', 'error');
+            const errorMessage = error.message || 'An error occurred. Please try again.';
+            showMessage(errorMessage, 'error');
         })
         .finally(() => {
             // Reset button state

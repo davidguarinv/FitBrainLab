@@ -719,20 +719,35 @@ def delete_account():
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
 
-import os
-import pandas as pd
-from flask import Flask, render_template
-
-app = Flask(__name__)
-
-import os
-import pandas as pd
-
 @bp.route('/communities')
 def communities():
-    path = os.path.join("static", "data", "communities_raw.csv")
-    df = pd.read_csv(path)
-    df.columns = df.columns.str.strip()  # Clean column headers
-    return render_template("communities.html", communities=df.to_dict(orient="records"))
+    import os
+    import pandas as pd
+    from flask import request, render_template
 
+    path = os.path.join("data", "migrations", "List of Communities - Sheet1 (4).csv")
+    df = pd.read_csv(path)
+    df.columns = df.columns.str.strip()
+
+    # Pagination
+    try:
+        page = int(request.args.get("page", 1))
+    except ValueError:
+        page = 1
+
+    per_page = 6
+    total = len(df)
+    total_pages = max((total + per_page - 1) // per_page, 1)
+
+    # Clamp the page number
+    page = max(1, min(page, total_pages))
+
+    start = (page - 1) * per_page
+    end = start + per_page
+    paginated = df.iloc[start:end]
+
+    return render_template("communities.html",
+                           communities=paginated.to_dict(orient="records"),
+                           page=page,
+                           total_pages=total_pages)
 

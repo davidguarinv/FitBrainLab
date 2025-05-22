@@ -210,7 +210,7 @@ def seed_database():
             ))
 
         db.session.commit()
-        print("✅ Seeded 180 challenges.")
+        print("Successfully seeded 180 challenges.")
 
 if __name__ == "__main__":
     seed_database()

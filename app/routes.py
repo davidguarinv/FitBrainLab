@@ -679,7 +679,7 @@ import pandas as pd
 
 @bp.route('/communities')
 def communities():
-    path = os.path.join("data", "migrations", "List of Communities - Sheet1 (2).csv")
+    path = os.path.join("static", "data", "communities_raw.csv")
     df = pd.read_csv(path)
     df.columns = df.columns.str.strip()  # Clean column headers
     return render_template("communities.html", communities=df.to_dict(orient="records"))

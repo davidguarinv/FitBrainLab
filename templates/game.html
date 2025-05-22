@@ -104,11 +104,10 @@
                 <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <div class="flex items-center mb-4">
                         <div class="w-10 h-10 mr-3 bg-gray-100 rounded-full flex items-center justify-center">
-                            {% if current_user.top_sport_category %}
-                                {% set category_slug = current_user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
-                                <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ current_user.top_sport_category }}" class="w-6 h-6">
+                            {% if current_user.profile_image %}
+                                <img src="{{ current_user.profile_image }}" alt="{{ current_user.username }}" class="w-8 h-8 rounded-full object-cover">
                             {% else %}
-                                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                <span class="text-gray-500 text-lg font-medium">{{ current_user.username[0]|upper }}</span>
                             {% endif %}
                         </div>
                         <h3 class="text-lg font-semibold">Your Stats</h3>
@@ -119,8 +118,12 @@
                             <span class="font-medium">{{ user_progress.total_points }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Daily Streak</span>
-                            <span class="font-medium">{{ user_progress.daily_streak }} days</span>
+                            <span class="text-gray-600">Level</span>
+                            <span class="font-medium">{{ user_progress.level }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Challenges Completed</span>
+                            <span class="font-medium">{{ user_progress.challenges_completed }}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-gray-600">Rank</span>
@@ -135,7 +138,7 @@
                 <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-green-500">
                     <h3 class="text-lg font-semibold mb-2">Weekly Habit Challenge</h3>
                     <div class="mb-3">
-                        <h4 class="font-medium text-primary">{{ habit_challenge.challenge.title }}</h4>
+                        <h4 class="font-medium">{{ habit_challenge.challenge.title }}</h4>
                         <p class="text-sm text-gray-600 mt-1">{{ habit_challenge.challenge.description }}</p>
                     </div>
                     
@@ -144,174 +147,127 @@
                         <div class="flex justify-between text-xs text-gray-600 mb-1">
                             <span>Progress: {{ habit_challenge.days_completed }}/7 days</span>
                             <span>
-                                {% if habit_challenge.days_completed >= 4 %}
-                                    {% if habit_challenge.days_completed == 7 %}
-                                        +{{ habit_challenge.challenge.points }} bonus points
-                                    {% else %}
-                                        +{{ (habit_challenge.challenge.points * 0.5)|int }} bonus points
-                                    {% endif %}
+                                {% if habit_challenge.days_completed == 7 %}
+                                    Complete! (+{{ habit_challenge.challenge.points }} points)
                                 {% else %}
-                                    Complete 4 days for bonus points
+                                    {{ ((habit_challenge.days_completed / 7) * 100)|int }}%
                                 {% endif %}
                             </span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full" style="height: 0.625rem;">
-                            <div class="bg-green-600 rounded-full" style="height: 0.625rem; width: {{ (habit_challenge.days_completed / 7 * 100)|int }}%;"></div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: {{ (habit_challenge.days_completed / 7) * 100 }}%"></div>
                         </div>
                     </div>
                     
                     <!-- Day Indicators -->
-                    <div class="flex justify-between mb-3">
+                    <div class="flex justify-between mb-4">
                         {% for day in range(1, 8) %}
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center {{ 'bg-green-100 text-green-800' if day <= habit_challenge.days_completed else 'bg-gray-100 text-gray-400' }}">
-                            {{ day }}
-                        </div>
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center {{ 'bg-green-500 text-white' if day <= habit_challenge.days_completed else 'bg-gray-100 text-gray-400' }}">
+                                {{ day }}
+                            </div>
                         {% endfor %}
                     </div>
                     
-                    <!-- Complete Today Button (if not already completed today) -->
-                    <form action="/api/challenges/{{ habit_challenge.challenge_id }}/complete" method="POST" class="mt-2">
-                        <button type="submit" class="w-full px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
-                            Complete Today
-                        </button>
-                    </form>
-                </div>
-                {% endif %}
-            {% endif %}
-
-            <!-- In Progress Challenges -->
-            {% if current_user.is_authenticated %}
-                {% if challenges.in_progress %}
-                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-primary">
-                    <h3 class="text-lg font-semibold mb-4">In Progress Challenges ({{ challenges.in_progress|length }}/2)</h3>
-                    {% for challenge in challenges.in_progress %}
-                        <div class="space-y-3 {% if not loop.last %}mb-4 pb-4 border-b border-gray-100{% endif %}">
-                            <h4 class="font-medium">{{ challenge.title }}</h4>
-                            <p class="text-sm text-gray-600">{{ challenge.description }}</p>
-                            <div class="flex justify-between items-center">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if challenge.difficulty == 'E' else 'bg-yellow-100 text-yellow-800' if challenge.difficulty == 'M' else 'bg-red-100 text-red-800' }}">
-                                    {{ challenge.difficulty }} · {{ challenge.points }} points
-                                </span>
-                                <div class="space-x-2">
-                                    <form action="/api/challenges/{{ challenge.id }}/complete" method="POST" style="display: inline;">
-                                        <button type="submit" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                            Complete
-                                        </button>
-                                    </form>
-                                </div>
+                    <!-- Today's Check-in Button -->
+                    <div class="text-center">
+                        {% if habit_challenge.can_check_in_today and habit_challenge.days_completed < 7 %}
+                            <button onclick="checkInHabit({{ habit_challenge.id }})" class="w-full px-4 py-2 bg-green-500 text-white font-medium rounded-md hover:bg-green-600 transition-colors">
+                                Check In Today
+                            </button>
+                        {% elif habit_challenge.days_completed == 7 %}
+                            <div class="text-green-600 font-medium">
+                                Challenge Completed! 🎉
                             </div>
-                        </div>
-                    {% endfor %}
-                    {% if challenges.in_progress|length < 2 %}
-                        <div class="mt-4 text-center">
-                            <a href="/game/challenges" class="text-primary hover:text-primary-dark text-sm font-medium">
-                                Find more challenges
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-                {% else %}
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold mb-4">No Active Challenges</h3>
-                    <p class="text-gray-600 mb-4">You don't have any challenges in progress.</p>
-                    <a href="/game/challenges" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors inline-block">
-                        Find Challenges
-                    </a>
+                        {% else %}
+                            <div class="text-gray-500 text-sm">
+                                You've already checked in today
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
                 {% endif %}
-            {% else %}
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
-                    {% if recent_completed_challenges %}
-                        <div class="space-y-4">
-                            {% for completed, challenge, user in recent_completed_challenges %}
-                                <div class="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
-                                    <div class="flex items-start justify-between">
-                                        <div>
-                                            <h4 class="font-medium text-sm">{{ challenge.title }}</h4>
-                                            <p class="text-xs text-gray-500">Completed by {{ user.username }}</p>
+                
+                <!-- Upcoming Events Card -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4">Weekly Leaderboard</h3>
+                    {% if leaderboard %}
+                        <div class="space-y-3">
+                            {% for user in leaderboard[:5] %}
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 bg-{{ ['blue', 'green', 'yellow', 'indigo', 'purple']|random }}-100 rounded-full flex items-center justify-center mr-2">
+                                            <span class="text-{{ ['blue', 'green', 'yellow', 'indigo', 'purple']|random }}-600 text-xs font-medium">{{ loop.index }}</span>
                                         </div>
-                                        <span class="text-xs font-medium px-2 py-1 bg-green-100 text-green-800 rounded-full">+{{ challenge.points }}</span>
+                                        <span class="text-sm {{ 'font-bold text-primary' if user.username == current_user.username else '' }}">{{ user.username }}</span>
                                     </div>
-                                    <p class="text-xs text-gray-400 mt-1">{{ completed.completed_at.strftime('%b %d, %Y') }}</p>
+                                    <span class="text-sm font-medium">{{ user.points }} pts</span>
                                 </div>
                             {% endfor %}
                         </div>
+                        <div class="mt-4 text-center">
+                            <button @click="loadContent('leaderboard')" class="text-primary text-sm hover:underline">View Full Leaderboard</button>
+                        </div>
                     {% else %}
-                        <p class="text-gray-600">No challenges have been completed yet.</p>
+                        <p class="text-gray-500 text-sm">No data available yet.</p>
                     {% endif %}
                 </div>
+            {% else %}
+                <!-- Call to Action for Non-Authenticated Users -->
+                <div class="bg-blue-50 rounded-lg shadow-sm p-6 mb-6 border border-blue-100">
+                    <h3 class="text-lg font-semibold mb-2">Join Fit Quest Today!</h3>
+                    <p class="text-sm text-gray-600 mb-4">Create an account to track your progress, earn points, and compete with others.</p>
+                    <button @click="loadContent('auth')" class="w-full px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-primary-dark transition-colors">
+                        Sign Up Now
+                    </button>
+                </div>
+                
+                <!-- Featured Stats -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4">Community Stats</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Active Users</span>
+                            <span class="font-medium">{{ community_stats.active_users|default(324) }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Challenges Completed</span>
+                            <span class="font-medium">{{ community_stats.total_challenges|default(1856) }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Top Score</span>
+                            <span class="font-medium">{{ community_stats.top_score|default(1250) }} pts</span>
+                        </div>
+                    </div>
+                </div>
             {% endif %}
+            
+            <!-- Help Card -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-2">Need Help?</h3>
+                <p class="text-sm text-gray-600 mb-4">Find out how to complete challenges and earn points.</p>
+                <a href="/help" class="text-primary text-sm hover:underline">View Help Guide</a>
+            </div>
         </div>
     </div>
 </div>
 </section>
-
-<!-- Weekly Habit Challenge Selection Modal -->
-{% if show_habit_modal %}
-<div id="habitChallengeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-data="{ open: true }" x-show="open">
-    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden" @click.away="open = false">
-        <div class="bg-primary text-white px-6 py-4">
-            <h3 class="text-lg font-semibold">Make Your Favorite Challenge a Habit</h3>
-            <p class="text-sm opacity-90">Complete it daily to earn bonus points!</p>
-        </div>
-        
-        <div class="p-6">
-            <p class="mb-4">Select one of your completed challenges from last week to make it your weekly habit challenge:</p>
-            
-            <form action="/api/habit-challenge/select" method="POST">
-                <div class="space-y-3 mb-6 max-h-60 overflow-y-auto">
-                    {% for user_challenge, challenge in current_user.get_previous_week_completed_challenges() %}
-                    <label class="block p-3 border rounded-lg hover:border-primary cursor-pointer transition-colors">
-                        <div class="flex items-start">
-                            <input type="radio" name="challenge_id" value="{{ challenge.id }}" class="mt-1 mr-3">
-                            <div>
-                                <h4 class="font-medium">{{ challenge.title }}</h4>
-                                <p class="text-sm text-gray-600">{{ challenge.description }}</p>
-                                <div class="flex items-center mt-1">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if challenge.difficulty == 'E' else 'bg-yellow-100 text-yellow-800' }}">
-                                        {{ challenge.difficulty }} · {{ challenge.points }} points
-                                    </span>
-                                    <span class="text-xs text-gray-500 ml-2">
-                                        Completed on {{ user_challenge.completed_at.strftime('%b %d, %Y') }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </label>
-                    {% endfor %}
-                </div>
-                
-                <div class="bg-gray-50 -mx-6 -mb-6 px-6 py-4 flex justify-between">
-                    <button type="button" class="px-4 py-2 text-gray-600 font-medium rounded-md hover:bg-gray-200 transition-colors" @click="open = false">
-                        Skip for Now
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-primary-dark transition-colors">
-                        Make it a Habit
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-{% endif %}
 </main>
 {% endblock content %}
 
-<!-- JavaScript for handling challenge interactions -->
 {% block scripts %}
 <script>
+// Function to start a challenge
 function startChallenge(challengeId) {
-    fetch(`/api/challenges/${challengeId}/start`, {
+    fetch('/api/challenges/' + challengeId + '/start', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
-        }
+            'Content-Type': 'application/json',
+        },
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            window.location.href = `/game/challenges?active=${challengeId}`;
+            window.location.href = '/game?section=challenges&active=' + challengeId;
         } else {
             alert(data.message);
         }
@@ -408,23 +364,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Function that launches confetti animation
-function launchConfetti() {
-    var duration = 3 * 1000;
-    var end = Date.now() + duration;
-
-    (function frame() {
-        confetti({
-            particleCount: 5,
-            angle: 90,
-            spread: 70,
-            origin: { y: 0 },
-            colors: ['#ff6b6b', '#feca57', '#1dd1a1', '#54a0ff', '#5f27cd'],
-        });
-        if (Date.now() < end) {
-            requestAnimationFrame(frame);
+// Function to check in for habit challenge
+function checkInHabit(habitChallengeId) {
+    fetch('/api/habit-challenges/' + habitChallengeId + '/check-in', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Launch confetti for visual feedback
+            if (typeof launchConfetti === 'function') {
+                launchConfetti();
+            }
+            
+            // Reload the page to reflect changes
+            window.location.reload();
+        } else {
+            alert(data.message);
         }
-    })();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while checking in for the habit challenge.');
+    });
 }
 </script>
 {% endblock scripts %}

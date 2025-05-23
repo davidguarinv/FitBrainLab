@@ -804,70 +804,66 @@ def delete_account():
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
 
-@bp.route('/communities')
+@bp.route("/communities")
 def communities():
-    import os
-    import pandas as pd
-    from flask import request, render_template
+    with open('static/data/communities_with_logos.json', encoding='utf-8') as f:
+        data = json.load(f)
 
-    # Use the communities_with_logos.json file for better image support
-    import json
-    path = os.path.join("static", "data", "communities_with_logos.json")
-    
-    with open(path, 'r') as file:
-        communities_data = json.load(file)
-    
-    # Convert to DataFrame for consistent handling
-    df = pd.DataFrame(communities_data)
-
-    # Normalize cost column to numeric
-    df['Cost'] = pd.to_numeric(df['Cost'], errors='coerce')
-
-    # Define cost ranges
-    cost_ranges = {
-        "0-50": (0, 50),
-        "51-100": (51, 100),
-        "101-200": (101, 200),
-        "201+": (201, float('inf'))
-    }
-
-    # Get filter parameters
     selected_sport = request.args.get("sport", "")
     selected_cost_range = request.args.get("cost", "")
+    page = int(request.args.get("page", 1))
+    per_page = 9
 
-    # Apply filters
-    if selected_sport:
-        df = df[df["Sport"] == selected_sport]
-    if selected_cost_range in cost_ranges:
-        low, high = cost_ranges[selected_cost_range]
-        df = df[df["Cost"].between(low, high)]
+    # Check if suggestion was sent to show confirmation message
+    suggestion_sent = request.args.get('suggestion_sent') == 'True'
 
-    # Extract all sports for the filter dropdown
-    all_sports = sorted(df['Sport'].dropna().unique())
+    filtered_data = []
+    for item in data:
+        if selected_sport and item.get("Sport") != selected_sport:
+            continue
+        if selected_cost_range:
+            try:
+                cost = float(item.get("Cost", 0))
+                min_cost, max_cost = map(int, selected_cost_range.split('-'))
+                if not (min_cost <= cost <= max_cost):
+                    continue
+            except:
+                continue
+        filtered_data.append(item)
 
-    # Pagination setup
-    try:
-        page = int(request.args.get("page", 1))
-    except ValueError:
-        page = 1
-
-    per_page = 6
-    total = len(df)
-    total_pages = max((total + per_page - 1) // per_page, 1)
-    page = max(1, min(page, total_pages))
-
+    total_items = len(filtered_data)
+    total_pages = math.ceil(total_items / per_page)
     start = (page - 1) * per_page
     end = start + per_page
-    paginated = df.iloc[start:end]
+    paginated_data = filtered_data[start:end]
 
-    return render_template(
-        "communities.html",
-        communities=paginated.to_dict(orient="records"),
-        page=page,
-        total_pages=total_pages,
-        sports=all_sports,
-        selected_sport=selected_sport,
-        cost_ranges=cost_ranges,
-        selected_cost_range=selected_cost_range
-    )
+    sports = sorted(set(item.get("Sport", "") for item in data if item.get("Sport")))
+    cost_ranges = {
+        "0-50": "0-50",
+        "50-100": "50-100",
+        "100-200": "100-200",
+        "200-9999": "200+"
+    }
 
+    return render_template("communities.html",
+                           communities=paginated_data,
+                           sports=sports,
+                           selected_sport=selected_sport,
+                           cost_ranges=cost_ranges,
+                           selected_cost_range=selected_cost_range,
+                           page=page,
+                           total_pages=total_pages,
+                           suggestion_sent=suggestion_sent)
+
+
+@bp.route('/submit_community', methods=['POST'])
+def submit_community():
+    community_name = request.form.get('community_name')
+    email = request.form.get('email')
+    message = request.form.get('message')
+
+    # Here you can handle saving or emailing the suggestion
+    print(f"Suggestion received: {community_name} - {email} - {message}")
+
+    # Redirect back to the communities page with success flag
+    return redirect(url_for('main.communities', suggestion_sent='True'))

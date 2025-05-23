@@ -23,12 +23,24 @@ instance/
 venv/
 ENV/
 .DS_Store
+.pytest_cache/
+.coverage
+htmlcov/
 
 # SQLite database files
 *.db
+*.db-journal
+
+# Vercel
+.vercel
+.now
 
 # Helper scripts
 create_test_timers.py
+
+# Temporary files
+*.log
+*.tmp
 direct_timer_fix.py
 simple_run.py
 test_server.py

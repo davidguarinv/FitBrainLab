@@ -725,9 +725,15 @@ def communities():
     import pandas as pd
     from flask import request, render_template
 
-    path = os.path.join("data", "migrations", "List of Communities - Sheet1 (4).csv")
-    df = pd.read_csv(path)
-    df.columns = df.columns.str.strip()
+    # Use the communities_with_logos.json file for better image support
+    import json
+    path = os.path.join("static", "data", "communities_with_logos.json")
+    
+    with open(path, 'r') as file:
+        communities_data = json.load(file)
+    
+    # Convert to DataFrame for consistent handling
+    df = pd.DataFrame(communities_data)
 
     # Pagination
     try:

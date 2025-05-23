@@ -28,8 +28,9 @@
 
 /* Page-specific background opacities */
 .about-hero-background,
-.game-hero-background {
-    opacity: 1; /* 0.2 higher than the default 0.5 */
+.game-hero-background,
+.communities-hero-background {
+    opacity: 1; /* higher than the default 0.5 */
 }
 
 /* Landing page section accents */

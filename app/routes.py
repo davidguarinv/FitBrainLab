@@ -725,11 +725,42 @@ def communities():
     import pandas as pd
     from flask import request, render_template
 
-    path = os.path.join("data", "migrations", "List of Communities - Sheet1 (4).csv")
-    df = pd.read_csv(path)
-    df.columns = df.columns.str.strip()
+    # Use the communities_with_logos.json file for better image support
+    import json
+    path = os.path.join("static", "data", "communities_with_logos.json")
+    
+    with open(path, 'r') as file:
+        communities_data = json.load(file)
+    
+    # Convert to DataFrame for consistent handling
+    df = pd.DataFrame(communities_data)
 
-    # Pagination
+    # Normalize cost column to numeric
+    df['Cost'] = pd.to_numeric(df['Cost'], errors='coerce')
+
+    # Define cost ranges
+    cost_ranges = {
+        "0-50": (0, 50),
+        "51-100": (51, 100),
+        "101-200": (101, 200),
+        "201+": (201, float('inf'))
+    }
+
+    # Get filter parameters
+    selected_sport = request.args.get("sport", "")
+    selected_cost_range = request.args.get("cost", "")
+
+    # Apply filters
+    if selected_sport:
+        df = df[df["Sport"] == selected_sport]
+    if selected_cost_range in cost_ranges:
+        low, high = cost_ranges[selected_cost_range]
+        df = df[df["Cost"].between(low, high)]
+
+    # Extract all sports for the filter dropdown
+    all_sports = sorted(df['Sport'].dropna().unique())
+
+    # Pagination setup
     try:
         page = int(request.args.get("page", 1))
     except ValueError:
@@ -738,16 +769,20 @@ def communities():
     per_page = 6
     total = len(df)
     total_pages = max((total + per_page - 1) // per_page, 1)
-
-    # Clamp the page number
     page = max(1, min(page, total_pages))
 
     start = (page - 1) * per_page
     end = start + per_page
     paginated = df.iloc[start:end]
 
-    return render_template("communities.html",
-                           communities=paginated.to_dict(orient="records"),
-                           page=page,
-                           total_pages=total_pages)
+    return render_template(
+        "communities.html",
+        communities=paginated.to_dict(orient="records"),
+        page=page,
+        total_pages=total_pages,
+        sports=all_sports,
+        selected_sport=selected_sport,
+        cost_ranges=cost_ranges,
+        selected_cost_range=selected_cost_range
+    )
 

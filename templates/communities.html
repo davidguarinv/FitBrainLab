@@ -4,12 +4,45 @@
 
 <main class="flex-1">
   <!-- Hero -->
-  <section class="w-full py-16 bg-gradient-to-b from-gray-100 to-gray-200 text-center">
+  <section class="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-blue-50 to-blue-100/50 hero-section">
+    <img src="{{ url_for('static', filename='images/green.png') }}" alt="Communities Hero Background" class="hero-background">
     <div class="container mx-auto px-4 md:px-6">
-      <h1 class="text-4xl font-bold mb-4">Explore Communities</h1>
-      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-        Browse local sport groups, clubs, and activity networks that help you stay active and social.
-      </p>
+      <div class="flex flex-col items-center text-center space-y-4 mb-8">
+        <div class="space-y-2">
+          <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            Sports & Activities
+          </div>
+          <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Explore Communities</h1>
+          <p class="max-w-[800px] text-gray-500 md:text-xl">
+            Browse local sport groups, clubs, and activity networks that help you stay active and social.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Form -->
+  <section class="w-full py-6 bg-white border-b">
+    <div class="container mx-auto px-4 md:px-6 text-center">
+      <form method="get" class="flex flex-wrap justify-center gap-4">
+        <select name="sport" class="border rounded-md px-3 py-2">
+          <option value="">All Sports</option>
+          {% for sport in sports %}
+            <option value="{{ sport }}" {% if sport == selected_sport %}selected{% endif %}>{{ sport }}</option>
+          {% endfor %}
+        </select>
+
+        <select name="cost" class="border rounded-md px-3 py-2">
+          <option value="">All Costs</option>
+          {% for label, _ in cost_ranges.items() %}
+            <option value="{{ label }}" {% if label == selected_cost_range %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+          Filter
+        </button>
+      </form>
     </div>
   </section>
 
@@ -17,9 +50,9 @@
   <section class="w-full py-12 bg-white">
     <div class="container mx-auto px-4 md:px-6">
       <div class="grid gap-6 md:grid-cols-3">
-        {% for row in communities %}
+        {% for row in communities %}     
         <div class="rounded-xl border bg-gray-50 shadow-sm p-6 text-center">
-          <img src="{{ row.ImageURL|string if row.ImageURL and row.ImageURL|string != 'nan' else url_for('static', filename='placeholder.png') }}"
+          <img src="{{ row.image_url if row.image_url|string not in ['nan', ''] else url_for('static', filename='placeholder.png') }}"
                alt="{{ row.Name }}"
                class="mx-auto mb-4 h-40 w-40 rounded-md object-contain border border-gray-200 bg-white p-2 shadow-sm">
           <h3 class="text-xl font-semibold">{{ row.Name }}</h3>
@@ -40,15 +73,18 @@
       <!-- Pagination Controls -->
       <div class="mt-10 text-center">
         {% if page > 1 %}
-        <a href="?page={{ page - 1 }}" class="inline-block px-4 py-2 mr-2 bg-gray-200 hover:bg-gray-300 rounded-md">Previous</a>
+        <a href="?page={{ page - 1 }}{% if selected_sport %}&sport={{ selected_sport }}{% endif %}{% if selected_cost_range %}&cost={{ selected_cost_range }}{% endif %}"
+           class="inline-block px-4 py-2 mr-2 bg-gray-200 hover:bg-gray-300 rounded-md">Previous</a>
         {% endif %}
 
         {% for p in range(1, total_pages + 1) %}
-        <a href="?page={{ p }}" class="inline-block px-4 py-2 mx-1 {{ 'bg-blue-600 text-white' if p == page else 'bg-gray-200 hover:bg-gray-300' }} rounded-md">{{ p }}</a>
+        <a href="?page={{ p }}{% if selected_sport %}&sport={{ selected_sport }}{% endif %}{% if selected_cost_range %}&cost={{ selected_cost_range }}{% endif %}"
+           class="inline-block px-4 py-2 mx-1 {{ 'bg-blue-600 text-white' if p == page else 'bg-gray-200 hover:bg-gray-300' }} rounded-md">{{ p }}</a>
         {% endfor %}
 
         {% if page < total_pages %}
-        <a href="?page={{ page + 1 }}" class="inline-block px-4 py-2 ml-2 bg-gray-200 hover:bg-gray-300 rounded-md">Next</a>
+        <a href="?page={{ page + 1 }}{% if selected_sport %}&sport={{ selected_sport }}{% endif %}{% if selected_cost_range %}&cost={{ selected_cost_range }}{% endif %}"
+           class="inline-block px-4 py-2 ml-2 bg-gray-200 hover:bg-gray-300 rounded-md">Next</a>
         {% endif %}
       </div>
     </div>

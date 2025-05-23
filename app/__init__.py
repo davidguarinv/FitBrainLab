@@ -37,10 +37,6 @@ def create_app(config_class=Config):
     from .routes import bp as main_bp
     app.register_blueprint(main_bp, url_prefix='')
 
-    # Register API blueprint
-    from .api import bp as api_bp
-    app.register_blueprint(api_bp, url_prefix='/api')
-
     # Create tables
     with app.app_context():
         db.create_all()

@@ -3,7 +3,7 @@
 <main class="flex-1">
     <!-- Hero Section -->
     <section class="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-blue-50 to-blue-100/50 hero-section">
-            <img src="{{ url_for('static', filename='images/orange.png') }}" alt="Game Hero Background" class="hero-background game-hero-background">
+        <img src="{{ url_for('static', filename='images/orange.png') }}" alt="Game Hero Background" class="hero-background game-hero-background">
         <div class="container mx-auto px-4 md:px-6">
             <div class="flex flex-col items-center text-center space-y-4 mb-8">
                 <div class="space-y-2">
@@ -36,362 +36,206 @@
                 {% endif %}
             {% endwith %}
             
-    <!-- Navigation Tabs with Alpine.js -->
-    <div x-data="{ activeTab: '{{ section }}', loadContent: function(tab) { this.activeTab = tab; } }">
-        <nav class="flex space-x-4 mb-8 border-b border-gray-200">
-            {% if current_user.is_authenticated %}
-            <button @click="loadContent('progress')"
-               class="px-3 py-2 text-sm font-medium rounded-md"
-               :class="{'text-primary border-b-2 border-primary': activeTab === 'progress', 'text-gray-500 hover:text-gray-700': activeTab !== 'progress'}">My Progress</button>
-            <button @click="loadContent('challenges')"
-               class="px-3 py-2 text-sm font-medium rounded-md"
-               :class="{'text-primary border-b-2 border-primary': activeTab === 'challenges', 'text-gray-500 hover:text-gray-700': activeTab !== 'challenges'}">Challenges</button>
-            {% endif %}
-            <button @click="loadContent('leaderboard')"
-               class="px-3 py-2 text-sm font-medium rounded-md"
-               :class="{'text-primary border-b-2 border-primary': activeTab === 'leaderboard', 'text-gray-500 hover:text-gray-700': activeTab !== 'leaderboard'}">Leaderboard</button>
-            {% if current_user.is_authenticated %}
-            <button @click="loadContent('profile')"
-               class="px-3 py-2 text-sm font-medium rounded-md"
-               :class="{'text-primary border-b-2 border-primary': activeTab === 'profile', 'text-gray-500 hover:text-gray-700': activeTab !== 'profile'}">Profile</button>
-            {% else %}
-            <button @click="loadContent('auth')"
-               class="px-3 py-2 text-sm font-medium rounded-md"
-               :class="{'text-primary border-b-2 border-primary': activeTab === 'auth', 'text-gray-500 hover:text-gray-700': activeTab !== 'auth'}">Login/Signup</button>
-            {% endif %}
-        </nav>
+            <!-- Navigation Tabs with Alpine.js -->
+            <div x-data="{ activeTab: '{{ section }}', loadContent: function(tab) { this.activeTab = tab; } }">
+                <nav class="flex space-x-4 mb-8 border-b border-gray-200">
+                    {% if current_user.is_authenticated %}
+                    <button @click="loadContent('progress')"
+                       class="px-3 py-2 text-sm font-medium rounded-md"
+                       :class="{'text-primary border-b-2 border-primary': activeTab === 'progress', 'text-gray-500 hover:text-gray-700': activeTab !== 'progress'}">My Progress</button>
+                    <button @click="loadContent('challenges')"
+                       class="px-3 py-2 text-sm font-medium rounded-md"
+                       :class="{'text-primary border-b-2 border-primary': activeTab === 'challenges', 'text-gray-500 hover:text-gray-700': activeTab !== 'challenges'}">Challenges</button>
+                    {% endif %}
+                    <button @click="loadContent('leaderboard')"
+                       class="px-3 py-2 text-sm font-medium rounded-md"
+                       :class="{'text-primary border-b-2 border-primary': activeTab === 'leaderboard', 'text-gray-500 hover:text-gray-700': activeTab !== 'leaderboard'}">Leaderboard</button>
+                    {% if current_user.is_authenticated %}
+                    <button @click="loadContent('profile')"
+                       class="px-3 py-2 text-sm font-medium rounded-md"
+                       :class="{'text-primary border-b-2 border-primary': activeTab === 'profile', 'text-gray-500 hover:text-gray-700': activeTab !== 'profile'}">Profile</button>
+                    {% endif %}
+                </nav>
 
-    <!-- Content Sections -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Main Content Area -->
-        <div class="lg:col-span-2">
-            <!-- Auth Section -->
-            <div x-show="activeTab === 'auth' && {{ 'true' if not current_user.is_authenticated else 'false' }}" x-transition>
-                {% if not current_user.is_authenticated %}
-                    {% include 'game/auth.html' %}
-                {% endif %}
-            </div>
-            
-            <!-- Progress Section -->
-            <div x-show="activeTab === 'progress' && {{ 'true' if current_user.is_authenticated else 'false' }}" x-transition>
-                {% if current_user.is_authenticated %}
-                    {% include 'game/progress.html' %}
-                {% endif %}
-            </div>
-            
-            <!-- Challenges Section -->
-            <div x-show="activeTab === 'challenges' && {{ 'true' if current_user.is_authenticated else 'false' }}" x-transition>
-                {% if current_user.is_authenticated %}
-                    {% include 'game/challenges.html' %}
-                {% endif %}
-            </div>
-            
-            <!-- Profile Section -->
-            <div x-show="activeTab === 'profile' && {{ 'true' if current_user.is_authenticated else 'false' }}" x-transition>
-                {% if current_user.is_authenticated %}
-                    {% include 'game/profile.html' %}
-                {% endif %}
-            </div>
-            
-            <!-- Leaderboard Section -->
-            <div x-show="activeTab === 'leaderboard'" x-transition>
-                {% include 'game/leaderboard.html' %}
-            </div>
-        </div>
-
-        <!-- Sidebar -->
-        <div class="lg:col-span-1">
-            {% if current_user.is_authenticated %}
-                <!-- User Stats Card -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 mr-3 bg-gray-100 rounded-full flex items-center justify-center">
-                            {% if current_user.profile_image %}
-                                <img src="{{ current_user.profile_image }}" alt="{{ current_user.username }}" class="w-8 h-8 rounded-full object-cover">
-                            {% else %}
-                                <span class="text-gray-500 text-lg font-medium">{{ current_user.username[0]|upper }}</span>
+                <!-- Content Sections -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Main Content Area -->
+                    <div class="lg:col-span-2">
+                        <!-- Auth Section -->
+                        <div x-show="activeTab === 'auth' && {{ 'true' if not current_user.is_authenticated else 'false' }}" x-transition>
+                            {% if not current_user.is_authenticated %}
+                                {% include 'game/auth.html' %}
                             {% endif %}
                         </div>
-                        <h3 class="text-lg font-semibold">Your Stats</h3>
+                        
+                        <!-- Progress Section -->
+                        <div x-show="activeTab === 'progress' && {{ 'true' if current_user.is_authenticated else 'false' }}" x-transition>
+                            {% if current_user.is_authenticated %}
+                                {% include 'game/progress.html' %}
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Challenges Section -->
+                        <div x-show="activeTab === 'challenges' && {{ 'true' if current_user.is_authenticated else 'false' }}" x-transition>
+                            {% if current_user.is_authenticated %}
+                                {% include 'game/challenges.html' %}
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Profile Section -->
+                        <div x-show="activeTab === 'profile' && {{ 'true' if current_user.is_authenticated else 'false' }}" x-transition>
+                            {% if current_user.is_authenticated %}
+                                {% include 'game/profile.html' %}
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Leaderboard Section -->
+                        <div x-show="activeTab === 'leaderboard'" x-transition>
+                            {% include 'game/leaderboard.html' %}
+                        </div>
                     </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Total Points</span>
-                            <span class="font-medium">{{ user_progress.total_points }}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Level</span>
-                            <span class="font-medium">{{ user_progress.level }}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Challenges Completed</span>
-                            <span class="font-medium">{{ user_progress.challenges_completed }}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Rank</span>
-                            <span class="font-medium">#{{ user_progress.rank|default(1) }}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Weekly Habit Challenge Card -->
-                {% set habit_challenge = current_user.get_weekly_habit_challenge() %}
-                {% if habit_challenge %}
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-green-500">
-                    <h3 class="text-lg font-semibold mb-2">Weekly Habit Challenge</h3>
-                    <div class="mb-3">
-                        <h4 class="font-medium">{{ habit_challenge.challenge.title }}</h4>
-                        <p class="text-sm text-gray-600 mt-1">{{ habit_challenge.challenge.description }}</p>
-                    </div>
-                    
-                    <!-- Progress Bar -->
-                    <div class="mb-2">
-                        <div class="flex justify-between text-xs text-gray-600 mb-1">
-                            <span>Progress: {{ habit_challenge.days_completed }}/7 days</span>
-                            <span>
-                                {% if habit_challenge.days_completed == 7 %}
-                                    Complete! (+{{ habit_challenge.challenge.points }} points)
-                                {% else %}
-                                    {{ ((habit_challenge.days_completed / 7) * 100)|int }}%
+
+                    <!-- Sidebar -->
+                    <div class="lg:col-span-1">
+                        {% if current_user.is_authenticated %}
+                            <!-- User Stats Card -->
+                            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                                <h3 class="text-lg font-semibold mb-4">Your Stats</h3>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Total Points</span>
+                                        <span class="font-medium">{{ user_progress.total_points }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Daily Streak</span>
+                                        <span class="font-medium">{{ user_progress.daily_streak }} days</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Rank</span>
+                                        <span class="font-medium">#{{ user_progress.rank|default(1) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- In Progress Challenges -->
+                            {% if challenges.in_progress %}
+                            <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-primary">
+                                <h3 class="text-lg font-semibold mb-4">In Progress Challenges ({{ challenges.in_progress|length }}/2)</h3>
+                                {% for challenge in challenges.in_progress %}
+                                    <div class="space-y-3 {% if not loop.last %}mb-4 pb-4 border-b border-gray-100{% endif %}">
+                                        <h4 class="font-medium">{{ challenge.title }}</h4>
+                                        <p class="text-sm text-gray-600">{{ challenge.description }}</p>
+                                        <div class="flex justify-between items-center">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if challenge.difficulty == 'E' else 'bg-yellow-100 text-yellow-800' if challenge.difficulty == 'M' else 'bg-red-100 text-red-800' }}">
+                                                {{ challenge.difficulty }} · {{ challenge.points }} points
+                                            </span>
+                                            <div class="space-x-2">
+                                                <form action="/api/challenges/{{ challenge.id }}/complete" method="POST" style="display: inline;">
+                                                    <button type="submit" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
+                                                        Complete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% if challenges.in_progress|length < 2 %}
+                                    <div class="mt-4 text-center">
+                                        <a href="/game/challenges" class="text-primary hover:text-primary-dark text-sm font-medium">
+                                            Find more challenges
+                                        </a>
+                                    </div>
                                 {% endif %}
-                            </span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-green-500 h-2 rounded-full" style="width: {{ (habit_challenge.days_completed / 7) * 100 }}%"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Day Indicators -->
-                    <div class="flex justify-between mb-4">
-                        {% for day in range(1, 8) %}
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center {{ 'bg-green-500 text-white' if day <= habit_challenge.days_completed else 'bg-gray-100 text-gray-400' }}">
-                                {{ day }}
                             </div>
-                        {% endfor %}
-                    </div>
-                    
-                    <!-- Today's Check-in Button -->
-                    <div class="text-center">
-                        {% if habit_challenge.can_check_in_today and habit_challenge.days_completed < 7 %}
-                            <button onclick="checkInHabit({{ habit_challenge.id }})" class="w-full px-4 py-2 bg-green-500 text-white font-medium rounded-md hover:bg-green-600 transition-colors">
-                                Check In Today
-                            </button>
-                        {% elif habit_challenge.days_completed == 7 %}
-                            <div class="text-green-600 font-medium">
-                                Challenge Completed! 🎉
-                            </div>
-                        {% else %}
-                            <div class="text-gray-500 text-sm">
-                                You've already checked in today
-                            </div>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
-                {% endif %}
-                
-                <!-- Upcoming Events Card -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h3 class="text-lg font-semibold mb-4">Weekly Leaderboard</h3>
-                    {% if leaderboard %}
-                        <div class="space-y-3">
-                            {% for user in leaderboard[:5] %}
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <div class="w-6 h-6 bg-{{ ['blue', 'green', 'yellow', 'indigo', 'purple']|random }}-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-{{ ['blue', 'green', 'yellow', 'indigo', 'purple']|random }}-600 text-xs font-medium">{{ loop.index }}</span>
-                                        </div>
-                                        <span class="text-sm {{ 'font-bold text-primary' if user.username == current_user.username else '' }}">{{ user.username }}</span>
-                                    </div>
-                                    <span class="text-sm font-medium">{{ user.points }} pts</span>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <div class="mt-4 text-center">
-                            <button @click="loadContent('leaderboard')" class="text-primary text-sm hover:underline">View Full Leaderboard</button>
-                        </div>
-                    {% else %}
-                        <p class="text-gray-500 text-sm">No data available yet.</p>
-                    {% endif %}
-                </div>
-            {% else %}
-                <!-- Call to Action for Non-Authenticated Users -->
-                <div class="bg-blue-50 rounded-lg shadow-sm p-6 mb-6 border border-blue-100">
-                    <h3 class="text-lg font-semibold mb-2">Join Fit Quest Today!</h3>
-                    <p class="text-sm text-gray-600 mb-4">Create an account to track your progress, earn points, and compete with others.</p>
-                    <button @click="loadContent('auth')" class="w-full px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-primary-dark transition-colors">
-                        Sign Up Now
-                    </button>
-                </div>
-                
-                <!-- Featured Stats -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h3 class="text-lg font-semibold mb-4">Community Stats</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Active Users</span>
-                            <span class="font-medium">{{ community_stats.active_users|default(324) }}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Challenges Completed</span>
-                            <span class="font-medium">{{ community_stats.total_challenges|default(1856) }}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Top Score</span>
-                            <span class="font-medium">{{ community_stats.top_score|default(1250) }} pts</span>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-            
-            <!-- Help Card -->
-            <div class="bg-white rounded-lg shadow-sm p-6">
-                <h3 class="text-lg font-semibold mb-2">Need Help?</h3>
-                <p class="text-sm text-gray-600 mb-4">Find out how to complete challenges and earn points.</p>
-                <a href="/help" class="text-primary text-sm hover:underline">View Help Guide</a>
             </div>
         </div>
-    </div>
-</div>
-</section>
+    </section>
 </main>
 {% endblock content %}
 
 {% block scripts %}
 <script>
-// Function to start a challenge
 function startChallenge(challengeId) {
-    fetch('/api/challenges/' + challengeId + '/start', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.href = '/game?section=challenges&active=' + challengeId;
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while starting the challenge.');
-    });
+    // Create a form element
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/api/challenges/' + challengeId + '/start';
+    
+    // Append form to body and submit
+    document.body.appendChild(form);
+    form.submit();
 }
 
-// Function to update all countdown timers on the page - only updates when minutes change
+function completeChallenge(challengeId) {
+    // Create a form element
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/api/challenges/' + challengeId + '/complete';
+    
+    // Append form to body and submit
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function abandonChallenge(challengeId) {
+    if (confirm('Are you sure you want to abandon this challenge? You will lose all progress.')) {
+        // Create a form element
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/api/challenges/' + challengeId + '/abandon';
+        
+        // Append form to body and submit
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
 function updateCountdownTimers() {
-    // Get all timer elements in the challenges section
-    const timerElements = document.querySelectorAll('.text-lg.font-bold.text-primary[data-regenerate-at]');
-    if (timerElements.length === 0) return; // No timers to update
-    
-    // Current time in UTC
-    const now = new Date();
-    
-    // Track if any timer needs a refresh (we'll only refresh once at the end)
-    let needsRefresh = false;
+    const timerElements = document.querySelectorAll('[data-regenerate-at]');
     
     timerElements.forEach(timerElement => {
-        // Get the regeneration timestamp from the data attribute
-        const regenerateAtStr = timerElement.getAttribute('data-regenerate-at');
-        if (!regenerateAtStr) return;
+        const regenerateAt = new Date(timerElement.getAttribute('data-regenerate-at'));
+        const now = new Date();
         
-        // Parse the regeneration timestamp
-        const regenerateAt = new Date(regenerateAtStr);
+        // Calculate time difference in seconds
+        let timeRemaining = Math.max(0, Math.floor((regenerateAt - now) / 1000));
         
-        // Calculate the time difference in seconds
-        const timeDiffSeconds = Math.max(0, Math.floor((regenerateAt - now) / 1000));
-        
-        // If timer has expired, mark for refresh but don't refresh immediately
-        if (timeDiffSeconds <= 0) {
-            needsRefresh = true;
+        if (timeRemaining <= 0) {
+            // Timer expired, refresh the page to get updated challenges
+            window.location.reload();
             return;
         }
         
         // Calculate hours, minutes, seconds
-        const hours = Math.floor(timeDiffSeconds / 3600);
-        const minutes = Math.floor((timeDiffSeconds % 3600) / 60);
+        const hours = Math.floor(timeRemaining / 3600);
+        const minutes = Math.floor((timeRemaining % 3600) / 60);
+        const seconds = timeRemaining % 60;
         
-        // Format the time string - only showing hours and minutes (not seconds)
-        let newTimeText = '';
+        // Format the time string
+        let timeString = '';
         if (hours > 0) {
-            newTimeText = `${hours}h ${minutes}m`;
+            timeString = `${hours}h ${minutes.toString().padStart(2, '0')}m`;
         } else {
-            newTimeText = `${minutes}m`;
+            timeString = `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
         }
         
-        // Only update if the displayed text is different (avoid constant DOM updates)
-        if (timerElement.textContent !== newTimeText) {
-            timerElement.textContent = newTimeText;
-        }
+        // Update the timer text
+        timerElement.textContent = timeString;
     });
-    
-    // Only refresh the page once every 30 seconds if timers have expired
-    if (needsRefresh) {
-        // Use localStorage to prevent constant refreshing
-        const lastRefresh = localStorage.getItem('lastTimerRefresh');
-        const now = new Date().getTime();
-        
-        if (!lastRefresh || (now - parseInt(lastRefresh)) > 30000) { // 30 seconds
-            localStorage.setItem('lastTimerRefresh', now);
-            window.location.reload();
-        }
-    }
 }
 
 // Update timers every second if there are any timers on the page
-const timerElements = document.querySelectorAll('.text-lg.font-bold.text-primary[data-regenerate-at]');
+const timerElements = document.querySelectorAll('[data-regenerate-at]');
 if (timerElements.length > 0) {
     // Initial update
     updateCountdownTimers();
     
-    // Set interval to update every second
+    // Update every second
     setInterval(updateCountdownTimers, 1000);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Update countdown timers immediately and then every second
-    updateCountdownTimers();
-    setInterval(updateCountdownTimers, 1000);
-    
-    // Check for success messages that indicate challenge completion
-    const successMessages = document.querySelectorAll('.bg-green-100.border-green-400.text-green-700');
-    for (const message of successMessages) {
-        if (message.textContent.trim().includes('Challenge completed successfully') || 
-            message.textContent.trim().includes('Habit challenge completed')) {
-            launchConfetti();
-            break;
-        }
-    }
-});
-
-// Function to check in for habit challenge
-function checkInHabit(habitChallengeId) {
-    fetch('/api/habit-challenges/' + habitChallengeId + '/check-in', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Launch confetti for visual feedback
-            if (typeof launchConfetti === 'function') {
-                launchConfetti();
-            }
-            
-            // Reload the page to reflect changes
-            window.location.reload();
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while checking in for the habit challenge.');
-    });
 }
 </script>
 {% endblock scripts %}

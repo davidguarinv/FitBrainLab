@@ -35,7 +35,7 @@
         </div>
 
         <!-- Profile Settings -->
-        <form method="POST" action="{{ url_for('main.update_profile_form') }}" class="space-y-4">
+        <form method="POST" action="{{ url_for('main.update_profile') }}" class="space-y-4">
             <div>
 
             </div>
@@ -45,58 +45,20 @@
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
             </div>
             <div>
-                <label for="top_sport_category" class="block text-sm font-medium text-gray-700">Sport Category</label>
-                <select id="top_sport_category" name="top_sport_category"
+                <label for="top_sport" class="block text-sm font-medium text-gray-700">Favorite Sport</label>
+                <select id="top_sport" name="top_sport"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
-                    <option value="" {% if not current_user.top_sport_category %}selected{% endif %}>Select a category</option>
-                    <option value="Endurance" {% if current_user.top_sport_category == 'Endurance' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
-                        Endurance
-                    </option>
-                    <option value="Ball Sports" {% if current_user.top_sport_category == 'Ball Sports' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><path d="M11.1 7.1a16.55 16.55 0 0 1 10.9 4"/><path d="M12 12a12.6 12.6 0 0 1-8.7 5"/><path d="M16.8 13.6a16.55 16.55 0 0 1-9 7.5"/><path d="M20.7 17a12.8 12.8 0 0 0-8.7-5 13.3 13.3 0 0 1 0-10"/><path d="M6.3 3.8a16.55 16.55 0 0 0 1.9 11.5"/><circle cx="12" cy="12" r="10"/></svg>
-                        Ball Sports
-                    </option>
-                    <option value="Racquet Sports" {% if current_user.top_sport_category == 'Racquet Sports' %}selected{% endif %}>
-                        <svg fill="#303030" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#303030" stroke-width="0.00024" class="inline-block mr-1"><path d="M21.261,2.739A9.836,9.836,0"/></svg>
-                        Racquet Sports
-                    </option>
-                    <option value="Combat Sports" {% if current_user.top_sport_category == 'Combat Sports' %}selected{% endif %}>
-                        <svg fill="#303030" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#303030" stroke-width="0.00024" class="inline-block mr-1"><path d="M16,1H8.5A5.5,5.5,"/></svg>
-                        Combat Sports
-                    </option>
-                    <option value="Water Sports" {% if current_user.top_sport_category == 'Water Sports' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
-                        Water Sports
-                    </option>
-                    <option value="Winter Sports" {% if current_user.top_sport_category == 'Winter Sports' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/></svg>
-                        Winter Sports
-                    </option>
-                    <option value="Mind & Fitness" {% if current_user.top_sport_category == 'Mind & Fitness' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4"/><path d="m20.1 3.9 1.4-1.4"/><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/><path d="m9.6 14.4 4.8-4.8"/></svg>
-                        Mind & Fitness
-                    </option>
-                    <option value="Outdoor & Adventure" {% if current_user.top_sport_category == 'Outdoor & Adventure' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/><path d="M4.14 15.08c2.62-1.57 5.24-1.43 7.86.42 2.74 1.94 5.49 2 8.23.19"/></svg>
-                        Outdoor & Adventure
-                    </option>
-                    <option value="Movement & Dance" {% if current_user.top_sport_category == 'Movement & Dance' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                        Movement & Dance
-                    </option>
-                    <option value="Motor Sports" {% if current_user.top_sport_category == 'Motor Sports' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
-                        Motor Sports
-                    </option>
-                    <option value="Esports" {% if current_user.top_sport_category == 'Esports' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><path d="M17 21v-2a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1"/><path d="M19 15V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V9"/><path d="M21 21v-2"/><path d="M3 5h4V3"/><path d="M7 5a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1V3"/></svg>
-                        Esports
-                    </option>
-                    <option value="Other" {% if current_user.top_sport_category == 'Other' %}selected{% endif %}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><path d="M14 11a2 2 0 1 1-4 0 4 4 0 0 1 8 0 6 6 0 0 1-12 0 8 8 0 0 1 16 0 10 10 0 1 1-20 0 11.93 11.93 0 0 1 2.42-7.22 2 2 0 1 1 3.16 2.44"/></svg>
-                        Other
-                    </option>
+                    <option value="" {% if not current_user.top_sport %}selected{% endif %}>Select a sport</option>
+                    <option value="Running" {% if current_user.top_sport == 'Running' %}selected{% endif %}>Running</option>
+                    <option value="Swimming" {% if current_user.top_sport == 'Swimming' %}selected{% endif %}>Swimming</option>
+                    <option value="Cycling" {% if current_user.top_sport == 'Cycling' %}selected{% endif %}>Cycling</option>
+                    <option value="Yoga" {% if current_user.top_sport == 'Yoga' %}selected{% endif %}>Yoga</option>
+                    <option value="Basketball" {% if current_user.top_sport == 'Basketball' %}selected{% endif %}>Basketball</option>
+                    <option value="Soccer" {% if current_user.top_sport == 'Soccer' %}selected{% endif %}>Soccer</option>
+                    <option value="Tennis" {% if current_user.top_sport == 'Tennis' %}selected{% endif %}>Tennis</option>
+                    <option value="Hiking" {% if current_user.top_sport == 'Hiking' %}selected{% endif %}>Hiking</option>
+                    <option value="Dancing" {% if current_user.top_sport == 'Dancing' %}selected{% endif %}>Dancing</option>
+                    <option value="Other" {% if current_user.top_sport and current_user.top_sport not in ['Running', 'Swimming', 'Cycling', 'Yoga', 'Basketball', 'Soccer', 'Tennis', 'Hiking', 'Dancing'] %}selected{% endif %}>Other</option>
                 </select>
             </div>
             <div class="pt-4 flex flex-wrap gap-3">

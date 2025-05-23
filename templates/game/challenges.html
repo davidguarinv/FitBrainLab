@@ -19,9 +19,11 @@
                         <div class="flex items-center justify-between">
                             <span class="text-primary font-medium">{{ slot.challenge.points }} points</span>
                             <div class="space-x-4">
-                                <button onclick="launchConfetti(); completeChallenge({{ slot.challenge.id }});" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
-                                    Complete Challenge
-                                </button>
+                                <form action="/api/challenges/{{ slot.challenge.id }}/complete" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
+                                        Complete Challenge
+                                    </button>
+                                </form>
                                 <form action="/api/challenges/{{ slot.challenge.id }}/abandon" method="POST" style="display: inline;">
                                     <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
                                         Abandon
@@ -54,15 +56,14 @@
                     <div class="flex justify-between items-center">
                         <span class="text-sm font-medium text-primary">{{ challenge.points }} points</span>
                         <div class="space-x-2">
-                            <button onclick="launchConfetti(); completeChallenge('{{ challenge.id }}');"
+                            <button onclick="completeChallenge('{{ challenge.id }}')"
                                     class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
                                 Complete
                             </button>
-                            <form action="/api/challenges/{{ challenge.id }}/abandon" method="POST" style="display: inline;">
-                                <button type="submit" class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded hover:bg-gray-200 transition-colors">
-                                    Abandon
-                                </button>
-                            </form>
+                            <button onclick="abandonChallenge('{{ challenge.id }}')"
+                                    class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded hover:bg-gray-200 transition-colors">
+                                Abandon
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -86,43 +87,65 @@
                     {% if slot.all_done %}
                         <!-- All done for the week -->
                         <div class="border rounded-lg p-4 bg-green-50 border-green-200">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h4 class="font-medium text-green-700">✓ Challenge Complete</h4>
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">All done for this week!</p>
                                     <p class="text-xs text-gray-500 mt-1">You've completed your weekly Easy challenges</p>
                                 </div>
                             </div>
                         </div>
+                    {% elif slot.regenerating %}
+                        <!-- Regenerating slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="animate-pulse mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600 timer-label">New challenge in</p>
+                                    <p class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.time_remaining }}</p>
+                                </div>
+                            </div>
+                        </div>
                     {% elif slot.challenge %}
-                        <!-- Has a challenge -->
+                        <!-- Available challenge -->
                         <div class="border rounded-lg p-4 hover:border-primary transition-colors">
                             <div class="flex justify-between items-start mb-2">
                                 <h4 class="font-medium">{{ slot.challenge.title }}</h4>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    E
+                                </span>
                             </div>
                             <p class="text-sm text-gray-600 mb-4">{{ slot.challenge.description }}</p>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium text-primary">{{ slot.challenge.points }} points</span>
-                                <a href="/game?section=challenges&active={{ slot.challenge.id }}" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                    Start
-                                </a>
+                                <form action="/api/challenges/{{ slot.challenge.id }}/start" method="POST" style="display: inline;">
+                                    <input type="hidden" name="slot" value="{{ slot.slot_number }}">
+                                    <button type="submit" class="px-3 py-1 {% if challenges.in_progress|length >= 2 %}bg-gray-300 cursor-not-allowed{% else %}bg-primary hover:bg-primary-dark{% endif %} text-white text-sm font-medium rounded transition-colors" {% if challenges.in_progress|length >= 2 %}disabled{% endif %}>
+                                        {% if challenges.in_progress|length >= 2 %}Slots Full{% else %}Start{% endif %}
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     {% else %}
-                        <!-- Regenerating -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h4 class="font-medium text-gray-600">Challenge Available Soon</h4>
-                                    <p class="text-xs text-gray-500 mt-1">New challenge regenerates in:</p>
-                                </div>
-                                <span class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.regenerate_time }}</span>
+                        <!-- Empty slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
+                            <div class="flex justify-center items-center h-24">
+                                <p class="text-gray-500">No challenge available</p>
                             </div>
                         </div>
                     {% endif %}
                 {% endfor %}
             </div>
         </div>
-        
+
         <!-- Medium Challenges -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
@@ -136,45 +159,67 @@
                     {% if slot.all_done %}
                         <!-- All done for the week -->
                         <div class="border rounded-lg p-4 bg-green-50 border-green-200">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h4 class="font-medium text-green-700">✓ Challenge Complete</h4>
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">All done for this week!</p>
                                     <p class="text-xs text-gray-500 mt-1">You've completed your weekly Medium challenges</p>
                                 </div>
                             </div>
                         </div>
+                    {% elif slot.regenerating %}
+                        <!-- Regenerating slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="animate-pulse mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600 timer-label">New challenge in</p>
+                                    <p class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.time_remaining }}</p>
+                                </div>
+                            </div>
+                        </div>
                     {% elif slot.challenge %}
-                        <!-- Has a challenge -->
+                        <!-- Available challenge -->
                         <div class="border rounded-lg p-4 hover:border-primary transition-colors">
                             <div class="flex justify-between items-start mb-2">
                                 <h4 class="font-medium">{{ slot.challenge.title }}</h4>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    M
+                                </span>
                             </div>
                             <p class="text-sm text-gray-600 mb-4">{{ slot.challenge.description }}</p>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium text-primary">{{ slot.challenge.points }} points</span>
-                                <a href="/game?section=challenges&active={{ slot.challenge.id }}" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                    Start
-                                </a>
+                                <form action="/api/challenges/{{ slot.challenge.id }}/start" method="POST" style="display: inline;">
+                                    <input type="hidden" name="slot" value="{{ slot.slot_number }}">
+                                    <button type="submit" class="px-3 py-1 {% if challenges.in_progress|length >= 2 %}bg-gray-300 cursor-not-allowed{% else %}bg-primary hover:bg-primary-dark{% endif %} text-white text-sm font-medium rounded transition-colors" {% if challenges.in_progress|length >= 2 %}disabled{% endif %}>
+                                        {% if challenges.in_progress|length >= 2 %}Slots Full{% else %}Start{% endif %}
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     {% else %}
-                        <!-- Regenerating -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h4 class="font-medium text-gray-600">Challenge Available Soon</h4>
-                                    <p class="text-xs text-gray-500 mt-1">New challenge regenerates in:</p>
-                                </div>
-                                <span class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.regenerate_time }}</span>
+                        <!-- Empty slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
+                            <div class="flex justify-center items-center h-24">
+                                <p class="text-gray-500">No challenge available</p>
                             </div>
                         </div>
                     {% endif %}
                 {% endfor %}
             </div>
         </div>
-        
+
         <!-- Hard Challenges -->
-        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div class="bg-white rounded-lg shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold">Hard Challenges</h3>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
@@ -186,36 +231,58 @@
                     {% if slot.all_done %}
                         <!-- All done for the week -->
                         <div class="border rounded-lg p-4 bg-green-50 border-green-200">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h4 class="font-medium text-green-700">✓ Challenge Complete</h4>
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600">All done for this week!</p>
                                     <p class="text-xs text-gray-500 mt-1">You've completed your weekly Hard challenges</p>
                                 </div>
                             </div>
                         </div>
+                    {% elif slot.regenerating %}
+                        <!-- Regenerating slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
+                            <div class="flex justify-center items-center h-full">
+                                <div class="text-center">
+                                    <div class="animate-pulse mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-600 timer-label">New challenge in</p>
+                                    <p class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.time_remaining }}</p>
+                                </div>
+                            </div>
+                        </div>
                     {% elif slot.challenge %}
-                        <!-- Has a challenge -->
+                        <!-- Available challenge -->
                         <div class="border rounded-lg p-4 hover:border-primary transition-colors">
                             <div class="flex justify-between items-start mb-2">
                                 <h4 class="font-medium">{{ slot.challenge.title }}</h4>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    H
+                                </span>
                             </div>
                             <p class="text-sm text-gray-600 mb-4">{{ slot.challenge.description }}</p>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium text-primary">{{ slot.challenge.points }} points</span>
-                                <a href="/game?section=challenges&active={{ slot.challenge.id }}" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                    Start
-                                </a>
+                                <form action="/api/challenges/{{ slot.challenge.id }}/start" method="POST" style="display: inline;">
+                                    <input type="hidden" name="slot" value="{{ slot.slot_number }}">
+                                    <button type="submit" class="px-3 py-1 {% if challenges.in_progress|length >= 2 %}bg-gray-300 cursor-not-allowed{% else %}bg-primary hover:bg-primary-dark{% endif %} text-white text-sm font-medium rounded transition-colors" {% if challenges.in_progress|length >= 2 %}disabled{% endif %}>
+                                        {% if challenges.in_progress|length >= 2 %}Slots Full{% else %}Start{% endif %}
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     {% else %}
-                        <!-- Regenerating -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h4 class="font-medium text-gray-600">Challenge Available Soon</h4>
-                                    <p class="text-xs text-gray-500 mt-1">New challenge regenerates in:</p>
-                                </div>
-                                <span class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.regenerate_time }}</span>
+                        <!-- Empty slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50" data-slot-id="{{ difficulty }}-{{ slot.slot_number }}">
+                            <div class="flex justify-center items-center h-24">
+                                <p class="text-gray-500">No challenge available</p>
                             </div>
                         </div>
                     {% endif %}
@@ -225,14 +292,17 @@
     </div>
 </div>
 
+<!-- Challenge interaction scripts -->
 <script>
-// Function to mark a challenge as complete via AJAX
-function completeChallenge(challengeId) {
-    // Create a form and submit it (this is more reliable than fetch for this case)
+function startChallenge(challengeId) {
+    console.log('Starting challenge:', challengeId);
+    
+    // Create a form and submit it
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = '/api/challenges/' + challengeId + '/complete';
+    form.action = `/api/challenges/${challengeId}/start`;
     
+    // Add hidden input for challenge ID
     const input = document.createElement('input');
     input.type = 'hidden';
     input.name = 'challenge_id';
@@ -244,14 +314,45 @@ function completeChallenge(challengeId) {
     form.submit();
 }
 
-// Check if we can use the global launchConfetti function
-if (typeof launchConfetti === 'function') {
-    console.log('Using global confetti function');
-} else {
-    console.log('Confetti function not found, looking for it in parent window');
+function completeChallenge(challengeId) {
+    console.log('Completing challenge:', challengeId);
     
-    if (window.parent && typeof window.parent.launchConfetti === 'function') {
-        window.launchConfetti = window.parent.launchConfetti;
+    // Create a form and submit it
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/api/challenges/${challengeId}/complete`;
+    
+    // Add hidden input for challenge ID
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'challenge_id';
+    input.value = challengeId;
+    form.appendChild(input);
+    
+    // Add the form to the body and submit it
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function abandonChallenge(challengeId) {
+    if (confirm('Are you sure you want to abandon this challenge? You won\'t receive any points.')) {
+        console.log('Abandoning challenge:', challengeId);
+        
+        // Create a form and submit it
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/api/challenges/${challengeId}/abandon`;
+        
+        // Add hidden input for challenge ID
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'challenge_id';
+        input.value = challengeId;
+        form.appendChild(input);
+        
+        // Add the form to the body and submit it
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 </script>

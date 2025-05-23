@@ -72,12 +72,16 @@ document.addEventListener('DOMContentLoaded', function() {
         })
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
+=======
+        .then(response => response.json())
+>>>>>>> Stashed changes
 =======
         .then(response => response.json())
 >>>>>>> Stashed changes
@@ -91,7 +95,11 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 showMessage(data.message || 'Failed to submit application. Please try again.', 'error');
+=======
+                showMessage(data.message, 'error');
+>>>>>>> Stashed changes
 =======
                 showMessage(data.message, 'error');
 >>>>>>> Stashed changes
@@ -104,8 +112,12 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             const errorMessage = error.message || 'An error occurred. Please try again.';
             showMessage(errorMessage, 'error');
+=======
+            showMessage('An error occurred. Please try again.', 'error');
+>>>>>>> Stashed changes
 =======
             showMessage('An error occurred. Please try again.', 'error');
 >>>>>>> Stashed changes

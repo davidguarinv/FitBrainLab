@@ -71,6 +71,91 @@ def submit_application():
             'message': 'An error occurred. Please try again.'
         }), 500
 
+@bp.route('/submit_community', methods=['POST'])
+def submit_community():
+    """Handle community submission"""
+    try:
+        # Check email configuration
+        if not current_app.config.get('EMAIL_USER'):
+            return jsonify({
+                'success': False,
+                'message': 'Email configuration is not set up. Please contact the administrator.'
+            }), 500
+            
+        # Get form data
+        form_data = request.form.to_dict()
+        
+        # Validate required fields
+        required_fields = ['Name', 'email', 'Location', 'Sport', 'website', 'message']
+        for field in required_fields:
+            if not form_data.get(field):
+                return jsonify({
+                    'success': False, 
+                    'message': f'{field.replace("_", " ").title()} is required'
+                }), 400
+        
+        # Send email with confirmation buttons
+        if send_email(form_data, 'community_submission'):
+            return jsonify({
+                'success': True, 
+                'message': 'Community submission received! We will review your submission and contact you soon.'
+            })
+        else:
+            return jsonify({
+                'success': False, 
+                'message': 'Failed to send submission. Please try again.'
+            }), 500
+            
+    except Exception as e:
+        current_app.logger.error(f"Error processing community submission: {e}")
+        return jsonify({
+            'success': False, 
+            'message': 'An error occurred. Please try again.'
+        }), 500
+
+@bp.route('/confirm-community/<community_id>/<action>', methods=['GET'])
+def confirm_community(community_id, action):
+    """Handle community confirmation"""
+    try:
+        # Get the community data from the session or database
+        community_data = request.form.to_dict()
+        
+        if action == 'accept':
+            # Read existing communities
+            json_file = os.path.join(current_app.static_folder, 'data', 'communities_with_logos.json')
+            with open(json_file, 'r') as f:
+                communities = json.load(f)
+            
+            # Add new community
+            new_community = {
+                "Name": community_data.get('Name'),
+                "Sport": community_data.get('Sport'),
+                "email": community_data.get('email'),
+                "website": community_data.get('website'),
+                "Location": community_data.get('Location'),
+                "Cost": community_data.get('Cost'),
+                "Int/Dutch": community_data.get('Int/Dutch', 'Both'),
+                "Student-based": community_data.get('Student-based', 'No'),
+                "image_url": community_data.get('image_url')
+            }
+            
+            communities.append(new_community)
+            
+            # Save updated communities
+            with open(json_file, 'w') as f:
+                json.dump(communities, f, indent=2)
+            
+            return "Community added successfully!"
+            
+        elif action == 'reject':
+            return "Community rejected"
+            
+        return "Invalid action"
+        
+    except Exception as e:
+        current_app.logger.error(f"Error in community confirmation: {e}")
+        return "An error occurred", 500
+
 @bp.route('/research')
 def research():
     return render_template('research.html')

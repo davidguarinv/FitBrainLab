@@ -7,124 +7,253 @@ from flask import current_app
 
 # Email handling functions for form submissions
 
-def format_email_content(form_data):
+def format_email_content(form_data, email_type):
     """Format the form data into a professional email"""
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    html_content = f"""
-    <html>
-    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-            <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
-                New Lab Application Submission
-            </h2>
-            
-            <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                <p style="margin: 0; color: #64748b; font-size: 14px;">
-                    <strong>Submitted:</strong> {current_time}
-                </p>
-            </div>
-            
-            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 30%; background-color: #f1f5f9;">
-                        Name:
-                    </td>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
-                        {form_data.get('first_name', '')} {form_data.get('last_name', '')}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
-                        Email:
-                    </td>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
-                        {form_data.get('email', '')}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
-                        Phone:
-                    </td>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
-                        {form_data.get('phone', 'Not provided')}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
-                        Education/Position:
-                    </td>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
-                        {form_data.get('education', '')}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
-                        Area of Interest:
-                    </td>
-                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
-                        {form_data.get('interest', '')}
-                    </td>
-                </tr>
-            </table>
-            
-            <div style="margin: 20px 0;">
-                <h3 style="color: #2563eb; margin-bottom: 10px;">Message:</h3>
-                <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb;">
-                    <p style="margin: 0; white-space: pre-wrap;">{form_data.get('message', '')}</p>
+    if email_type == 'community_submission':
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
+                    New Community Submission
+                </h2>
+                
+                <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p style="margin: 0; color: #64748b; font-size: 14px;">
+                        <strong>Submitted:</strong> {current_time}
+                    </p>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 30%; background-color: #f1f5f9;">
+                            Community Name:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('Name', '')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Contact Email:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('email', '')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Location:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('Location', '')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Sport:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('Sport', '')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Website:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('website', 'Not provided')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Logo URL:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('image_url', 'Not provided')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Cost:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('Cost', '')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            International/Dutch:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('Int/Dutch', 'Both')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Student-based:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('Student-based', 'No')}
+                        </td>
+                    </tr>
+                </table>
+                
+                <div style="margin: 20px 0;">
+                    <h3 style="color: #2563eb; margin-bottom: 10px;">Message:</h3>
+                    <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb;">
+                        <p style="margin: 0; white-space: pre-wrap;">{form_data.get('message', '')}</p>
+                    </div>
+                </div>
+                
+                <div style="margin: 30px 0;">
+                    <h3 style="color: #2563eb; margin-bottom: 10px;">Action Required:</h3>
+                    <p>Please review the community submission and click one of the buttons below:</p>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <a href="{current_app.config['BASE_URL']}/confirm-community/{form_data.get('Name', '')}/accept" 
+                           style="background-color: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+                            Accept Community
+                        </a>
+                        <a href="{current_app.config['BASE_URL']}/confirm-community/{form_data.get('Name', '')}/reject" 
+                           style="background-color: #ef4444; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+                            Reject Community
+                        </a>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 12px;">
+                    <p>This email was automatically generated from the community submission form.</p>
                 </div>
             </div>
-            
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 12px;">
-                <p>This email was automatically generated from the lab application form.</p>
+        </body>
+        </html>
+        """
+    else:
+        # Keep the existing email format for lab applications
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
+                    New Lab Application Submission
+                </h2>
+                
+                <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p style="margin: 0; color: #64748b; font-size: 14px;">
+                        <strong>Submitted:</strong> {current_time}
+                    </p>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 30%; background-color: #f1f5f9;">
+                            Name:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('first_name', '')} {form_data.get('last_name', '')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Email:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('email', '')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Phone:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('phone', 'Not provided')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Education/Position:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('education', '')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background-color: #f1f5f9;">
+                            Area of Interest:
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                            {form_data.get('interest', '')}
+                        </td>
+                    </tr>
+                </table>
+                
+                <div style="margin: 20px 0;">
+                    <h3 style="color: #2563eb; margin-bottom: 10px;">Message:</h3>
+                    <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb;">
+                        <p style="margin: 0; white-space: pre-wrap;">{form_data.get('message', '')}</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 12px;">
+                    <p>This email was automatically generated from the lab application form.</p>
+                </div>
             </div>
-        </div>
-    </body>
-    </html>
-    """
+        </body>
+        </html>
+        """
     
     return html_content
 
-def send_email(form_data):
+def send_email(form_data, email_type):
     """Send email with form data"""
     try:
-        # Get configuration values directly from Flask config
-        email_user = current_app.config['EMAIL_USER']
-        recipient_email = current_app.config['RECIPIENT_EMAIL']
-        smtp_server = current_app.config['SMTP_SERVER']
-        smtp_port = current_app.config['SMTP_PORT']
-        email_password = current_app.config['EMAIL_PASSWORD']
+        from app import create_app
+        app = create_app()
         
-        # Validate email configuration
-        if not email_user or not email_password:
-            raise ValueError("Email user or password not configured")
+        with app.app_context():
+            # Get configuration values from Flask config
+            email_user = app.config['EMAIL_USER']
+            recipient_email = app.config['RECIPIENT_EMAIL']
+            smtp_server = app.config['SMTP_SERVER']
+            smtp_port = app.config['SMTP_PORT']
+            email_password = app.config['EMAIL_PASSWORD']
             
-        # Create message
-        msg = MIMEMultipart('alternative')
-        msg['From'] = email_user
-        msg['To'] = recipient_email
-        msg['Subject'] = f"New Lab Application - {form_data.get('first_name', '')} {form_data.get('last_name', '')}"
-        
-        # Create HTML content
-        html_content = format_email_content(form_data)
-        html_part = MIMEText(html_content, 'html')
-        msg.attach(html_part)
-        
-        # Send email
-        try:
-            with smtplib.SMTP(smtp_server, smtp_port) as server:
-                server.starttls()
-                server.login(email_user, email_password)
-                server.send_message(msg)
-                current_app.logger.info("Email sent successfully")
-                return True
-        except smtplib.SMTPAuthenticationError as e:
-            current_app.logger.error(f"Authentication error: {e}")
-            raise ValueError("Invalid email credentials. Please check your email and password.")
-        except smtplib.SMTPException as e:
-            current_app.logger.error(f"SMTP error occurred: {e}")
-            return False
-        
+            # Validate email configuration
+            if not email_user or not email_password:
+                raise ValueError("Email user or password not configured")
+                
+            # Create message
+            msg = MIMEMultipart('alternative')
+            msg['From'] = email_user
+            msg['To'] = recipient_email
+            
+            if email_type == 'community_submission':
+                msg['Subject'] = f"New Community Submission - {form_data.get('Name', '')}"
+            else:
+                msg['Subject'] = f"New Lab Application - {form_data.get('first_name', '')} {form_data.get('last_name', '')}"
+            
+            # Create HTML content
+            html_content = format_email_content(form_data, email_type)
+            html_part = MIMEText(html_content, 'html')
+            msg.attach(html_part)
+            
+            # Send email
+            try:
+                with smtplib.SMTP(smtp_server, smtp_port) as server:
+                    server.starttls()
+                    server.login(email_user, email_password)
+                    server.send_message(msg)
+                    app.logger.info("Email sent successfully")
+                    return True
+            except smtplib.SMTPAuthenticationError as e:
+                app.logger.error(f"Authentication error: {e}")
+                raise ValueError("Invalid email credentials. Please check your email and password.")
+            except smtplib.SMTPException as e:
+                app.logger.error(f"SMTP error occurred: {e}")
+                return False
+                
     except Exception as e:
-        current_app.logger.error(f"Error sending email: {e}")
+        print(f"Error sending email: {e}")
         return False

@@ -19,8 +19,8 @@ def create_app(config_class=Config):
     def load_user(user_id):
         return User.query.get(int(user_id))
     app = Flask(__name__, 
-                static_folder='static',
-                template_folder='templates')
+                static_folder=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static'),
+                template_folder=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates'))
     
     # Configuration
     app.config.from_object(config_class)

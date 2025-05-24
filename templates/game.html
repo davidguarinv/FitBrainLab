@@ -254,6 +254,40 @@
     </div>
 </div>
 </section>
+<!-- Fun Fact Modal -->
+{% if fun_fact %}
+<div id="funFactModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50 backdrop-blur-sm">
+    <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all">
+        <!-- Success message header -->
+        <div class="bg-green-500 text-white rounded-t-lg p-4">
+            <h3 class="text-xl font-bold text-center">{{ success_message }}</h3>
+        </div>
+        
+        <!-- Fun fact content -->
+        <div class="p-6 text-center">
+            <div class="mb-6">
+                <h4 class="text-lg font-semibold mb-4">Fun Fact</h4>
+                <p class="text-gray-700">{{ fun_fact.fact }}</p>
+            </div>
+            
+            <!-- Source info with hover -->
+            <div class="relative inline-block mb-6 group">
+                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 mx-auto cursor-help">
+                    <span class="font-semibold">S</span>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-3 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        <p class="text-left">{{ fun_fact.source }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Close button -->
+            <button id="closeModal" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors">
+                How cool!
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
 </main>
 {% endblock content %}
 
@@ -280,6 +314,31 @@ function startChallenge(challengeId) {
         alert('An error occurred while starting the challenge.');
     });
 }
+
+// Handle fun fact modal
+document.addEventListener('DOMContentLoaded', function() {
+    // If fun fact modal exists, trigger confetti and set up event listeners
+    const funFactModal = document.getElementById('funFactModal');
+    if (funFactModal) {
+        // Launch confetti when fun fact appears
+        if (typeof launchConfetti === 'function') {
+            launchConfetti();
+        }
+        
+        // Close modal and redirect
+        const closeModalBtn = document.getElementById('closeModal');
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', function() {
+                funFactModal.classList.add('opacity-0');
+                setTimeout(() => {
+                    funFactModal.style.display = 'none';
+                    // Redirect to challenges page
+                    window.location.href = '/game?section=challenges';
+                }, 300);
+            });
+        }
+    }
+})
 
 // Function to update all countdown timers on the page - only updates when minutes change
 function updateCountdownTimers() {

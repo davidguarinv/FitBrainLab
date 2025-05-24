@@ -32,7 +32,7 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
 
     # Import models (so they are registered with SQLAlchemy)
-    from .models import User, Challenge, CompletedChallenge, InProgressChallenge
+    from .models import User, Challenge, CompletedChallenge, InProgressChallenge, FunFact
 
     # Register blueprints
     from .routes import bp as main_bp
@@ -41,5 +41,8 @@ def create_app(config_class=Config):
     # Create tables
     with app.app_context():
         db.create_all()
+        
+        # Import fun facts from JSON file
+        FunFact.import_from_json(app)
 
     return app

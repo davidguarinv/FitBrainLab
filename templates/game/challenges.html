@@ -228,6 +228,11 @@
 <script>
 // Function to mark a challenge as complete via AJAX
 function completeChallenge(challengeId) {
+    // Launch confetti immediately for better user experience
+    if (typeof launchConfetti === 'function') {
+        launchConfetti();
+    }
+    
     // Create a form and submit it (this is more reliable than fetch for this case)
     const form = document.createElement('form');
     form.method = 'POST';

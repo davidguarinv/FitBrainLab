@@ -200,7 +200,7 @@ def seed_database():
 
         # insert with correct regen_hours
         for c in challenges:
-            regen = 6 if c["difficulty"]=="E" else 8 if c["difficulty"]=="M" else 10
+            regen = 4 if c["difficulty"]=="E" else 6 if c["difficulty"]=="M" else 8
             db.session.add(Challenge(
                 title=c["title"],
                 description=c["description"],

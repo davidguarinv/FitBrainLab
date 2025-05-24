@@ -1,0 +1,31 @@
+/* Fun Fact Modal Styling */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Animation for modal */
+@keyframes modal-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#funFactModal .relative {
+  animation: modal-appear 0.3s ease-out forwards;
+}
+
+/* Source tooltip styles */
+.group:hover .group-hover\:opacity-100 {
+  visibility: visible;
+}
+
+/* Ensure the modal is above everything else */
+#funFactModal {
+  z-index: 9999;
+}

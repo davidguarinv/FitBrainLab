@@ -2,6 +2,8 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
+import json
+import os
 from . import db
 
 # -------------------------
@@ -341,19 +343,83 @@ class UserChallenge(db.Model):
 
 class WeeklyHabitChallenge(db.Model):
     __tablename__ = 'weekly_habit_challenge'
-
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=False)
-    week_number = db.Column(db.Integer, nullable=False)  # ISO week number (1-53)
-    year = db.Column(db.Integer, nullable=False)  # Year for the week
-    days_completed = db.Column(db.Integer, default=0)  # Number of days completed this week (0-7)
-    bonus_points_earned = db.Column(db.Integer, default=0)  # Bonus points earned for habit completion
+    week_number = db.Column(db.Integer, nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    days_completed = db.Column(db.Integer, default=0)
+    bonus_points_earned = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Relationships
     user = db.relationship('User', backref='habit_challenges')
     challenge = db.relationship('Challenge', backref='habit_selections')
-    
-    # Composite unique constraint to ensure a user can only have one habit challenge per week
     __table_args__ = (db.UniqueConstraint('user_id', 'week_number', 'year', name='_user_habit_week_uc'),)
+
+
+# -------------------------
+# Fun Fact Model
+# -------------------------
+class FunFact(db.Model):
+    __tablename__ = 'fun_fact'
+    id = db.Column(db.Integer, primary_key=True)
+    fact = db.Column(db.String(500), nullable=False)
+    source = db.Column(db.String(500), nullable=True)
+    times_shown = db.Column(db.Integer, default=0)
+    last_shown = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    @staticmethod
+    def import_from_json(app):
+        """Import fun facts from JSON file."""
+        json_file = os.path.join(app.static_folder, 'data', 'fun_facts.json')
+        if not os.path.exists(json_file):
+            app.logger.error(f"Fun facts JSON file not found at {json_file}")
+            return False
+            
+        try:
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+            # Check if we have exercise facts
+            if 'exercise_facts' not in data:
+                app.logger.error("No exercise_facts found in JSON file")
+                return False
+                
+            # Get existing fact IDs to avoid duplicates
+            existing_facts = {fact.id: fact for fact in FunFact.query.all()}
+            
+            # Import facts
+            count = 0
+            for fact_data in data['exercise_facts']:
+                # Skip if already exists
+                if fact_data['id'] in existing_facts:
+                    continue
+                    
+                new_fact = FunFact(
+                    id=fact_data['id'],
+                    fact=fact_data['fact'],
+                    source=fact_data.get('source', '')
+                )
+                db.session.add(new_fact)
+                count += 1
+                
+            if count > 0:
+                db.session.commit()
+                app.logger.info(f"Imported {count} new fun facts")
+            return True
+            
+        except Exception as e:
+            app.logger.error(f"Error importing fun facts: {str(e)}")
+            db.session.rollback()
+            return False
+            
+    @staticmethod
+    def get_random_fact():
+        """Get a random fun fact, prioritizing ones that haven't been shown recently."""
+        # First try to get facts that have never been shown
+        never_shown = FunFact.query.filter(FunFact.times_shown == 0).all()
+        if never_shown:
+            return random.choice(never_shown)
+            
+        # Then try to get facts that have been shown less often
+        return FunFact.query.order_by(FunFact.times_shown, FunFact.last_shown).first()

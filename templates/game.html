@@ -157,7 +157,8 @@
                             </span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-green-500 h-2 rounded-full" style="width: {{ '{:.0f}'.format((habit_challenge.days_completed / 7) * 100) }}%"></div>
+                            {% set progress_percent = '{:.0f}'.format((habit_challenge.days_completed / 7) * 100) %}
+                            <div class="bg-green-500 h-2 rounded-full progress-bar" data-width="{{ progress_percent }}"></div>
                         </div>
                     </div>
                     
@@ -354,6 +355,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update countdown timers immediately and then every second
     updateCountdownTimers();
     setInterval(updateCountdownTimers, 1000);
+    
+    // Initialize progress bars with data-width attributes
+    document.querySelectorAll('.progress-bar').forEach(function(bar) {
+        const width = bar.getAttribute('data-width');
+        if (width) {
+            bar.style.width = width + '%';
+        }
+    });
     
     // Check for success messages that indicate challenge completion
     const successMessages = document.querySelectorAll('.bg-green-100.border-green-400.text-green-700');

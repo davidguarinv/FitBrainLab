@@ -104,18 +104,20 @@
       {% if suggestion_sent %}
         <p class="text-green-600 font-semibold mb-4">Thank you! Your suggestion was sent.</p>
       {% endif %}
-      <form method="POST" action="{{ url_for('main.submit_community') }}">
-        <input type="text" name="Name" placeholder="Community Name" class="border rounded-md p-3" required>
-        <input type="email" name="email" placeholder="Contact Email" class="border rounded-md p-3" required>
-        <input type="text" name="Location" placeholder="Address" class="border rounded-md p-3" required>
-        <input type="text" name="Sport" placeholder="Sport" class="border rounded-md p-3" required>
-        <input type="url" name="website" placeholder="Website URL" class="border rounded-md p-3" required>
-        <input type="url" name="image_url" placeholder="Logo URL" class="border rounded-md p-3">
-        <input type="text" name="Cost" placeholder="Cost (e.g., Free, $10/month)" class="border rounded-md p-3">
-        <input type="text" name="Int/Dutch" placeholder="International/Dutch" class="border rounded-md p-3">
-        <input type="text" name="Student-based" placeholder="Student-based? (Yes/No)" class="border rounded-md p-3">
-        <textarea name="message" placeholder="Tell us about your community..." rows="4" class="border rounded-md p-3" required></textarea>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">Submit</button>
+      <form method="POST" action="{{ url_for('main.submit_community') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <input type="text" name="Name" placeholder="Community Name" class="border rounded-md p-3 w-full" required>
+        <input type="email" name="email" placeholder="Contact Email" class="border rounded-md p-3 w-full" required>
+        <input type="text" name="Location" placeholder="Address" class="border rounded-md p-3 w-full" required>
+        <input type="text" name="Sport" placeholder="Sport" class="border rounded-md p-3 w-full" required>
+        <input type="url" name="website" placeholder="Website URL" class="border rounded-md p-3 w-full" required>
+        <input type="url" name="image_url" placeholder="Logo URL" class="border rounded-md p-3 w-full">
+        <input type="text" name="Cost" placeholder="Cost (e.g., Free, $10/month)" class="border rounded-md p-3 w-full">
+        <div class="grid grid-cols-2 gap-4">
+          <input type="text" name="Int/Dutch" placeholder="International/Dutch" class="border rounded-md p-3 w-full">
+          <input type="text" name="Student-based" placeholder="Student-based? (Yes/No)" class="border rounded-md p-3 w-full">
+        </div>
+        <textarea name="message" placeholder="Tell us about your community..." rows="4" class="border rounded-md p-3 w-full md:col-span-2" required></textarea>
+        <button type="submit" class="md:col-span-2 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors font-medium">Submit Community</button>
       </form>
     </div>
   </section>

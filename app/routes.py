@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import json
+import math
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -856,8 +858,8 @@ def communities():
                            suggestion_sent=suggestion_sent)
 
 
-@bp.route('/submit_community', methods=['POST'])
-def submit_community():
+@bp.route('/submit_community_suggestion', methods=['POST'])
+def submit_community_suggestion():
     community_name = request.form.get('community_name')
     email = request.form.get('email')
     message = request.form.get('message')

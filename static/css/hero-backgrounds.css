@@ -28,23 +28,7 @@
 
 /* Page-specific background opacities */
 .about-hero-background,
-.game-hero-background {
+.game-hero-background,
+.communities-hero-background{
     opacity: 1; /* 0.2 higher than the default 0.5 */
-}
-
-/* Landing page section accents */
-.landing-section-about {
-    border-left: 4px solid #FFD54F; /* Yellow accent */
-}
-
-.landing-section-game {
-    border-left: 4px solid #FF9800; /* Orange accent */
-}
-
-.landing-section-research {
-    border-left: 4px solid #9C27B0; /* Purple accent */
-}
-
-.landing-section-publications {
-    border-left: 4px solid #F44336; /* Red accent */
 }

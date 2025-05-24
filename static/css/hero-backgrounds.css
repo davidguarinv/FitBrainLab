@@ -9,16 +9,12 @@
 
 .hero-background {
     position: absolute;
-    top: 50%;
-    left: 50%;
     width: 100vw; /* Use viewport width to ensure full width coverage */
     height: 100%;
     object-fit: fill; /* Stretched to fill the entire area */
-    z-index: 1; /* Above the gradient background but below the content */
-    opacity: 0.5; /* Adjust opacity to ensure text remains readable */
+    z-index: -1;
+    object-fit: cover; 
     max-width: none; /* Override any max-width constraints */
-    transform: translate(-50%, -50%) scale(7); /* Zoom in by 4x and center */
-    filter: blur(6px); /* Add a blur effect */
 }
 
 .hero-content {
@@ -46,5 +42,5 @@
 }
 
 .landing-section-publications {
-    border-left: 4px solid #F44336; /* Red accent */
+    border-left: 4px solid #3672f4; 
 }

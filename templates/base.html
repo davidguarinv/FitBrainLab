@@ -34,14 +34,26 @@
       <a href="{{ url_for('main.communities') }}" class="text-sm font-medium {% if request.path == url_for('main.communities') %}text-blue-600{% else %}text-gray-500 transition-colors hover:text-blue-600{% endif %}">Communities</a>
       <a href="{{ url_for('main.game') }}" class="text-sm font-medium {% if request.path == url_for('main.game') %}text-blue-600{% else %}text-gray-500 transition-colors hover:text-blue-600{% endif %}">Game</a>
     </nav>
-    <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-9 px-4 py-2 md:hidden">
-      Menu
+    <button id="mobile-menu-button" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-9 px-4 py-2 md:hidden">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
     </button>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-16 inset-x-0 bg-white shadow-lg">
+      <div class="px-4 py-6">
+        <nav class="space-y-4">
+          <a href="/" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">Home</a>
+          <a href="/research" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">Research</a>
+          <a href="/publications" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">Publications</a>
+          <a href="/about" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">About Us</a>
+          <a href="{{ url_for('main.communities') }}" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">Communities</a>
+          <a href="{{ url_for('main.game') }}" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">Game</a>
+        </nav>
+      </div>
+    </div>
   </div>
 </header>
 {% block content %}
 {% endblock %}
-
 
 <footer class="bg-gray-800 text-white py-8">
   <div class="container mx-auto px-4">
@@ -82,11 +94,22 @@
 
   <script>
     // Mobile menu toggle
-    document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
-      const menu = document.getElementById('mobile-menu');
-      if (menu) {
-        menu.classList.toggle('hidden');
-      }
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        }
     });
   </script>
   

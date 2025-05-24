@@ -19,34 +19,32 @@
             and community engagement.
             </p>
             <div class="flex flex-col gap-2 min-[400px]:flex-row">
-            <a
-                href="/research"
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2"
-            >
-                Explore Our Research
-                <!-- Arrow right icon -->
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="ml-2 h-4 w-4"
+                <a href="/research"
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2"
                 >
-                <path d="M5 12h14"></path>
-                <path d="m12 5 7 7-7 7"></path>
-                </svg>
-            </a>
-            <a
-                href="/about"
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2"
-            >
-                Meet the Team
-            </a>
+                    Explore Our Research
+                    <!-- Arrow right icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="ml-2 h-4 w-4"
+                    >
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </a>
+                <a href="/about"
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2"
+                >
+                    Meet the Team
+                </a>
             </div>
         </div>
         <div class="relative h-[300px] lg:h-[400px] rounded-xl overflow-hidden">
@@ -756,6 +754,7 @@
         </div>
         </div>
     </section>
+    <script src="{{ url_for('static', filename='js/navigation.js') }}"></script>
 </main>
 
     {% endblock %}

@@ -6,8 +6,19 @@ from . import db
 from .models import User, Challenge, CompletedChallenge, InProgressChallenge, ChallengeRegeneration, UserChallenge, WeeklyChallengeSet, UserWeeklyOrder, WeeklyHabitChallenge
 from .forms import LoginForm, RegistrationForm
 from .email_handler import send_email
-from datetime import datetime, timedelta
+import logging
+import os
+import json
 from sqlalchemy import func
+import uuid
+import re
+import math
+
+print(">>> THIS routes.py LOADED <<<")
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 # Create blueprint
 bp = Blueprint('main', __name__)
@@ -23,7 +34,7 @@ def about():
 
 @bp.route('/submit-application', methods=['POST'])
 def submit_application():
-    """Handle form submission"""
+    """Handle form submission from about page"""
     try:
         # Check email configuration
         if not current_app.config.get('EMAIL_USER'):
@@ -52,8 +63,8 @@ def submit_application():
                     'message': f'{field.replace("_", " ").title()} is required'
                 }), 400
         
-        # Send email
-        if send_email(form_data):
+        # Send email (using 'application' type for about page form)
+        if send_email(form_data, 'application'):
             return jsonify({
                 'success': True, 
                 'message': 'Application submitted successfully!'
@@ -73,88 +84,292 @@ def submit_application():
 
 @bp.route('/submit_community', methods=['POST'])
 def submit_community():
-    """Handle community submission"""
+    """Handle community form submission"""
     try:
-        # Check email configuration
-        if not current_app.config.get('EMAIL_USER'):
-            return jsonify({
-                'success': False,
-                'message': 'Email configuration is not set up. Please contact the administrator.'
-            }), 500
-            
-        # Get form data
+        # Log detailed request information
+        logger.info("Community form submission received")
+        logger.info(f"Request URL: {request.url}")
+        logger.info(f"Request method: {request.method}")
+        logger.info(f"Request content type: {request.content_type}")
+        logger.info(f"Request headers: {dict(request.headers)}")
+        logger.info(f"Form data: {dict(request.form)}")
+        logger.info(f"Request args: {dict(request.args)}")
+        logger.info(f"Request path: {request.path}")
+        logger.info(f"Request full path: {request.full_path}")
+        logger.info(f"Base URL: {request.base_url}")
+        logger.info(f"Host URL: {request.host_url}")
+        
+        # Get all form data
         form_data = request.form.to_dict()
+        logger.info(f"Processed form data: {form_data}")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Form received successfully'
+        })
+    except Exception as e:
+        logger.error(f"Error processing community submission: {str(e)}")
+        logger.error(f"Exception type: {type(e).__name__}")
+        return jsonify({
+            'success': False, 
+            'message': f'Error processing form: {str(e)}'
+        }), 500
+
+    try:
+        # Get all form data
+        form_data = request.form.to_dict()
+        logger.debug(f"Processed form data: {form_data}")
         
         # Validate required fields
         required_fields = ['Name', 'email', 'Location', 'Sport', 'website', 'message']
         for field in required_fields:
             if not form_data.get(field):
-                return jsonify({
-                    'success': False, 
-                    'message': f'{field.replace("_", " ").title()} is required'
-                }), 400
+                error_message = f'{field.replace("_", " ").title()} is required'
+                logger.warning(f"Missing required field: {field}")
+                if request.is_json or request.content_type == 'application/json':
+                    return jsonify({
+                        'success': False, 
+                        'message': error_message
+                    }), 400
+                else:
+                    flash(error_message, 'error')
+                    return redirect(url_for('main.communities'))
         
-        # Send email with confirmation buttons
-        if send_email(form_data, 'community_submission'):
+        # Generate unique submission ID
+        submission_id = str(uuid.uuid4())
+        logger.debug(f"Generated submission ID: {submission_id}")
+        
+        # Store submission temporarily
+        temp_submissions_file = os.path.join(current_app.static_folder, 'temp_submissions.json')
+        
+        # Load existing submissions
+        temp_submissions = {}
+        if os.path.exists(temp_submissions_file):
+            try:
+                with open(temp_submissions_file, 'r') as f:
+                    temp_submissions = json.load(f)
+            except json.JSONDecodeError:
+                current_app.logger.warning(f"Could not parse JSON from {temp_submissions_file}")
+                temp_submissions = {}
+
+        # Add new submission
+        temp_submissions[submission_id] = {
+            'data': form_data,
+            'timestamp': datetime.now().isoformat(),
+            'status': 'pending'
+        }
+
+        # Save updated submissions
+        try:
+            with open(temp_submissions_file, 'w') as f:
+                json.dump(temp_submissions, f, indent=2)
+        except Exception as e:
+            current_app.logger.error(f"Error saving submissions: {e}")
             return jsonify({
-                'success': True, 
-                'message': 'Community submission received! We will review your submission and contact you soon.'
-            })
-        else:
-            return jsonify({
-                'success': False, 
-                'message': 'Failed to send submission. Please try again.'
+                'success': False,
+                'message': 'Failed to save submission. Please try again.'
             }), 500
+
+        # Send confirmation email
+        try:
+            confirm_url = url_for('main.confirm_community', submission_id=submission_id, action='confirm', _external=True)
+            reject_url = url_for('main.confirm_community', submission_id=submission_id, action='reject', _external=True)
             
+            send_email(
+                subject='Community Submission Confirmation',
+                recipients=[form_data['email']],
+                template='email/confirm_community.html',
+                confirm_url=confirm_url,
+                reject_url=reject_url,
+                community_name=form_data['Name']
+            )
+            
+            return jsonify({
+                'success': True,
+                'message': 'Thank you! Please check your email for confirmation.'
+            })
+            
+        except Exception as e:
+            current_app.logger.error(f"Error sending confirmation email: {e}")
+            return jsonify({
+                'success': False,
+                'message': 'Failed to send confirmation email. Please try again.'
+            }), 500
+
     except Exception as e:
         current_app.logger.error(f"Error processing community submission: {e}")
         return jsonify({
-            'success': False, 
+            'success': False,
             'message': 'An error occurred. Please try again.'
         }), 500
 
-@bp.route('/confirm-community/<community_id>/<action>', methods=['GET'])
-def confirm_community(community_id, action):
-    """Handle community confirmation"""
+@bp.route('/confirm-community/<submission_id>/<action>', methods=['GET'])
+def confirm_community(submission_id, action):
+    """Handle community confirmation from email buttons"""
     try:
-        # Get the community data from the session or database
-        community_data = request.form.to_dict()
+        # Load temporary submissions
+        temp_submissions_file = os.path.join(current_app.static_folder, 'temp_submissions.json')
+        
+        if not os.path.exists(temp_submissions_file):
+            return "Submission not found", 404
+            
+        with open(temp_submissions_file, 'r') as f:
+            temp_submissions = json.load(f)
+        
+        # Get submission_id from URL parameters
+        submission_id = request.args.get('submission_id')
+        if not submission_id:
+            return "Missing submission_id parameter", 400
+            
+        if submission_id not in temp_submissions:
+            return "Submission not found", 404
+            
+        community_data = temp_submissions[submission_id]
         
         if action == 'accept':
             # Read existing communities
             json_file = os.path.join(current_app.static_folder, 'data', 'communities_with_logos.json')
-            with open(json_file, 'r') as f:
-                communities = json.load(f)
             
-            # Add new community
+            communities = []
+            if os.path.exists(json_file):
+                with open(json_file, 'r', encoding='utf-8') as f:
+                    communities = json.load(f)
+            
+            # Create new community entry
             new_community = {
-                "Name": community_data.get('Name'),
-                "Sport": community_data.get('Sport'),
-                "email": community_data.get('email'),
-                "website": community_data.get('website'),
-                "Location": community_data.get('Location'),
-                "Cost": community_data.get('Cost'),
+                "Name": community_data.get('Name', ''),
+                "Sport": community_data.get('Sport', ''),
+                "email": community_data.get('email', ''),
+                "website": community_data.get('website', ''),
+                "Location": community_data.get('Location', ''),
+                "Cost": community_data.get('Cost', ''),
                 "Int/Dutch": community_data.get('Int/Dutch', 'Both'),
                 "Student-based": community_data.get('Student-based', 'No'),
-                "image_url": community_data.get('image_url')
+                "image_url": community_data.get('image_url', '')
             }
             
+            # Add new community to the list
             communities.append(new_community)
             
             # Save updated communities
-            with open(json_file, 'w') as f:
-                json.dump(communities, f, indent=2)
+            os.makedirs(os.path.dirname(json_file), exist_ok=True)
+            with open(json_file, 'w', encoding='utf-8') as f:
+                json.dump(communities, f, indent=2, ensure_ascii=False)
             
-            return "Community added successfully!"
+            # Remove from temporary submissions
+            del temp_submissions[submission_id]
+            with open(temp_submissions_file, 'w') as f:
+                json.dump(temp_submissions, f, indent=2)
+            
+            current_app.logger.info(f"Community '{new_community['Name']}' added successfully")
+            return f"<h1>Community Added Successfully!</h1><p>The community '{new_community['Name']}' has been added to the platform.</p>"
             
         elif action == 'reject':
-            return "Community rejected"
+            # Remove from temporary submissions
+            del temp_submissions[submission_id]
+            with open(temp_submissions_file, 'w') as f:
+                json.dump(temp_submissions, f, indent=2)
             
-        return "Invalid action"
+            current_app.logger.info(f"Community submission '{community_data.get('Name', 'Unknown')}' rejected")
+            return f"<h1>Community Rejected</h1><p>The community submission has been rejected and removed.</p>"
+            
+        return "Invalid action", 400
         
     except Exception as e:
         current_app.logger.error(f"Error in community confirmation: {e}")
-        return "An error occurred", 500
+        return f"An error occurred: {str(e)}", 500
+
+@bp.route("/communities")
+def communities():
+    """Display communities page with filtering and pagination"""
+    try:
+        # Load communities data
+        json_file = os.path.join(current_app.static_folder, 'data', 'communities_with_logos.json')
+        
+        if not os.path.exists(json_file):
+            # Create empty file if it doesn't exist
+            os.makedirs(os.path.dirname(json_file), exist_ok=True)
+            with open(json_file, 'w', encoding='utf-8') as f:
+                json.dump([], f)
+            data = []
+        else:
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+        selected_sport = request.args.get("sport", "")
+        selected_cost_range = request.args.get("cost", "")
+        page = int(request.args.get("page", 1))
+        per_page = 9
+
+        # Check if suggestion was sent to show confirmation message
+        suggestion_sent = request.args.get('suggestion_sent') == 'True'
+
+        # Filter data
+        filtered_data = []
+        for item in data:
+            if selected_sport and item.get("Sport") != selected_sport:
+                continue
+            if selected_cost_range and selected_cost_range != "":
+                try:
+                    cost_str = item.get("Cost", "0")
+                    # Extract numeric value from cost string
+                    cost_match = re.search(r'\d+', str(cost_str))
+                    if cost_match:
+                        cost = float(cost_match.group())
+                        if '-' in selected_cost_range:
+                            min_cost, max_cost = map(int, selected_cost_range.split('-'))
+                        else:
+                            # Handle "200+" case
+                            min_cost = int(selected_cost_range.replace('+', ''))
+                            max_cost = 9999
+                        
+                        if not (min_cost <= cost <= max_cost):
+                            continue
+                except:
+                    # If we can't parse the cost, include it anyway
+                    pass
+            filtered_data.append(item)
+
+        # Pagination
+        total_items = len(filtered_data)
+        total_pages = math.ceil(total_items / per_page) if total_items > 0 else 1
+        start = (page - 1) * per_page
+        end = start + per_page
+        paginated_data = filtered_data[start:end]
+
+        # Get unique sports for filter dropdown
+        sports = sorted(set(item.get("Sport", "") for item in data if item.get("Sport")))
+        
+        # Cost ranges for filter
+        cost_ranges = {
+            "0-50": "0-50",
+            "50-100": "50-100", 
+            "100-200": "100-200",
+            "200+": "200+"
+        }
+
+        return render_template("communities.html",
+                               communities=paginated_data,
+                               sports=sports,
+                               selected_sport=selected_sport,
+                               cost_ranges=cost_ranges,
+                               selected_cost_range=selected_cost_range,
+                               page=page,
+                               total_pages=total_pages,
+                               suggestion_sent=suggestion_sent)
+    
+    except Exception as e:
+        current_app.logger.error(f"Error loading communities page: {e}")
+        flash('Error loading communities. Please try again.', 'error')
+        return render_template("communities.html",
+                               communities=[],
+                               sports=[],
+                               selected_sport="",
+                               cost_ranges={},
+                               selected_cost_range="",
+                               page=1,
+                               total_pages=1,
+                               suggestion_sent=False)
 
 @bp.route('/research')
 def research():
@@ -804,66 +1019,3 @@ def delete_account():
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
 
-@bp.route("/communities")
-def communities():
-    with open('static/data/communities_with_logos.json', encoding='utf-8') as f:
-        data = json.load(f)
-
-    selected_sport = request.args.get("sport", "")
-    selected_cost_range = request.args.get("cost", "")
-    page = int(request.args.get("page", 1))
-    per_page = 9
-
-    # Check if suggestion was sent to show confirmation message
-    suggestion_sent = request.args.get('suggestion_sent') == 'True'
-
-    filtered_data = []
-    for item in data:
-        if selected_sport and item.get("Sport") != selected_sport:
-            continue
-        if selected_cost_range:
-            try:
-                cost = float(item.get("Cost", 0))
-                min_cost, max_cost = map(int, selected_cost_range.split('-'))
-                if not (min_cost <= cost <= max_cost):
-                    continue
-            except:
-                continue
-        filtered_data.append(item)
-
-    total_items = len(filtered_data)
-    total_pages = math.ceil(total_items / per_page)
-    start = (page - 1) * per_page
-    end = start + per_page
-    paginated_data = filtered_data[start:end]
-
-    sports = sorted(set(item.get("Sport", "") for item in data if item.get("Sport")))
-    cost_ranges = {
-        "0-50": "0-50",
-        "50-100": "50-100",
-        "100-200": "100-200",
-        "200-9999": "200+"
-    }
-
-    return render_template("communities.html",
-                           communities=paginated_data,
-                           sports=sports,
-                           selected_sport=selected_sport,
-                           cost_ranges=cost_ranges,
-                           selected_cost_range=selected_cost_range,
-                           page=page,
-                           total_pages=total_pages,
-                           suggestion_sent=suggestion_sent)
-
-
-@bp.route('/submit_community', methods=['POST'])
-def submit_community():
-    community_name = request.form.get('community_name')
-    email = request.form.get('email')
-    message = request.form.get('message')
-
-    # Here you can handle saving or emailing the suggestion
-    print(f"Suggestion received: {community_name} - {email} - {message}")
-
-    # Redirect back to the communities page with success flag
-    return redirect(url_for('main.communities', suggestion_sent='True'))

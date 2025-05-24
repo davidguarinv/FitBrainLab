@@ -96,7 +96,7 @@
       {% if suggestion_sent %}
         <p class="text-green-600 font-semibold mb-4">Thank you! Your suggestion was sent.</p>
       {% endif %}
-      <form method="POST" action="/submit_community" class="grid gap-4">
+      <form method="POST" action="{{ url_for('main.submit_community') }}">
         <input type="text" name="Name" placeholder="Community Name" class="border rounded-md p-3" required>
         <input type="email" name="email" placeholder="Contact Email" class="border rounded-md p-3" required>
         <input type="text" name="Location" placeholder="Address" class="border rounded-md p-3" required>
@@ -107,9 +107,7 @@
         <input type="text" name="Int/Dutch" placeholder="International/Dutch" class="border rounded-md p-3">
         <input type="text" name="Student-based" placeholder="Student-based? (Yes/No)" class="border rounded-md p-3">
         <textarea name="message" placeholder="Tell us about your community..." rows="4" class="border rounded-md p-3" required></textarea>
-        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">
-          Submit
-        </button>
+        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">Submit</button>
       </form>
     </div>
   </section>

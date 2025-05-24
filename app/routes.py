@@ -286,6 +286,98 @@ def confirm_community(submission_id, action):
         current_app.logger.error(f"Error in community confirmation: {e}")
         return f"An error occurred: {str(e)}", 500
 
+@bp.route('/communities')
+def communities():
+    """Display communities page with filtering and pagination"""
+    try:
+        # Load communities data
+        json_file = os.path.join(current_app.static_folder, 'data', 'communities_with_logos.json')
+        
+        if not os.path.exists(json_file):
+            # Create empty file if it doesn't exist
+            os.makedirs(os.path.dirname(json_file), exist_ok=True)
+            with open(json_file, 'w', encoding='utf-8') as f:
+                json.dump([], f)
+            data = []
+        else:
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+        selected_sport = request.args.get("sport", "")
+        selected_cost_range = request.args.get("cost", "")
+        page = int(request.args.get("page", 1))
+        per_page = 9
+
+        # Check if suggestion was sent to show confirmation message
+        suggestion_sent = request.args.get('suggestion_sent') == 'True'
+
+        # Filter data
+        filtered_data = []
+        for item in data:
+            if selected_sport and item.get("Sport") != selected_sport:
+                continue
+            if selected_cost_range and selected_cost_range != "":
+                try:
+                    cost_str = item.get("Cost", "0")
+                    # Extract numeric value from cost string
+                    cost_match = re.search(r'\d+', str(cost_str))
+                    if cost_match:
+                        cost = float(cost_match.group())
+                        if '-' in selected_cost_range:
+                            min_cost, max_cost = map(int, selected_cost_range.split('-'))
+                        else:
+                            # Handle "200+" case
+                            min_cost = int(selected_cost_range.replace('+', ''))
+                            max_cost = 9999
+                        
+                        if not (min_cost <= cost <= max_cost):
+                            continue
+                except:
+                    # If we can't parse the cost, include it anyway
+                    pass
+            filtered_data.append(item)
+
+        # Pagination
+        total_items = len(filtered_data)
+        total_pages = math.ceil(total_items / per_page) if total_items > 0 else 1
+        start = (page - 1) * per_page
+        end = start + per_page
+        paginated_data = filtered_data[start:end]
+
+        # Get unique sports for filter dropdown
+        sports = sorted(set(item.get("Sport", "") for item in data if item.get("Sport")))
+        
+        # Cost ranges for filter
+        cost_ranges = {
+            "0-50": "0-50",
+            "50-100": "50-100", 
+            "100-200": "100-200",
+            "200+": "200+"
+        }
+
+        return render_template("communities.html",
+                               communities=paginated_data,
+                               sports=sports,
+                               selected_sport=selected_sport,
+                               cost_ranges=cost_ranges,
+                               selected_cost_range=selected_cost_range,
+                               page=page,
+                               total_pages=total_pages,
+                               suggestion_sent=suggestion_sent)
+    
+    except Exception as e:
+        current_app.logger.error(f"Error loading communities page: {e}")
+        flash('Error loading communities. Please try again.', 'error')
+        return render_template("communities.html",
+                               communities=[],
+                               sports=[],
+                               selected_sport="",
+                               cost_ranges={},
+                               selected_cost_range="",
+                               page=1,
+                               total_pages=1,
+                               suggestion_sent=False)
+
 @bp.route('/research')
 def research():
     return render_template('research.html')

@@ -934,58 +934,6 @@ def delete_account():
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
 
-@bp.route("/communities")
-def communities():
-    with open('static/data/communities_with_logos.json', encoding='utf-8') as f:
-        data = json.load(f)
-
-    selected_sport = request.args.get("sport", "")
-    selected_cost_range = request.args.get("cost", "")
-    page = int(request.args.get("page", 1))
-    per_page = 9
-
-    # Check if suggestion was sent to show confirmation message
-    suggestion_sent = request.args.get('suggestion_sent') == 'True'
-
-    filtered_data = []
-    for item in data:
-        if selected_sport and item.get("Sport") != selected_sport:
-            continue
-        if selected_cost_range:
-            try:
-                cost = float(item.get("Cost", 0))
-                min_cost, max_cost = map(int, selected_cost_range.split('-'))
-                if not (min_cost <= cost <= max_cost):
-                    continue
-            except:
-                continue
-        filtered_data.append(item)
-
-    total_items = len(filtered_data)
-    total_pages = math.ceil(total_items / per_page)
-    start = (page - 1) * per_page
-    end = start + per_page
-    paginated_data = filtered_data[start:end]
-
-    sports = sorted(set(item.get("Sport", "") for item in data if item.get("Sport")))
-    cost_ranges = {
-        "0-50": "0-50",
-        "50-100": "50-100",
-        "100-200": "100-200",
-        "200-9999": "200+"
-    }
-
-    return render_template("communities.html",
-                           communities=paginated_data,
-                           sports=sports,
-                           selected_sport=selected_sport,
-                           cost_ranges=cost_ranges,
-                           selected_cost_range=selected_cost_range,
-                           page=page,
-                           total_pages=total_pages,
-                           suggestion_sent=suggestion_sent)
-
-
 @bp.route('/submit_community_suggestion', methods=['POST'])
 def submit_community_suggestion():
     community_name = request.form.get('community_name')

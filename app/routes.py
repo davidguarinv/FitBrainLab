@@ -450,14 +450,86 @@ def complete_challenge(challenge_id):
             current_user.daily_h_count = 0
             current_user.last_challenge_date = datetime.utcnow().date()
             
+            # Reset streak if they didn't complete any challenges yesterday
+            last_challenge_date = current_user.last_challenge_date
+            if last_challenge_date and (datetime.utcnow().date() - last_challenge_date).days > 1:
+                current_user.daily_streak = 1  # Reset to 1 (counting today's challenge)
+            else:
+                current_user.daily_streak += 1  # Increment streak
+            
+        # Update daily and weekly counters based on challenge difficulty
         if challenge.difficulty == 'E':
             current_user.daily_e_count += 1
+            current_user.weekly_e_completed += 1
         elif challenge.difficulty == 'M':
             current_user.daily_m_count += 1
+            current_user.weekly_m_completed += 1
         elif challenge.difficulty == 'H':
             current_user.daily_h_count += 1
+            current_user.weekly_h_completed += 1
+        
+        # Check if this is a friend challenge link
+        friend_link = None
+        friend_code = request.form.get('friend_code')
+        if friend_code:
+            friend = User.query.filter_by(personal_code=friend_code).first()
+            if friend:
+                friend_link = FriendChallengeLink.query.filter(
+                    FriendChallengeLink.challenge_id == challenge_id,
+                    ((FriendChallengeLink.user1_id == current_user.id) & (FriendChallengeLink.user2_id == friend.id)) |
+                    ((FriendChallengeLink.user1_id == friend.id) & (FriendChallengeLink.user2_id == current_user.id))
+                ).first()
+                
+                if not friend_link:
+                    # Create a new friend link
+                    friend_link = FriendChallengeLink(
+                        challenge_id=challenge_id,
+                        user1_id=current_user.id,
+                        user2_id=friend.id,
+                        user1_confirmed=True,
+                        expires_at=datetime.utcnow() + timedelta(days=1)
+                    )
+                    db.session.add(friend_link)
+                elif friend_link.user1_id == current_user.id and not friend_link.user1_confirmed:
+                    friend_link.user1_confirmed = True
+                    # If both users have confirmed, award bonus points
+                    if friend_link.user2_confirmed:
+                        # Award 50% bonus points
+                        bonus_points = int(challenge.points * 0.5)
+                        completed.points_earned += bonus_points
+                        flash(f'You earned {bonus_points} bonus points for completing this challenge with a friend!', 'success')
+                elif friend_link.user2_id == current_user.id and not friend_link.user2_confirmed:
+                    friend_link.user2_confirmed = True
+                    # If both users have confirmed, award bonus points
+                    if friend_link.user1_confirmed:
+                        # Award 50% bonus points
+                        bonus_points = int(challenge.points * 0.5)
+                        completed.points_earned += bonus_points
+                        flash(f'You earned {bonus_points} bonus points for completing this challenge with a friend!', 'success')
+        
+        # Check for Challenge of the Week completion
+        cotw = ChallengeOfTheWeek.query.filter_by(
+            user_id=current_user.id,
+            challenge_id=challenge_id,
+            week_number=datetime.utcnow().isocalendar()[1],
+            year=datetime.utcnow().isocalendar()[0]
+        ).first()
+        
+        if cotw and cotw.can_complete_today():
+            bonus_points = cotw.complete_daily()
+            completed.points_earned += bonus_points
+            flash(f'You earned {bonus_points} bonus points for completing your Challenge of the Week!', 'success')
         
         db.session.commit()
+        
+        # Check if the user has earned any achievements
+        from app.models import UserAchievement
+        new_achievements = UserAchievement.check_achievements(current_user.id)
+        
+        if new_achievements:
+            for achievement in new_achievements:
+                flash(f"Achievement Unlocked: {achievement['name']} - {achievement['message']} (+{achievement['points_reward']} points)", 'achievement')
+                # Add achievement points to user
         
         # Success message with fun fact
         flash('Challenge completed successfully!', 'success')
@@ -884,31 +956,102 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.game'))
     
+    # Handle login form submission
     if request.method == 'POST':
-        print(f"Login form data: {request.form}")
         username = request.form.get('username')
         password = request.form.get('password')
         remember_me = request.form.get('remember_me') == 'on'
         
-        print(f"Username: {username}, Password provided: {'Yes' if password else 'No'}, Remember me: {remember_me}")
-        
-        # Basic validation
-        if not username or not password:
-            flash('Username and password are required', 'error')
-            return redirect(url_for('main.game', section='auth'))
-        
-        # Authenticate user
         user = User.query.filter_by(username=username).first()
-        if user is None or not user.check_password(password):
+        
+        if user and user.check_password(password):
+            login_user(user, remember=remember_me)
+            flash('Logged in successfully!', 'success')
+            next_page = request.args.get('next') or url_for('main.game')
+            return redirect(next_page)
+        else:
             flash('Invalid username or password', 'error')
             return redirect(url_for('main.game', section='auth'))
-            
-        # Log in the user
-        login_user(user, remember=remember_me)
-        flash('Logged in successfully!', 'success')
-        return redirect(url_for('main.game'))
         
     return redirect(url_for('main.game', section='auth'))
+
+
+@bp.route('/recover-password', methods=['GET', 'POST'])
+def recover_password():
+    """Password recovery using backup codes"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.game'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        backup_code = request.form.get('backup_code')
+        
+        if not username or not backup_code:
+            flash('Please provide both username and backup code', 'error')
+            return render_template('recover_password.html')
+        
+        user = User.query.filter_by(username=username).first()
+        
+        if not user:
+            flash('Username not found', 'error')
+            return render_template('recover_password.html')
+        
+        if user.backup_code != backup_code:
+            flash('Invalid backup code', 'error')
+            return render_template('recover_password.html')
+        
+        # If we get here, the backup code is valid
+        # Generate a reset token and redirect to reset password page
+        session['reset_user_id'] = user.id
+        return redirect(url_for('main.reset_password'))
+    
+    return render_template('recover_password.html')
+
+
+@bp.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    """Reset password after successful backup code verification"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.game'))
+    
+    # Check if user is authorized to reset password
+    user_id = session.get('reset_user_id')
+    if not user_id:
+        flash('Unauthorized access', 'error')
+        return redirect(url_for('main.login'))
+    
+    user = User.query.get(user_id)
+    if not user:
+        flash('User not found', 'error')
+        return redirect(url_for('main.login'))
+    
+    if request.method == 'POST':
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if not password or not confirm_password:
+            flash('Please provide both password fields', 'error')
+            return render_template('reset_password.html')
+        
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return render_template('reset_password.html')
+        
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long', 'error')
+            return render_template('reset_password.html')
+        
+        # Update the password and generate a new backup code
+        user.set_password(password)
+        user.generate_backup_code()  # Generate a new backup code for security
+        db.session.commit()
+        
+        # Clear the session and redirect to login
+        session.pop('reset_user_id', None)
+        flash('Password has been reset successfully. Please login with your new password.', 'success')
+        return redirect(url_for('main.game', section='auth'))
+    
+    return render_template('reset_password.html')
 
 @bp.route('/login-redirect')
 def login_redirect():

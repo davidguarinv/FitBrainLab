@@ -628,6 +628,7 @@ def game(section='challenges'):
     # Get user's progress if authenticated
     user_progress = None
     user_rank = None
+    user_achievements = None
     if current_user.is_authenticated:
         completed = CompletedChallenge.query\
             .filter_by(user_id=current_user.id)\
@@ -652,6 +653,26 @@ def game(section='challenges'):
         ).count()
         
         user_rank = higher_ranked_users + 1  # User's rank (1-based)
+        
+        # Get user's achievements for the profile section
+        from app.models import UserAchievement, Achievement
+        achievements_data = db.session.query(UserAchievement, Achievement)\
+            .join(Achievement, UserAchievement.achievement_id == Achievement.id)\
+            .filter(UserAchievement.user_id == current_user.id)\
+            .order_by(UserAchievement.achieved_at.desc())\
+            .all()
+            
+        # Process achievements for easy template rendering
+        user_achievements = []
+        for ua, achievement in achievements_data:
+            user_achievements.append({
+                'id': achievement.id,
+                'name': achievement.name,
+                'message': achievement.message,
+                'points_reward': achievement.points_reward,
+                'icon': achievement.icon,
+                'achieved_at': ua.achieved_at
+            })
             
         user_progress = {
             'completed_challenges': completed,
@@ -949,7 +970,8 @@ def game(section='challenges'):
                            active_challenge_id=active_challenge_id,
                            in_progress_challenges=in_progress_challenges,
                            login_form=login_form,
-                           signup_form=signup_form)
+                           signup_form=signup_form,
+                           user_achievements=user_achievements)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():

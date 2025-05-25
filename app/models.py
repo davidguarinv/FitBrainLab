@@ -19,7 +19,6 @@ class User(UserMixin, db.Model):
     top_sport_category = db.Column(db.String(50))  # Optional: sport category
     last_sport_update = db.Column(db.DateTime)  # Last update timestamp
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Creation timestamp
-    daily_streak = db.Column(db.Integer, default=0)  # Daily streak counter
     last_challenge_date = db.Column(db.Date)  # Last challenge date
     daily_e_count = db.Column(db.Integer, default=0)  # Daily easy challenge count
     daily_m_count = db.Column(db.Integer, default=0)  # Daily medium challenge count
@@ -475,12 +474,6 @@ class Achievement(db.Model):
                 'points_reward': 250
             },
             {
-                'name': 'Streak Master',
-                'condition': 'streak_7',
-                'message': 'Maintain a 7-day streak of completing challenges.',
-                'points_reward': 200
-            },
-            {
                 'name': 'Friend Challenger',
                 'condition': 'friend_1',
                 'message': 'Complete a challenge with a friend.',
@@ -603,11 +596,6 @@ class UserAchievement(db.Model):
                 earned = (user.weekly_e_completed >= user.weekly_e_cap and
                          user.weekly_m_completed >= user.weekly_m_cap and
                          user.weekly_h_completed >= user.weekly_h_cap)
-                
-            # Streak
-            elif condition.startswith('streak_'):
-                days = int(condition.split('_')[1])
-                earned = user.daily_streak >= days
                 
             # Friend challenges
             elif condition.startswith('friend_'):

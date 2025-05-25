@@ -450,12 +450,6 @@ def complete_challenge(challenge_id):
             current_user.daily_h_count = 0
             current_user.last_challenge_date = datetime.utcnow().date()
             
-            # Reset streak if they didn't complete any challenges yesterday
-            last_challenge_date = current_user.last_challenge_date
-            if last_challenge_date and (datetime.utcnow().date() - last_challenge_date).days > 1:
-                current_user.daily_streak = 1  # Reset to 1 (counting today's challenge)
-            else:
-                current_user.daily_streak += 1  # Increment streak
             
         # Update daily and weekly counters based on challenge difficulty
         if challenge.difficulty == 'E':
@@ -678,7 +672,6 @@ def game(section='challenges'):
             'completed_challenges': completed,
             'total_points': user_points,
             'rank': user_rank,
-            'daily_streak': current_user.daily_streak
         }
     
     # Import weekly challenge utilities

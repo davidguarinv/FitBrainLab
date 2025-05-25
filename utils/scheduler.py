@@ -152,50 +152,6 @@ def create_user_weekly_order(user_id):
     db.session.commit()
     logger.info(f"Created weekly challenge order for user {user_id}, week {week_number}, year {year}")
 
-def update_habit_challenge_progress(user_id, challenge_id):
-    """Update the progress for a user's weekly habit challenge.
-    
-    This function is called when a user completes their habit challenge for the day.
-    """
-    # Get current week info
-    current_week = get_current_week_info()
-    
-    # Get the user's habit challenge for this week
-    habit_challenge = WeeklyHabitChallenge.query.filter_by(
-        user_id=user_id,
-        week_number=current_week['week_number'],
-        year=current_week['year']
-    ).first()
-    
-    if not habit_challenge or habit_challenge.challenge_id != challenge_id:
-        logger.warning(f"No matching habit challenge found for user {user_id}, challenge {challenge_id}")
-        return
-    
-    # Get the challenge to determine points
-    challenge = Challenge.query.get(challenge_id)
-    if not challenge:
-        logger.error(f"Challenge {challenge_id} not found")
-        return
-    
-    # Update days completed
-    habit_challenge.days_completed += 1
-    
-    # Calculate bonus points
-    if habit_challenge.days_completed == 4:  # First threshold: 4 days
-        # Award 50% of points
-        bonus_points = challenge.points * 0.5
-        habit_challenge.bonus_points_earned += int(bonus_points)
-        logger.info(f"User {user_id} reached 4-day habit streak for challenge {challenge_id}, awarded {bonus_points} points")
-    
-    if habit_challenge.days_completed == 7:  # Second threshold: all 7 days
-        # Award remaining 50% of points
-        bonus_points = challenge.points * 0.5
-        habit_challenge.bonus_points_earned += int(bonus_points)
-        logger.info(f"User {user_id} reached 7-day habit streak for challenge {challenge_id}, awarded {bonus_points} points")
-    
-    # Commit changes
-    db.session.commit()
-
 # Initialize scheduler functions
 def init_app(app):
     """Initialize scheduler functions with the Flask app."""

@@ -21,10 +21,6 @@
                 <p class="text-2xl font-bold text-primary">{{ user_progress.total_points }}</p>
             </div>
             <div class="bg-gray-50 rounded-lg p-4 text-center">
-                <h3 class="text-sm font-medium text-gray-600">Daily Streak</h3>
-                <p class="text-2xl font-bold text-primary">{{ user_progress.daily_streak }}</p>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
                 <h3 class="text-sm font-medium text-gray-600">Rank</h3>
                 <p class="text-2xl font-bold text-primary">#{{ user_progress.rank }}</p>
             </div>
@@ -193,25 +189,6 @@
                     <p class="text-sm font-medium text-primary">{{ total_completed }}/{{ next_milestone }}</p>
                     <div class="w-32 h-2 bg-gray-200 rounded-full mt-2">
                         <div class="h-full bg-primary rounded-full" style="width: {{ (total_completed / next_milestone * 100)|int }}%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Daily Streak -->
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-xl">
-                        📅
-                    </div>
-                    <div>
-                        <h4 class="font-medium">Streak Master</h4>
-                        <p class="text-sm text-gray-600">Maintain a 7-day streak</p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p class="text-sm font-medium text-primary">{{ user_progress.daily_streak }}/7</p>
-                    <div class="w-32 h-2 bg-gray-200 rounded-full mt-2">
-                        <div class="h-full bg-primary rounded-full" style="width: {{ (user_progress.daily_streak / 7 * 100)|int if user_progress.daily_streak <= 7 else 100 }}%;"></div>
                     </div>
                 </div>
             </div>

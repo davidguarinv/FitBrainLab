@@ -492,7 +492,6 @@ def brain_adaptations(): return render_template('research/brain_adaptations.html
 @bp.route('/research/leopard_predict')
 def leopard_predict(): return render_template('research/leopard_predict.html')
 
-
 # API Endpoints for Game Actions
 @bp.route('/api/challenges/<int:challenge_id>/complete', methods=['POST'])
 @login_required
@@ -500,11 +499,9 @@ def complete_challenge(challenge_id):
     """Complete a challenge, record it, and optionally return a fun fact."""
     try:
         challenge = Challenge.query.get_or_404(challenge_id)
-        # Prevent duplicate completion
         if CompletedChallenge.query.filter_by(user_id=current_user.id, challenge_id=challenge_id).first():
             flash('Already completed this challenge.', 'info')
             return redirect(url_for('main.game', section='challenges'))
-        # Record completion
         uc = UserChallenge.query.filter_by(user_id=current_user.id, challenge_id=challenge_id, status='pending').first()
         if uc:
             uc.status = 'completed'
@@ -520,7 +517,6 @@ def complete_challenge(challenge_id):
                 completed_at=datetime.utcnow()
             )
             db.session.add(uc)
-        # Add completed record
         comp = CompletedChallenge(
             user_id=current_user.id,
             challenge_id=challenge_id,
@@ -528,7 +524,6 @@ def complete_challenge(challenge_id):
             completed_at=datetime.utcnow()
         )
         db.session.add(comp)
-        # Fun fact
         fun_fact = FunFact.get_random_fact()
         if fun_fact:
             fun_fact.times_shown += 1
@@ -547,7 +542,7 @@ def complete_challenge(challenge_id):
 @bp.route('/api/challenges/<int:challenge_id>/abandon', methods=['POST'])
 @login_required
 def abandon_challenge(challenge_id):
-    # Set cooldown on abandon
+    """Set cooldown on abandon and lock slot."""
     uc = UserChallenge.query.filter_by(user_id=current_user.id, challenge_id=challenge_id, status='pending').first_or_404()
     uc.status = 'abandoned'
     uc.cooldown_until = datetime.utcnow() + timedelta(hours=2)
@@ -559,14 +554,13 @@ def abandon_challenge(challenge_id):
 @bp.route('/update_profile', methods=['POST'])
 @login_required
 def update_profile_form():
-    # Handle profile form submission from game/profile.html
+    """Handle profile form submission from profile tab."""
     if 'top_sport_category' in request.form:
         current_user.top_sport_category = request.form.get('top_sport_category')
         current_user.last_sport_update = datetime.utcnow()
         db.session.commit()
         flash('Profile updated successfully!', 'success')
     return redirect(url_for('main.game', section='profile'))
-
 
 # Logout Route
 @bp.route('/logout')
@@ -588,7 +582,10 @@ def game(section='challenges'):
     # Leaderboards: all-time and weekly
     one_week_ago = datetime.utcnow() - timedelta(days=7)
     all_time_users = (
-        db.session.query(User, func.coalesce(func.sum(CompletedChallenge.points_earned), 0).label('total_points'))
+        db.session.query(
+            User,
+            func.coalesce(func.sum(CompletedChallenge.points_earned), 0).label('total_points')
+        )
         .outerjoin(CompletedChallenge, User.id == CompletedChallenge.user_id)
         .filter(User.is_public == True)
         .group_by(User.id)
@@ -597,7 +594,10 @@ def game(section='challenges'):
         .all()
     )
     weekly_users = (
-        db.session.query(User, func.coalesce(func.sum(CompletedChallenge.points_earned), 0).label('weekly_points'))
+        db.session.query(
+            User,
+            func.coalesce(func.sum(CompletedChallenge.points_earned), 0).label('weekly_points')
+        )
         .outerjoin(
             CompletedChallenge,
             (User.id == CompletedChallenge.user_id) & (CompletedChallenge.completed_at >= one_week_ago)
@@ -609,10 +609,10 @@ def game(section='challenges'):
         .all()
     )
 
-    # Active challenge ID from query param
+    # Active challenge ID
     active_challenge_id = request.args.get('active', type=int)
 
-    # User progress & recent completions
+    # User progress
     user_progress = None
     if current_user.is_authenticated:
         recent_completed = (
@@ -630,11 +630,10 @@ def game(section='challenges'):
             .having(func.sum(CompletedChallenge.points_earned) > user_pts)
             .scalar() or 0
         )
-        user_rank = higher_ranked + 1
         user_progress = {
             'completed_challenges': recent_completed,
             'total_points': user_pts,
-            'rank': user_rank,
+            'rank': higher_ranked + 1,
         }
 
     # Weekly challenge setup
@@ -656,6 +655,7 @@ def game(section='challenges'):
     # Build weekly slots: 4E, 3M, 2H
     display_slots = {'E': 4, 'M': 3, 'H': 2}
     challenges_by_difficulty = {'E': [], 'M': [], 'H': []}
+
     if current_user.is_authenticated:
         weekly_counts = current_user.get_weekly_challenge_counts()
         for diff, slots in display_slots.items():
@@ -686,10 +686,12 @@ def game(section='challenges'):
             }
             import random
             pool = [o.challenge for o in order if o.challenge_id not in attempted_ids]
+            if not pool:
+                pool = Challenge.query.filter_by(difficulty=diff).limit(slots).all()
             for _ in range(slots):
                 choice = random.choice(pool) if pool else None
                 challenges_by_difficulty[diff].append({'challenge': choice, 'all_done': False})
-                if choice and choice in pool:
+                if choice in pool:
                     pool.remove(choice)
     else:
         for diff, slots in display_slots.items():
@@ -699,9 +701,9 @@ def game(section='challenges'):
     # Final context for template
     challenges = {
         'in_progress': in_progress,
-        'E': [slot['challenge'] for slot in challenges_by_difficulty['E']],
-        'M': [slot['challenge'] for slot in challenges_by_difficulty['M']],
-        'H': [slot['challenge'] for slot in challenges_by_difficulty['H']],
+        'E': challenges_by_difficulty['E'],
+        'M': challenges_by_difficulty['M'],
+        'H': challenges_by_difficulty['H'],
     }
 
     print("🔍 DEBUG: challenges keys →", challenges.keys())

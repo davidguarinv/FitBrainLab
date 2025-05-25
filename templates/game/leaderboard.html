@@ -103,9 +103,6 @@
                     <!-- User Info -->
                     <h3 class="font-bold text-lg mb-1">{{ user.username }}</h3>
                     <p class="text-primary font-medium mb-2">{{ points|int }} points</p>
-                    {% if user.top_sport_category %}
-                        <p class="text-sm text-gray-600">{{ user.top_sport_category }}</p>
-                    {% endif %}
                 </div>
             {% endfor %}
         </div>

@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
-from .models import User, Challenge, CompletedChallenge, InProgressChallenge, ChallengeRegeneration, UserChallenge, WeeklyChallengeSet, UserWeeklyOrder, WeeklyHabitChallenge
+from .models import User, Challenge, CompletedChallenge, InProgressChallenge, ChallengeRegeneration, UserChallenge, WeeklyChallengeSet, UserWeeklyOrder, WeeklyHabitChallenge, FunFact
 from .forms import LoginForm, RegistrationForm
 from .email_handler import send_email
 import logging
@@ -81,6 +81,20 @@ def save_to_main_json(submission_id, submission_data):
         return False
 
 print(">>> THIS routes.py LOADED <<<")
+
+# Helper function to format time remaining for regeneration timers
+def format_time_remaining(seconds):
+    """Format seconds into a human-readable string (e.g., '2h 30m' or '45m')"""
+    if seconds is None:
+        return None
+        
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    
+    if hours > 0:
+        return f"{hours}h {minutes}m"
+    else:
+        return f"{minutes}m"
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -443,6 +457,167 @@ def communities():
                                total_pages=1,
                                suggestion_sent=False)
 
+@bp.route('/api/challenges/<int:challenge_id>/complete', methods=['POST'])
+@login_required
+def complete_challenge(challenge_id):
+    """Complete a challenge and return a random fun fact"""
+    try:
+        # Find the challenge
+        challenge = Challenge.query.get_or_404(challenge_id)
+        
+        # Check if the user already completed this challenge
+        existing = CompletedChallenge.query.filter_by(
+            user_id=current_user.id,
+            challenge_id=challenge_id
+        ).first()
+        
+        if existing:
+            flash('You have already completed this challenge!', 'info')
+            return redirect(url_for('main.game', section='challenges'))
+        
+        # Remove from in-progress if it's there
+        in_progress = InProgressChallenge.query.filter_by(
+            user_id=current_user.id,
+            challenge_id=challenge_id
+        ).first()
+        
+        if in_progress:
+            db.session.delete(in_progress)
+        
+        # Add to completed challenges
+        completed = CompletedChallenge(
+            user_id=current_user.id,
+            challenge_id=challenge_id,
+            points_earned=challenge.points
+        )
+        db.session.add(completed)
+        
+        # Get a random fun fact
+        fun_fact = FunFact.get_random_fact()
+        if fun_fact:
+            # Update its display stats
+            fun_fact.times_shown += 1
+            fun_fact.last_shown = datetime.utcnow()
+        
+        # Create regeneration timer for this challenge
+        regen = ChallengeRegeneration(
+            user_id=current_user.id,
+            difficulty=challenge.difficulty,
+            regenerate_at=datetime.utcnow() + timedelta(hours=challenge.regen_hours),
+            slot_number=int(request.args.get('slot', 1))
+        )
+        db.session.add(regen)
+        
+        # Update user daily stats
+        if current_user.last_challenge_date != datetime.utcnow().date():
+            current_user.daily_e_count = 0
+            current_user.daily_m_count = 0
+            current_user.daily_h_count = 0
+            current_user.last_challenge_date = datetime.utcnow().date()
+            
+            
+        # Update daily and weekly counters based on challenge difficulty
+        if challenge.difficulty == 'E':
+            current_user.daily_e_count += 1
+            current_user.weekly_e_completed += 1
+        elif challenge.difficulty == 'M':
+            current_user.daily_m_count += 1
+            current_user.weekly_m_completed += 1
+        elif challenge.difficulty == 'H':
+            current_user.daily_h_count += 1
+            current_user.weekly_h_completed += 1
+        
+        # Check if this is a friend challenge link
+        friend_link = None
+        friend_code = request.form.get('friend_code')
+        if friend_code:
+            friend = User.query.filter_by(personal_code=friend_code).first()
+            if friend:
+                friend_link = FriendChallengeLink.query.filter(
+                    FriendChallengeLink.challenge_id == challenge_id,
+                    ((FriendChallengeLink.user1_id == current_user.id) & (FriendChallengeLink.user2_id == friend.id)) |
+                    ((FriendChallengeLink.user1_id == friend.id) & (FriendChallengeLink.user2_id == current_user.id))
+                ).first()
+                
+                if not friend_link:
+                    # Create a new friend link
+                    friend_link = FriendChallengeLink(
+                        challenge_id=challenge_id,
+                        user1_id=current_user.id,
+                        user2_id=friend.id,
+                        user1_confirmed=True,
+                        expires_at=datetime.utcnow() + timedelta(days=1)
+                    )
+                    db.session.add(friend_link)
+                elif friend_link.user1_id == current_user.id and not friend_link.user1_confirmed:
+                    friend_link.user1_confirmed = True
+                    # If both users have confirmed, award bonus points
+                    if friend_link.user2_confirmed:
+                        # Award 50% bonus points
+                        bonus_points = int(challenge.points * 0.5)
+                        completed.points_earned += bonus_points
+                        flash(f'You earned {bonus_points} bonus points for completing this challenge with a friend!', 'success')
+                elif friend_link.user2_id == current_user.id and not friend_link.user2_confirmed:
+                    friend_link.user2_confirmed = True
+                    # If both users have confirmed, award bonus points
+                    if friend_link.user1_confirmed:
+                        # Award 50% bonus points
+                        bonus_points = int(challenge.points * 0.5)
+                        completed.points_earned += bonus_points
+                        flash(f'You earned {bonus_points} bonus points for completing this challenge with a friend!', 'success')
+        
+        # Check for Challenge of the Week completion
+        cotw = ChallengeOfTheWeek.query.filter_by(
+            user_id=current_user.id,
+            challenge_id=challenge_id,
+            week_number=datetime.utcnow().isocalendar()[1],
+            year=datetime.utcnow().isocalendar()[0]
+        ).first()
+        
+        if cotw and cotw.can_complete_today():
+            bonus_points = cotw.complete_daily()
+            completed.points_earned += bonus_points
+            flash(f'You earned {bonus_points} bonus points for completing your Challenge of the Week!', 'success')
+        
+        db.session.commit()
+        
+        # Check if the user has earned any achievements
+        from app.models import UserAchievement
+        new_achievements = UserAchievement.check_achievements(current_user.id)
+        
+        if new_achievements:
+            for achievement in new_achievements:
+                flash(f"Achievement Unlocked: {achievement['name']} - {achievement['message']} (+{achievement['points_reward']} points)", 'achievement')
+                # Add achievement points to user
+        
+        # Success message with fun fact
+        flash('Challenge completed successfully!', 'success')
+        
+        # Use different success messages randomly
+        success_messages = [
+            'Nicely done!', 
+            'Good one champ!', 
+            'Way to go!', 
+            'Nice moves!', 
+            'You\'re incredible!', 
+            'You\'re a step closer to being Stresilient!'
+        ]
+        
+        # Return fun fact information along with redirect
+        if fun_fact:
+            return render_template('game.html', 
+                              section='challenges',
+                              fun_fact=fun_fact,
+                              success_message=random.choice(success_messages))
+        else:
+            return redirect(url_for('main.game', section='challenges'))
+            
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error completing challenge: {str(e)}")
+        flash(f'Error completing challenge: {str(e)}', 'error')
+        return redirect(url_for('main.game', section='challenges'))
+
 @bp.route('/research')
 def research():
     return render_template('research.html')
@@ -512,6 +687,7 @@ def game(section='challenges'):
     # Get user's progress if authenticated
     user_progress = None
     user_rank = None
+    user_achievements = None
     if current_user.is_authenticated:
         completed = CompletedChallenge.query\
             .filter_by(user_id=current_user.id)\
@@ -536,12 +712,31 @@ def game(section='challenges'):
         ).count()
         
         user_rank = higher_ranked_users + 1  # User's rank (1-based)
+        
+        # Get user's achievements for the profile section
+        from app.models import UserAchievement, Achievement
+        achievements_data = db.session.query(UserAchievement, Achievement)\
+            .join(Achievement, UserAchievement.achievement_id == Achievement.id)\
+            .filter(UserAchievement.user_id == current_user.id)\
+            .order_by(UserAchievement.achieved_at.desc())\
+            .all()
+            
+        # Process achievements for easy template rendering
+        user_achievements = []
+        for ua, achievement in achievements_data:
+            user_achievements.append({
+                'id': achievement.id,
+                'name': achievement.name,
+                'message': achievement.message,
+                'points_reward': achievement.points_reward,
+                'icon': achievement.icon,
+                'achieved_at': ua.achieved_at
+            })
             
         user_progress = {
             'completed_challenges': completed,
             'total_points': user_points,
             'rank': user_rank,
-            'daily_streak': current_user.daily_streak
         }
     
     # Import weekly challenge utilities
@@ -700,63 +895,98 @@ def game(section='challenges'):
             ).all()
             attempted_ids = [c.challenge_id for c in attempted_challenges if c.status != 'abandoned']
             
-            # Filter out challenges that are already in progress
-            in_progress_ids = [c.id for c in in_progress_challenges]
+            # Check if a specific challenge should be shown for this slot
+            available_challenge = None
+            i = 0
             
-            # Find the next challenges to display (that aren't attempted or in progress)
-            available_challenges = []
-            for order in user_order:
-                if order.challenge_id not in attempted_ids and order.challenge_id not in in_progress_ids:
-                    challenge = Challenge.query.get(order.challenge_id)
-                    if challenge:
-                        available_challenges.append(challenge)
-                        if len(available_challenges) >= display_counts[difficulty]:
-                            break
-            
-            # Fill slots with available challenges
-            for slot_number in range(1, display_counts[difficulty] + 1):
-                # First, check if there's a regeneration timer active for this slot
-                timer_key = (difficulty, slot_number)
-                regen_timer = regeneration_by_slot.get(timer_key)
+            # Try to assign a challenge from the user's weekly order
+            while i < len(user_order) and not available_challenge:
+                order_item = user_order[i]
+                i += 1
                 
-                # Show the timer if it's active and not expired
-                if regen_timer and regen_timer.regenerate_at > now:
-                    # Calculate remaining time
-                    time_remaining = (regen_timer.regenerate_at - now).total_seconds()
-                    hours = int(time_remaining // 3600)
-                    minutes = int((time_remaining % 3600) // 60)
+                # Skip if this challenge has already been attempted
+                if order_item.challenge_id in attempted_ids:
+                    continue
                     
-                    # Format time remaining - only show hours and minutes
-                    if hours > 0:
-                        time_str = f"{hours}h {minutes}m"
-                    else:
-                        time_str = f"{minutes}m"
-                        
-                    # Show regeneration timer in this specific slot
-                    print(f'Displaying regeneration timer for {difficulty} slot {slot_number}, expires at {regen_timer.regenerate_at}')
-                    challenges_by_difficulty[difficulty].append({
-                        'challenge': None,
-                        'regenerating': True,
-                        'time_remaining': time_str,
-                        'regenerate_at': regen_timer.regenerate_at.isoformat(),
-                        'slot_number': slot_number
-                    })
-                # If no timer or timer expired, try to show a challenge if available
-                elif slot_number <= len(available_challenges):
-                    challenge = available_challenges[slot_number - 1]
-                    challenges_by_difficulty[difficulty].append({
-                        'challenge': challenge,
-                        'regenerating': False,
-                        'time_remaining': None,
-                        'slot_number': slot_number
-                    })
+                # Get the challenge details
+                challenge = Challenge.query.get(order_item.challenge_id)
+                if challenge:
+                    available_challenge = challenge
+                    break
+            
+            # If we couldn't get a challenge from the user's weekly order, create a dummy one
+            # This is for testing purposes and will be shown instead of "Challenge Available Soon"
+            if not available_challenge:
+                # Let's check if we have any challenges in the database first
+                all_challenges = Challenge.query.filter_by(difficulty=difficulty).all()
+                if all_challenges:
+                    # Use a random existing challenge
+                    import random
+                    available_challenge = random.choice(all_challenges)
                 else:
-                    # Empty slot with no timer and no challenge available
+                    # Create a dummy challenge - this would be a temporary fix
+                    dummy_challenge = Challenge(
+                        title=f"{difficulty} Challenge #{slot_number}",
+                        description="Complete this challenge to earn points and unlock a fun fact about exercise and brain health!",
+                        difficulty=difficulty,
+                        points=10 * (3 if difficulty == 'H' else 2 if difficulty == 'M' else 1),
+                        regen_hours=8
+                    )
+                    db.session.add(dummy_challenge)
+                    db.session.commit()
+                    available_challenge = dummy_challenge
+
+            # For each slot
+            for slot_number in range(1, display_counts[difficulty] + 1):
+                # Check if this slot has an active regeneration timer
+                timer_key = (difficulty, slot_number)
+                is_regenerating = False
+                time_remaining = None
+                regenerate_at = None
+                
+                if timer_key in regeneration_by_slot:
+                    timer = regeneration_by_slot[timer_key]
+                    time_remaining = (timer.regenerate_at - now).total_seconds()
+                    
+                    if time_remaining > 0:
+                        # This slot is still regenerating
+                        is_regenerating = True
+                        regenerate_at = timer.regenerate_at.isoformat()
+
+                # Only assign a challenge if there's no active regeneration timer
+                if not is_regenerating and available_challenge:
+                    challenges_by_difficulty[difficulty].append({
+                        'challenge': available_challenge,
+                        'regenerating': False,
+                        'slot_number': slot_number
+                    })
+                    
+                    # Make sure we don't reuse this challenge
+                    available_challenge = None
+                    
+                    # Try to find the next available challenge
+                    while i < len(user_order) and not available_challenge:
+                        order_item = user_order[i]
+                        i += 1
+                        
+                        # Skip if this challenge has already been attempted
+                        if order_item.challenge_id in attempted_ids:
+                            continue
+                            
+                        # Get the challenge details
+                        challenge = Challenge.query.get(order_item.challenge_id)
+                        if challenge:
+                            available_challenge = challenge
+                            break
+                else:
+                    # Either regenerating or no available challenge
                     challenges_by_difficulty[difficulty].append({
                         'challenge': None,
-                        'regenerating': False,
-                        'time_remaining': None,
-                        'slot_number': slot_number
+                        'regenerating': is_regenerating,
+                        'regenerate_at': regenerate_at,
+                        'regenerate_time': format_time_remaining(time_remaining) if time_remaining else None,
+                        'slot_number': slot_number,
+                        'all_done': False
                     })
     else:
         # For non-authenticated users, just show empty slots
@@ -798,38 +1028,110 @@ def game(section='challenges'):
                            active_challenge_id=active_challenge_id,
                            in_progress_challenges=in_progress_challenges,
                            login_form=login_form,
-                           signup_form=signup_form)
+                           signup_form=signup_form,
+                           user_achievements=user_achievements)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.game'))
     
+    # Handle login form submission
     if request.method == 'POST':
-        print(f"Login form data: {request.form}")
         username = request.form.get('username')
         password = request.form.get('password')
         remember_me = request.form.get('remember_me') == 'on'
         
-        print(f"Username: {username}, Password provided: {'Yes' if password else 'No'}, Remember me: {remember_me}")
-        
-        # Basic validation
-        if not username or not password:
-            flash('Username and password are required', 'error')
-            return redirect(url_for('main.game', section='auth'))
-        
-        # Authenticate user
         user = User.query.filter_by(username=username).first()
-        if user is None or not user.check_password(password):
+        
+        if user and user.check_password(password):
+            login_user(user, remember=remember_me)
+            flash('Logged in successfully!', 'success')
+            next_page = request.args.get('next') or url_for('main.game')
+            return redirect(next_page)
+        else:
             flash('Invalid username or password', 'error')
             return redirect(url_for('main.game', section='auth'))
-            
-        # Log in the user
-        login_user(user, remember=remember_me)
-        flash('Logged in successfully!', 'success')
-        return redirect(url_for('main.game'))
         
     return redirect(url_for('main.game', section='auth'))
+
+
+@bp.route('/recover-password', methods=['GET', 'POST'])
+def recover_password():
+    """Password recovery using backup codes"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.game'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        backup_code = request.form.get('backup_code')
+        
+        if not username or not backup_code:
+            flash('Please provide both username and backup code', 'error')
+            return render_template('recover_password.html')
+        
+        user = User.query.filter_by(username=username).first()
+        
+        if not user:
+            flash('Username not found', 'error')
+            return render_template('recover_password.html')
+        
+        if user.backup_code != backup_code:
+            flash('Invalid backup code', 'error')
+            return render_template('recover_password.html')
+        
+        # If we get here, the backup code is valid
+        # Generate a reset token and redirect to reset password page
+        session['reset_user_id'] = user.id
+        return redirect(url_for('main.reset_password'))
+    
+    return render_template('recover_password.html')
+
+
+@bp.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    """Reset password after successful backup code verification"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.game'))
+    
+    # Check if user is authorized to reset password
+    user_id = session.get('reset_user_id')
+    if not user_id:
+        flash('Unauthorized access', 'error')
+        return redirect(url_for('main.login'))
+    
+    user = User.query.get(user_id)
+    if not user:
+        flash('User not found', 'error')
+        return redirect(url_for('main.login'))
+    
+    if request.method == 'POST':
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if not password or not confirm_password:
+            flash('Please provide both password fields', 'error')
+            return render_template('reset_password.html')
+        
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return render_template('reset_password.html')
+        
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long', 'error')
+            return render_template('reset_password.html')
+        
+        # Update the password and generate a new backup code
+        user.set_password(password)
+        user.generate_backup_code()  # Generate a new backup code for security
+        db.session.commit()
+        
+        # Clear the session and redirect to login
+        session.pop('reset_user_id', None)
+        flash('Password has been reset successfully. Please login with your new password.', 'success')
+        return redirect(url_for('main.game', section='auth'))
+    
+    return render_template('reset_password.html')
 
 @bp.route('/login-redirect')
 def login_redirect():

@@ -2,6 +2,8 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
+import json
+import os
 from . import db
 
 # -------------------------
@@ -17,13 +19,24 @@ class User(UserMixin, db.Model):
     top_sport_category = db.Column(db.String(50))  # Optional: sport category
     last_sport_update = db.Column(db.DateTime)  # Last update timestamp
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Creation timestamp
-    daily_streak = db.Column(db.Integer, default=0)  # Daily streak counter
     last_challenge_date = db.Column(db.Date)  # Last challenge date
     daily_e_count = db.Column(db.Integer, default=0)  # Daily easy challenge count
     daily_m_count = db.Column(db.Integer, default=0)  # Daily medium challenge count
     daily_h_count = db.Column(db.Integer, default=0)  # Daily hard challenge count
     last_week_visited = db.Column(db.Integer)  # Last ISO week number visited
     last_year_visited = db.Column(db.Integer)  # Last year visited
+    
+    # New fields for password recovery and friend challenges
+    backup_code = db.Column(db.String(16), unique=True)  # Backup code for password recovery
+    personal_code = db.Column(db.String(10), unique=True)  # Personal code for friend challenges
+    
+    # Weekly challenge caps
+    weekly_e_cap = db.Column(db.Integer, default=9)  # Weekly easy challenge cap
+    weekly_m_cap = db.Column(db.Integer, default=6)  # Weekly medium challenge cap
+    weekly_h_cap = db.Column(db.Integer, default=3)  # Weekly hard challenge cap
+    weekly_e_completed = db.Column(db.Integer, default=0)  # Weekly easy challenges completed
+    weekly_m_completed = db.Column(db.Integer, default=0)  # Weekly medium challenges completed
+    weekly_h_completed = db.Column(db.Integer, default=0)  # Weekly hard challenges completed
 
     # Relationships
     completed_challenges = db.relationship('CompletedChallenge', backref='user', lazy='dynamic')
@@ -36,6 +49,26 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         """Check hashed password."""
         return check_password_hash(self.password_hash, password)
+        
+    def generate_backup_code(self):
+        """Generate a unique backup code for password recovery."""
+        import secrets
+        while True:
+            code = secrets.token_hex(8)  # 16 character hex string
+            if not User.query.filter_by(backup_code=code).first():
+                self.backup_code = code
+                return code
+                
+    def generate_personal_code(self):
+        """Generate a unique personal code for friend challenges."""
+        import string
+        import secrets
+        alphabet = string.ascii_uppercase + string.digits
+        while True:
+            code = ''.join(secrets.choice(alphabet) for _ in range(8))
+            if not User.query.filter_by(personal_code=code).first():
+                self.personal_code = code
+                return code
 
     @staticmethod
     def generate_username():
@@ -57,11 +90,11 @@ class User(UserMixin, db.Model):
     def can_take_challenge(self, difficulty):
         """Check if user can take a challenge of given difficulty."""
         self.reset_daily_counts()
-        if difficulty == 'E' and self.daily_e_count >= 3:
+        if difficulty == 'E' and self.daily_e_count >= 4:
             return False
-        if difficulty == 'M' and self.daily_m_count >= 2:
+        if difficulty == 'M' and self.daily_m_count >= 3:
             return False
-        if difficulty == 'H' and self.daily_h_count >= 1:
+        if difficulty == 'H' and self.daily_h_count >= 2:
             return False
         return True
 
@@ -270,12 +303,12 @@ class ChallengeRegeneration(db.Model):
     def get_regen_hours(difficulty):
         """Get the regeneration time in hours based on difficulty."""
         if difficulty == 'E':
-            return 6  # Easy challenges regenerate in 6 hours
+            return 4  # Easy challenges regenerate in 4 hours
         elif difficulty == 'M':
-            return 8  # Medium challenges regenerate in 8 hours
+            return 6  # Medium challenges regenerate in 6 hours
         elif difficulty == 'H':
-            return 10  # Hard challenges regenerate in 10 hours
-        return 6  # Default to 6 hours
+            return 8  # Hard challenges regenerate in 8 hours
+        return 4  # Default to 4 hours
 
 
 class WeeklyChallengeSet(db.Model):
@@ -341,19 +374,416 @@ class UserChallenge(db.Model):
 
 class WeeklyHabitChallenge(db.Model):
     __tablename__ = 'weekly_habit_challenge'
-
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=False)
-    week_number = db.Column(db.Integer, nullable=False)  # ISO week number (1-53)
-    year = db.Column(db.Integer, nullable=False)  # Year for the week
-    days_completed = db.Column(db.Integer, default=0)  # Number of days completed this week (0-7)
-    bonus_points_earned = db.Column(db.Integer, default=0)  # Bonus points earned for habit completion
+    week_number = db.Column(db.Integer, nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    days_completed = db.Column(db.Integer, default=0)
+    bonus_points_earned = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Relationships
     user = db.relationship('User', backref='habit_challenges')
     challenge = db.relationship('Challenge', backref='habit_selections')
-    
-    # Composite unique constraint to ensure a user can only have one habit challenge per week
     __table_args__ = (db.UniqueConstraint('user_id', 'week_number', 'year', name='_user_habit_week_uc'),)
+
+
+# -------------------------
+# Achievement Model
+# -------------------------
+class Achievement(db.Model):
+    __tablename__ = 'achievement'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    condition = db.Column(db.String(100), nullable=False)  # e.g., '100_total', '50_easy'
+    message = db.Column(db.Text, nullable=False)
+    points_reward = db.Column(db.Integer, default=150)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship with UserAchievement
+    user_achievements = db.relationship('UserAchievement', backref='achievement', lazy='dynamic')
+    
+    @staticmethod
+    def seed_achievements():
+        """Seed the default achievements into the database."""
+        achievements = [
+            {
+                'name': 'First Steps',
+                'condition': '1_total',
+                'message': 'Complete your first challenge!',
+                'points_reward': 50
+            },
+            {
+                'name': 'Getting Started',
+                'condition': '10_total',
+                'message': 'Complete 10 challenges of any difficulty.',
+                'points_reward': 100
+            },
+            {
+                'name': 'Challenge Enthusiast',
+                'condition': '50_total',
+                'message': 'Complete 50 challenges of any difficulty.',
+                'points_reward': 200
+            },
+            {
+                'name': 'Challenge Master',
+                'condition': '100_total',
+                'message': 'Complete 100 challenges of any difficulty.',
+                'points_reward': 300
+            },
+            {
+                'name': 'Easy Beginner',
+                'condition': '10_easy',
+                'message': 'Complete 10 easy challenges.',
+                'points_reward': 75
+            },
+            {
+                'name': 'Easy Expert',
+                'condition': '50_easy',
+                'message': 'Complete 50 easy challenges.',
+                'points_reward': 150
+            },
+            {
+                'name': 'Medium Beginner',
+                'condition': '10_medium',
+                'message': 'Complete 10 medium challenges.',
+                'points_reward': 100
+            },
+            {
+                'name': 'Medium Expert',
+                'condition': '50_medium',
+                'message': 'Complete 50 medium challenges.',
+                'points_reward': 200
+            },
+            {
+                'name': 'Hard Beginner',
+                'condition': '10_hard',
+                'message': 'Complete 10 hard challenges.',
+                'points_reward': 150
+            },
+            {
+                'name': 'Hard Expert',
+                'condition': '30_hard',
+                'message': 'Complete 30 hard challenges.',
+                'points_reward': 300
+            },
+            {
+                'name': 'Weekly Warrior',
+                'condition': 'weekly_all',
+                'message': 'Complete all weekly challenge caps in a single week.',
+                'points_reward': 250
+            },
+            {
+                'name': 'Friend Challenger',
+                'condition': 'friend_1',
+                'message': 'Complete a challenge with a friend.',
+                'points_reward': 150
+            },
+            {
+                'name': 'Social Butterfly',
+                'condition': 'friend_10',
+                'message': 'Complete 10 challenges with friends.',
+                'points_reward': 300
+            },
+            {
+                'name': 'Habit Former',
+                'condition': 'habit_1',
+                'message': 'Complete a weekly habit challenge (all 7 days).',
+                'points_reward': 200
+            },
+            {
+                'name': 'Consistent Achiever',
+                'condition': 'habit_5',
+                'message': 'Complete 5 weekly habit challenges.',
+                'points_reward': 350
+            }
+        ]
+        
+        for achievement_data in achievements:
+            existing = Achievement.query.filter_by(name=achievement_data['name']).first()
+            if not existing:
+                achievement = Achievement(
+                    name=achievement_data['name'],
+                    condition=achievement_data['condition'],
+                    message=achievement_data['message'],
+                    points_reward=achievement_data['points_reward']
+                )
+                db.session.add(achievement)
+        
+        db.session.commit()
+        return len(achievements)
+
+
+# -------------------------
+# User Achievement Model
+# -------------------------
+class UserAchievement(db.Model):
+    __tablename__ = 'user_achievement'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    achievement_id = db.Column(db.Integer, db.ForeignKey('achievement.id'), nullable=False)
+    achieved_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship with User
+    user = db.relationship('User', backref='achievements')
+    
+    # Ensure a user can only earn an achievement once
+    __table_args__ = (db.UniqueConstraint('user_id', 'achievement_id', name='_user_achievement_uc'),)
+
+    @staticmethod
+    def check_achievements(user_id):
+        """Check if the user has earned any new achievements."""
+        from sqlalchemy import func
+        
+        # Get the user
+        user = User.query.get(user_id)
+        if not user:
+            return []
+        
+        # Get achievements the user has already earned
+        earned_achievement_ids = [ua.achievement_id for ua in UserAchievement.query.filter_by(user_id=user_id).all()]
+        
+        # Get all possible achievements
+        all_achievements = Achievement.query.all()
+        
+        newly_earned = []
+        
+        for achievement in all_achievements:
+            # Skip if already earned
+            if achievement.id in earned_achievement_ids:
+                continue
+                
+            # Check conditions
+            condition = achievement.condition
+            earned = False
+            
+            # Total challenges
+            if condition.endswith('_total'):
+                count = int(condition.split('_')[0])
+                total_completed = CompletedChallenge.query.filter_by(user_id=user_id).count()
+                earned = total_completed >= count
+                
+            # Easy challenges
+            elif condition.endswith('_easy'):
+                count = int(condition.split('_')[0])
+                easy_completed = CompletedChallenge.query.join(Challenge).filter(
+                    CompletedChallenge.user_id == user_id,
+                    Challenge.difficulty == 'E'
+                ).count()
+                earned = easy_completed >= count
+                
+            # Medium challenges
+            elif condition.endswith('_medium'):
+                count = int(condition.split('_')[0])
+                medium_completed = CompletedChallenge.query.join(Challenge).filter(
+                    CompletedChallenge.user_id == user_id,
+                    Challenge.difficulty == 'M'
+                ).count()
+                earned = medium_completed >= count
+                
+            # Hard challenges
+            elif condition.endswith('_hard'):
+                count = int(condition.split('_')[0])
+                hard_completed = CompletedChallenge.query.join(Challenge).filter(
+                    CompletedChallenge.user_id == user_id,
+                    Challenge.difficulty == 'H'
+                ).count()
+                earned = hard_completed >= count
+                
+            # Weekly all
+            elif condition == 'weekly_all':
+                earned = (user.weekly_e_completed >= user.weekly_e_cap and
+                         user.weekly_m_completed >= user.weekly_m_cap and
+                         user.weekly_h_completed >= user.weekly_h_cap)
+                
+            # Friend challenges
+            elif condition.startswith('friend_'):
+                count = int(condition.split('_')[1])
+                friend_completed = db.session.query(func.count(FriendChallengeLink.id)).filter(
+                    ((FriendChallengeLink.user1_id == user_id) & FriendChallengeLink.user1_confirmed) |
+                    ((FriendChallengeLink.user2_id == user_id) & FriendChallengeLink.user2_confirmed)
+                ).scalar()
+                earned = friend_completed >= count
+                
+            # Habit challenges
+            elif condition.startswith('habit_'):
+                count = int(condition.split('_')[1])
+                habit_completed = WeeklyHabitChallenge.query.filter(
+                    WeeklyHabitChallenge.user_id == user_id,
+                    WeeklyHabitChallenge.days_completed == 7
+                ).count()
+                earned = habit_completed >= count
+                
+            # If earned, create a new UserAchievement
+            if earned:
+                new_achievement = UserAchievement(user_id=user_id, achievement_id=achievement.id)
+                db.session.add(new_achievement)
+                newly_earned.append({
+                    'name': achievement.name,
+                    'message': achievement.message,
+                    'points_reward': achievement.points_reward
+                })
+                
+        if newly_earned:
+            db.session.commit()
+            
+        return newly_earned
+
+
+# -------------------------
+# Friend Challenge Link Model
+# -------------------------
+class FriendChallengeLink(db.Model):
+    __tablename__ = 'friend_challenge_link'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=False)
+    user1_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user2_id = db.Column(db.Integer, nullable=False)
+    user1_confirmed = db.Column(db.Boolean, default=False)
+    user2_confirmed = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime, nullable=True)
+    
+    # Relationships
+    challenge = db.relationship('Challenge', backref='friend_links')
+    user1 = db.relationship('User', backref='friend_challenges_initiated', foreign_keys=[user1_id])
+    
+    def is_complete(self):
+        """Check if both users have confirmed the challenge."""
+        return self.user1_confirmed and self.user2_confirmed
+        
+    def is_expired(self):
+        """Check if the link has expired."""
+        if not self.expires_at:
+            return False
+        return datetime.utcnow() > self.expires_at
+
+
+# -------------------------
+# Challenge of the Week Model
+# -------------------------
+class ChallengeOfTheWeek(db.Model):
+    __tablename__ = 'challenge_of_the_week'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=False)
+    week_number = db.Column(db.Integer, nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_completed = db.Column(db.Date, nullable=True)
+    times_completed = db.Column(db.Integer, default=0)
+    
+    # Relationships
+    user = db.relationship('User', backref='challenge_of_the_week')
+    challenge = db.relationship('Challenge', backref='cotw_selections')
+    
+    # Ensure a user can only have one Challenge of the Week per week
+    __table_args__ = (db.UniqueConstraint('user_id', 'week_number', 'year', name='_user_cotw_week_uc'),)
+    
+    def can_complete_today(self):
+        """Check if the challenge can be completed today."""
+        today = datetime.utcnow().date()
+        return self.last_completed is None or self.last_completed != today
+    
+    def complete_daily(self):
+        """Mark the challenge as completed for today and increment count."""
+        today = datetime.utcnow().date()
+        self.last_completed = today
+        self.times_completed += 1
+        db.session.commit()
+        
+        # Return the points earned (50% of original challenge points)
+        return int(self.challenge.points * 0.5)
+
+
+# -------------------------
+# Weekly Leaderboard Rewards Model
+# -------------------------
+class WeeklyLeaderboardReward(db.Model):
+    __tablename__ = 'weekly_leaderboard_reward'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    week_number = db.Column(db.Integer, nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    rank = db.Column(db.Integer, nullable=False)  # 1, 2, or 3 for top three positions
+    points_awarded = db.Column(db.Integer, nullable=False)
+    awarded_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship with User
+    user = db.relationship('User', backref='leaderboard_rewards')
+    
+    # Ensure a user can only receive one reward per week
+    __table_args__ = (db.UniqueConstraint('user_id', 'week_number', 'year', name='_user_weekly_reward_uc'),)
+
+
+# -------------------------
+# Fun Fact Model
+# -------------------------
+class FunFact(db.Model):
+    __tablename__ = 'fun_fact'
+    id = db.Column(db.Integer, primary_key=True)
+    fact = db.Column(db.String(500), nullable=False)
+    source = db.Column(db.String(500), nullable=True)
+    times_shown = db.Column(db.Integer, default=0)
+    last_shown = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    @staticmethod
+    def import_from_json(app):
+        """Import fun facts from JSON file."""
+        json_file = os.path.join(app.static_folder, 'data', 'fun_facts.json')
+        if not os.path.exists(json_file):
+            app.logger.error(f"Fun facts JSON file not found at {json_file}")
+            return False
+            
+        try:
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+            # Check if we have exercise facts
+            if 'exercise_facts' not in data:
+                app.logger.error("No exercise_facts found in JSON file")
+                return False
+                
+            # Get existing fact IDs to avoid duplicates
+            existing_facts = {fact.id: fact for fact in FunFact.query.all()}
+            
+            # Import facts
+            count = 0
+            for fact_data in data['exercise_facts']:
+                # Skip if already exists
+                if fact_data['id'] in existing_facts:
+                    continue
+                    
+                new_fact = FunFact(
+                    id=fact_data['id'],
+                    fact=fact_data['fact'],
+                    source=fact_data.get('source', '')
+                )
+                db.session.add(new_fact)
+                count += 1
+                
+            if count > 0:
+                db.session.commit()
+                app.logger.info(f"Imported {count} new fun facts")
+            return True
+            
+        except Exception as e:
+            app.logger.error(f"Error importing fun facts: {str(e)}")
+            db.session.rollback()
+            return False
+            
+    @staticmethod
+    def get_random_fact():
+        """Get a random fun fact, prioritizing ones that haven't been shown recently."""
+        # First try to get facts that have never been shown
+        never_shown = FunFact.query.filter(FunFact.times_shown == 0).all()
+        if never_shown:
+            return random.choice(never_shown)
+            
+        # Then try to get facts that have been shown less often
+        return FunFact.query.order_by(FunFact.times_shown, FunFact.last_shown).first()

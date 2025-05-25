@@ -19,9 +19,12 @@
                         <div class="flex items-center justify-between">
                             <span class="text-primary font-medium">{{ slot.challenge.points }} points</span>
                             <div class="space-x-4">
-                                <button onclick="launchConfetti(); completeChallenge({{ slot.challenge.id }});" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
-                                    Complete Challenge
-                                </button>
+                                <form id="complete-challenge-form-{{ slot.challenge.id }}" action="/api/challenges/{{ slot.challenge.id }}/complete" method="POST" style="display: inline;">
+                                    <input type="hidden" name="challenge_id" value="{{ slot.challenge.id }}">
+                                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors complete-challenge-btn">
+                                        Complete Challenge
+                                    </button>
+                                </form>
                                 <form action="/api/challenges/{{ slot.challenge.id }}/abandon" method="POST" style="display: inline;">
                                     <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
                                         Abandon

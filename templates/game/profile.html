@@ -188,7 +188,11 @@
                 <div class="text-right">
                     <p class="text-sm font-medium text-primary">{{ total_completed }}/{{ next_milestone }}</p>
                     <div class="w-32 h-2 bg-gray-200 rounded-full mt-2">
-                        <div class="h-full bg-primary rounded-full" style="width: {{ (total_completed / next_milestone * 100)|int }}%;"></div>
+                        {% set progress_percent = 0 %}
+                        {% if total_completed and next_milestone %}
+                            {% set progress_percent = (total_completed / next_milestone * 100)|int %}
+                        {% endif %}
+                        <div class="h-full bg-primary rounded-full progress-bar" data-width="{{ progress_percent }}"></div>
                     </div>
                 </div>
             </div>
@@ -225,7 +229,11 @@
                 <div class="text-right">
                     <p class="text-sm font-medium text-primary">{{ total_points|int }}/{{ next_point_milestone }}</p>
                     <div class="w-32 h-2 bg-gray-200 rounded-full mt-2">
-                        <div class="h-full bg-primary rounded-full" style="width: {{ (total_points / next_point_milestone * 100)|int }}%;"></div>
+                        {% set points_percent = 0 %}
+                        {% if total_points and next_point_milestone %}
+                            {% set points_percent = (total_points / next_point_milestone * 100)|int %}
+                        {% endif %}
+                        <div class="h-full bg-primary rounded-full progress-bar" data-width="{{ points_percent }}"></div>
                     </div>
                 </div>
             </div>
@@ -236,6 +244,17 @@
 
 <!-- Profile interaction scripts -->
 <script>
+// Apply progress bar widths from data attributes
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(bar => {
+        const width = bar.getAttribute('data-width');
+        if (width) {
+            bar.style.width = width + '%';
+        }
+    });
+});
+
 function toggleProfileVisibility() {
     fetch('/api/profile/toggle-visibility', {
         method: 'POST',

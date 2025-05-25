@@ -144,13 +144,13 @@ def format_email_content(form_data, email_type):
                 </div>
                 
                 <script>
-                    function confirmCommunity(url, submissionId, action) {
-                        const encodedUrl = encodeURIComponent(url);
-                        const iframe = document.createElement('iframe');
+                    function confirmCommunity(url, submissionId, action) {{
+                        var encodedUrl = encodeURIComponent(url);
+                        var iframe = document.createElement('iframe');
                         iframe.style.display = 'none';
                         iframe.src = encodedUrl;
                         document.body.appendChild(iframe);
-                    }
+                    }}
                 </script>
             </div>
         </body>

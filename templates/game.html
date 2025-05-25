@@ -131,7 +131,11 @@
                 </div>
                 
                 <!-- Weekly Habit Challenge Card -->
-                {% set habit_challenge = current_user.get_weekly_habit_challenge() %}
+                {% if current_user.is_authenticated and current_user.get_weekly_habit_challenge is defined %}
+                    {% set habit_challenge = current_user.get_weekly_habit_challenge() %}
+                {% else %}
+                    {% set habit_challenge = None %}
+                {% endif %}
                 {% if habit_challenge %}
                 <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-green-500">
                     <h3 class="text-lg font-semibold mb-2">Weekly Habit Challenge</h3>
@@ -169,17 +173,26 @@
                     
                     <!-- Today's Check-in Button -->
                     <div class="text-center">
-                        {% if habit_challenge.can_check_in_today and habit_challenge.days_completed < 7 %}
-                            <button onclick="checkInHabit({{ habit_challenge.id }}); return false;" class="w-full px-4 py-2 bg-green-500 text-white font-medium rounded-md hover:bg-green-600 transition-colors">
-                                Check In Today
-                            </button>
-                        {% elif habit_challenge.days_completed == 7 %}
-                            <div class="text-green-600 font-medium">
-                                Challenge Completed! 🎉
-                            </div>
+                        {% if habit_challenge is defined and habit_challenge %}
+                            {% if habit_challenge.can_check_in_today and habit_challenge.days_completed < 7 %}
+                                <form action="/api/habit-challenges/check-in" method="post" class="w-full">
+                                    <input type="hidden" name="habit_challenge_id" value="{{ habit_challenge.id }}">
+                                    <button type="submit" class="w-full px-4 py-2 bg-green-500 text-white font-medium rounded-md hover:bg-green-600 transition-colors">
+                                        Check In Today
+                                    </button>
+                                </form>
+                            {% elif habit_challenge.days_completed == 7 %}
+                                <div class="text-green-600 font-medium">
+                                    Challenge Completed! 🎉
+                                </div>
+                            {% else %}
+                                <div class="text-gray-500 text-sm">
+                                    You've already checked in today
+                                </div>
+                            {% endif %}
                         {% else %}
                             <div class="text-gray-500 text-sm">
-                                You've already checked in today
+                                No active habit challenge
                             </div>
                         {% endif %}
                     </div>
@@ -427,6 +440,19 @@ document.addEventListener('DOMContentLoaded', function() {
             launchConfetti();
             break;
         }
+    }
+    
+    // Add event listener for habit check-in button
+    const checkInButton = document.getElementById('habit-check-in-button');
+    if (checkInButton) {
+        checkInButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const habitId = this.getAttribute('data-habit-id');
+            if (habitId) {
+                checkInHabit(habitId);
+            }
+            return false;
+        });
     }
 });
 

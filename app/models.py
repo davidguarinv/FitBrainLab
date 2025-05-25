@@ -90,11 +90,11 @@ class User(UserMixin, db.Model):
     def can_take_challenge(self, difficulty):
         """Check if user can take a challenge of given difficulty."""
         self.reset_daily_counts()
-        if difficulty == 'E' and self.daily_e_count >= 3:
+        if difficulty == 'E' and self.daily_e_count >= 4:
             return False
-        if difficulty == 'M' and self.daily_m_count >= 2:
+        if difficulty == 'M' and self.daily_m_count >= 3:
             return False
-        if difficulty == 'H' and self.daily_h_count >= 1:
+        if difficulty == 'H' and self.daily_h_count >= 2:
             return False
         return True
 
@@ -303,12 +303,12 @@ class ChallengeRegeneration(db.Model):
     def get_regen_hours(difficulty):
         """Get the regeneration time in hours based on difficulty."""
         if difficulty == 'E':
-            return 6  # Easy challenges regenerate in 6 hours
+            return 4  # Easy challenges regenerate in 4 hours
         elif difficulty == 'M':
-            return 8  # Medium challenges regenerate in 8 hours
+            return 6  # Medium challenges regenerate in 6 hours
         elif difficulty == 'H':
-            return 10  # Hard challenges regenerate in 10 hours
-        return 6  # Default to 6 hours
+            return 8  # Hard challenges regenerate in 8 hours
+        return 4  # Default to 4 hours
 
 
 class WeeklyChallengeSet(db.Model):

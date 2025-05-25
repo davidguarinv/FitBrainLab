@@ -32,7 +32,7 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
 
     # Import models (so they are registered with SQLAlchemy)
-    from .models import User, Challenge, CompletedChallenge, InProgressChallenge, FunFact
+    from .models import User, Challenge, CompletedChallenge, FunFact
 
     # Register blueprints
     from .routes import bp as main_bp

@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
-from .models import User, Challenge, CompletedChallenge, InProgressChallenge, ChallengeRegeneration, UserChallenge, WeeklyChallengeSet, UserWeeklyOrder, WeeklyHabitChallenge, FunFact
+from .models import User, Challenge, CompletedChallenge, ChallengeRegeneration, UserChallenge, WeeklyChallengeSet, UserWeeklyOrder, WeeklyHabitChallenge, FunFact
 from .forms import LoginForm, RegistrationForm
 from .email_handler import send_email
 import logging
@@ -475,22 +475,32 @@ def complete_challenge(challenge_id):
             flash('You have already completed this challenge!', 'info')
             return redirect(url_for('main.game', section='challenges'))
         
-        # Remove from in-progress if it's there
-        in_progress = InProgressChallenge.query.filter_by(
+        # Create or update user challenge record
+        user_challenge = UserChallenge.query.filter_by(
+            user_id=current_user.id,
+            challenge_id=challenge_id,
+            status='pending'
+        ).first()
+        
+        if not user_challenge:
+            user_challenge = UserChallenge(
+                user_id=current_user.id,
+                challenge_id=challenge_id,
+                status='pending',
+                week_number=datetime.utcnow().isocalendar()[1],
+                year=datetime.utcnow().year,
+                started_at=datetime.utcnow()
+            )
+            db.session.add(user_challenge)
+            
+        # Remove from completed challenges if it was there
+        completed = CompletedChallenge.query.filter_by(
             user_id=current_user.id,
             challenge_id=challenge_id
         ).first()
         
-        if in_progress:
-            db.session.delete(in_progress)
-        
-        # Add to completed challenges
-        completed = CompletedChallenge(
-            user_id=current_user.id,
-            challenge_id=challenge_id,
-            points_earned=challenge.points
-        )
-        db.session.add(completed)
+        if completed:
+            db.session.delete(completed)
         
         # Get a random fun fact
         fun_fact = FunFact.get_random_fact()
@@ -766,17 +776,12 @@ def game(section='challenges'):
     in_progress_challenges = []
     in_progress_count = 0
     if current_user.is_authenticated:
-        # Get challenges that are currently in progress (from UserChallenge with status 'pending')
-        in_progress = UserChallenge.query.filter_by(
-            user_id=current_user.id,
-            status='pending',
-            week_number=current_week['week_number'],
-            year=current_week['year']
-        ).all()
-        
-        in_progress_count = len(in_progress)
-        in_progress_challenge_ids = [c.challenge_id for c in in_progress]
-        in_progress_challenges = Challenge.query.filter(Challenge.id.in_(in_progress_challenge_ids)).all() if in_progress_challenge_ids else []
+        from app.utils.game_helpers import get_in_progress_challenges
+        in_progress_challenges, in_progress_count = get_in_progress_challenges(
+            current_user.id,
+            current_week['week_number'],
+            current_week['year']
+        )
     
     # Get challenge regeneration timers - now user specific
     now = datetime.utcnow()
@@ -999,8 +1004,13 @@ def game(section='challenges'):
                     'slot_number': slot_number
                 })
     
-    # Add in-progress challenges to the context
-    challenges_by_difficulty['in_progress'] = in_progress_challenges
+    # Build the challenges dictionary with the new structure
+    challenges = {
+        'in_progress': in_progress_challenges,
+        'E': [c['challenge'] for c in challenges_by_difficulty.get('E', []) if c.get('challenge')][:4],  # Max 4 easy challenges
+        'M': [c['challenge'] for c in challenges_by_difficulty.get('M', []) if c.get('challenge')][:3],  # Max 3 medium challenges
+        'H': [c['challenge'] for c in challenges_by_difficulty.get('H', []) if c.get('challenge')][:2]   # Max 2 hard challenges
+    }
     
     # Get recent completed challenges by any user
     recent_completed_challenges = db.session.query(
@@ -1024,9 +1034,9 @@ def game(section='challenges'):
                            user_progress=user_progress,
                            top_users=all_time_users,
                            weekly_users=weekly_users,
-                           challenges=challenges_by_difficulty,
+                           challenges=challenges,
                            active_challenge_id=active_challenge_id,
-                           in_progress_challenges=in_progress_challenges,
+                           active_count=in_progress_count,
                            login_form=login_form,
                            signup_form=signup_form,
                            user_achievements=user_achievements)
@@ -1245,12 +1255,13 @@ def get_progress():
     # Get in-progress challenges
     in_progress = db.session.query(
         Challenge,
-        InProgressChallenge.started_at
+        UserChallenge.started_at
     ).join(
-        InProgressChallenge,
-        Challenge.id == InProgressChallenge.challenge_id
+        UserChallenge,
+        Challenge.id == UserChallenge.challenge_id
     ).filter(
-        InProgressChallenge.user_id == current_user.id
+        UserChallenge.user_id == current_user.id,
+        UserChallenge.status == 'pending'
     ).all()
     
     return jsonify({
@@ -1375,8 +1386,8 @@ def delete_account():
         # Delete user's completed challenges
         CompletedChallenge.query.filter_by(user_id=current_user.id).delete()
         
-        # Delete user's in-progress challenges
-        InProgressChallenge.query.filter_by(user_id=current_user.id).delete()
+        # Clean up user challenges
+        UserChallenge.query.filter_by(user_id=current_user.id, status='pending').delete()
         
         # Get user ID before logging out
         user_id = current_user.id

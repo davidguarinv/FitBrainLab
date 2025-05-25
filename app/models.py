@@ -40,7 +40,6 @@ class User(UserMixin, db.Model):
 
     # Relationships
     completed_challenges = db.relationship('CompletedChallenge', backref='user', lazy='dynamic')
-    in_progress_challenges = db.relationship('InProgressChallenge', backref='user', lazy='dynamic')
 
     def set_password(self, password):
         """Hash and store password."""
@@ -251,12 +250,12 @@ class Challenge(db.Model):
     description = db.Column(db.String(500), nullable=False)
     difficulty = db.Column(db.String(1), nullable=False)  # 'E', 'M', 'H'
     points = db.Column(db.Integer, nullable=False)
-    regen_hours = db.Column(db.Integer, default=6)  # Hours before challenge ates
+    regen_hours = db.Column(db.Integer, default=6)  # Hours before challenge regenerates
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationships
     completed_by = db.relationship('CompletedChallenge', backref='challenge', lazy='dynamic')
-    in_progress_by = db.relationship('InProgressChallenge', backref='challenge', lazy='dynamic')
+    user_attempts = db.relationship('UserChallenge', backref='challenge', lazy='dynamic')
 
 
 # -------------------------
@@ -270,18 +269,6 @@ class CompletedChallenge(db.Model):
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=False)
     completed_at = db.Column(db.DateTime, default=datetime.utcnow)
     points_earned = db.Column(db.Integer, nullable=True)  # Store points earned when completing the challenge
-
-
-# -------------------------
-# In Progress Challenge Model
-# -------------------------
-class InProgressChallenge(db.Model):
-    __tablename__ = 'in_progress_challenge'
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=False)
-    started_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 # -------------------------

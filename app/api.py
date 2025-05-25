@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 from datetime import datetime
 from . import db
-from .models import Challenge, CompletedChallenge, InProgressChallenge, User, ChallengeRegeneration, UserChallenge, WeeklyChallengeSet, UserWeeklyOrder, WeeklyHabitChallenge
+from .models import Challenge, CompletedChallenge, User, ChallengeRegeneration, UserChallenge, WeeklyChallengeSet, UserWeeklyOrder, WeeklyHabitChallenge
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -78,13 +78,7 @@ def start_challenge(challenge_id):
             db.session.add(user_challenge)
             db.session.commit()
     
-    # For backward compatibility, also add to InProgressChallenge
-    in_progress = InProgressChallenge(
-        user_id=current_user.id,
-        challenge_id=challenge_id
-    )
-    db.session.add(in_progress)
-    
+
     # Get the current time
     now = datetime.utcnow()
     
@@ -160,13 +154,7 @@ def complete_challenge(challenge_id):
         status='pending'
     ).first()
     
-    # For backward compatibility, also check the old system
-    in_progress = InProgressChallenge.query.filter_by(
-        user_id=current_user.id,
-        challenge_id=challenge_id
-    ).first()
-    
-    if not user_challenge and not in_progress:
+    if not user_challenge:
         flash('Challenge not in progress', 'error')
         return redirect(url_for('main.game', section='challenges'))
     
@@ -178,7 +166,7 @@ def complete_challenge(challenge_id):
         user_challenge.completed_at = datetime.utcnow()
         user_challenge.points_earned = challenge.points
     
-    # Complete the challenge in the old system
+    # Record the completion in the history
     completed = CompletedChallenge(
         user_id=current_user.id,
         challenge_id=challenge_id,
@@ -246,13 +234,7 @@ def abandon_challenge(challenge_id):
         status='pending'
     ).first()
     
-    # For backward compatibility, also check the old system
-    in_progress = InProgressChallenge.query.filter_by(
-        user_id=current_user.id,
-        challenge_id=challenge_id
-    ).first()
-    
-    if not user_challenge and not in_progress:
+    if not user_challenge:
         flash('Challenge not in progress', 'error')
         return redirect(url_for('main.game', section='challenges'))
     
@@ -260,12 +242,7 @@ def abandon_challenge(challenge_id):
     difficulty = challenge.difficulty
     
     # Mark as abandoned in the weekly system
-    if user_challenge:
-        user_challenge.status = 'abandoned'
-    
-    # Remove from in progress (old system)
-    if in_progress:
-        db.session.delete(in_progress)
+    user_challenge.status = 'abandoned'
     
     # SIMPLIFIED APPROACH: Delete and recreate the order entry to avoid unique constraints
     # Get the current order entry

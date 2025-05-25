@@ -16,7 +16,16 @@ def format_email_content(form_data, email_type):
     if email_type == 'community_submission':
         # Get the base URL for confirmation links
         base_url = current_app.config.get('BASE_URL', 'http://localhost:5000')
+        
+        # Get submission ID from form data - it should be there since we added it in routes.py
         submission_id = form_data.get('submission_id')
+        if not submission_id:
+            current_app.logger.error("No submission_id found in form data")
+            return None
+        
+        # Generate confirmation URLs manually since we can't use request object here
+        accept_url = f"{base_url}/confirm-community/{submission_id}/accept"
+        reject_url = f"{base_url}/confirm-community/{submission_id}/reject"
         
         html_content = f"""
         <html>
@@ -118,14 +127,14 @@ def format_email_content(form_data, email_type):
                     <h3 style="color: #92400e; margin-bottom: 15px;">Action Required:</h3>
                     <p style="margin-bottom: 20px; color: #92400e;">Please review the community submission and click one of the buttons below:</p>
                     <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                        <a href="{base_url}/confirm-community/{submission_id}/accept" 
-                           style="background-color: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                        <button onclick="javascript:confirmCommunity('" + accept_url + "', '" + submission_id + "', 'accept')"
+                               style="background-color: #059669; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
                             ✅ Accept Community
-                        </a>
-                        <a href="{base_url}/confirm-community/{submission_id}/reject" 
-                           style="background-color: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                        </button>
+                        <button onclick="javascript:confirmCommunity('" + reject_url + "', '" + submission_id + "', 'reject')"
+                               style="background-color: #dc2626; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
                             ❌ Reject Community
-                        </a>
+                        </button>
                     </div>
                 </div>
                 
@@ -133,6 +142,16 @@ def format_email_content(form_data, email_type):
                     <p>This email was automatically generated from the community submission form.</p>
                     <p><strong>Submission ID:</strong> {submission_id}</p>
                 </div>
+                
+                <script>
+                    function confirmCommunity(url, submissionId, action) {
+                        const encodedUrl = encodeURIComponent(url);
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = encodedUrl;
+                        document.body.appendChild(iframe);
+                    }
+                </script>
             </div>
         </body>
         </html>

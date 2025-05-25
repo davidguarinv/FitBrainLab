@@ -16,6 +16,70 @@ import uuid
 import re
 import math
 
+def save_to_main_json(submission_id, submission_data):
+    """Save a community submission to the main JSON file"""
+    try:
+        # Log the start of the save process
+        community_name = submission_data['data'].get('Name', 'Unknown')
+        current_app.logger.info(f"Attempting to save community: {community_name}")
+        
+        # Read existing communities
+        json_file = os.path.join(current_app.static_folder, 'data', 'communities_with_logos.json')
+        
+        # Verify directory exists and is writable
+        data_dir = os.path.dirname(json_file)
+        if not os.path.exists(data_dir):
+            try:
+                os.makedirs(data_dir, exist_ok=True)
+                current_app.logger.info(f"Created directory: {data_dir}")
+            except Exception as e:
+                current_app.logger.error(f"Failed to create directory: {e}")
+                return False
+        
+        # Verify file permissions and read existing data
+        if os.path.exists(json_file):
+            try:
+                with open(json_file, 'r', encoding='utf-8') as f:
+                    communities = json.load(f)
+                current_app.logger.info(f"Loaded {len(communities)} existing communities")
+            except Exception as e:
+                current_app.logger.error(f"Failed to read existing file: {e}")
+                return False
+        else:
+            communities = []
+            current_app.logger.info("Creating new communities file")
+        
+        # Create new community entry from the submission data
+        new_community = {
+            "Name": submission_data['data'].get('Name', ''),
+            "Sport": submission_data['data'].get('Sport', ''),
+            "email": submission_data['data'].get('email', ''),
+            "website": submission_data['data'].get('website', ''),
+            "Address": submission_data['data'].get('Address', ''),
+            "Cost": submission_data['data'].get('Cost', ''),
+            "Int/Dutch": submission_data['data'].get('Int/Dutch', 'Both'),
+            "Student-based": submission_data['data'].get('Student-based', 'No'),
+            "image_url": submission_data['data'].get('image_url', '')
+        }
+        
+        # Add new community to the list
+        communities.append(new_community)
+        current_app.logger.info(f"Added community: {new_community['Name']}")
+        
+        # Save updated communities
+        try:
+            with open(json_file, 'w', encoding='utf-8') as f:
+                json.dump(communities, f, indent=2, ensure_ascii=False)
+            current_app.logger.info(f"Successfully saved community '{new_community['Name']}' to {json_file}")
+            return True
+        except Exception as e:
+            current_app.logger.error(f"Failed to write to file {json_file}: {e}")
+            return False
+        
+    except Exception as e:
+        current_app.logger.error(f"Error saving to main JSON: {e}")
+        return False
+
 print(">>> THIS routes.py LOADED <<<")
 
 # Configure logging
@@ -88,59 +152,39 @@ def submit_application():
 def submit_community():
     """Handle community form submission"""
     try:
-        # Log detailed request information
-        logger.info("Community form submission received")
-        logger.info(f"Request URL: {request.url}")
-        logger.info(f"Request method: {request.method}")
-        logger.info(f"Request content type: {request.content_type}")
-        logger.info(f"Request headers: {dict(request.headers)}")
-        logger.info(f"Form data: {dict(request.form)}")
-        logger.info(f"Request args: {dict(request.args)}")
-        logger.info(f"Request path: {request.path}")
-        logger.info(f"Request full path: {request.full_path}")
-        logger.info(f"Base URL: {request.base_url}")
-        logger.info(f"Host URL: {request.host_url}")
-        
-        # Get all form data
-        form_data = request.form.to_dict()
-        
-        # Update field names for consistency
-        if 'Location' in form_data:
-            form_data['Address'] = form_data.pop('Location')
-        
-        logger.info(f"Processed form data: {form_data}")
-        
-        return jsonify({
-            'success': True,
-            'message': 'Form received successfully'
-        })
-    except Exception as e:
-        logger.error(f"Error processing community submission: {str(e)}")
-        logger.error(f"Exception type: {type(e).__name__}")
-        return jsonify({
-            'success': False, 
-            'message': f'Error processing form: {str(e)}'
-        }), 500
-
-    try:
         # Get all form data
         form_data = request.form.to_dict()
         logger.debug(f"Processed form data: {form_data}")
         
-        # Validate required fields
-        required_fields = ['Name', 'email', 'Location', 'Sport', 'website', 'message']
-        for field in required_fields:
-            if not form_data.get(field):
-                error_message = f'{field.replace("_", " ").title()} is required'
-                logger.warning(f"Missing required field: {field}")
-                if request.is_json or request.content_type == 'application/json':
-                    return jsonify({
-                        'success': False, 
-                        'message': error_message
-                    }), 400
-                else:
-                    flash(error_message, 'error')
-                    return redirect(url_for('main.communities'))
+# All fields are optional, use get() with default empty string
+        form_data = request.form.to_dict()
+        logger.debug(f"Processed form data: {form_data}")
+        
+        # Store submission temporarily
+        temp_submissions_file = os.path.join(current_app.static_folder, 'temp_submissions.json')
+        
+        # Load existing submissions
+        temp_submissions = {}
+        if os.path.exists(temp_submissions_file):
+            try:
+                with open(temp_submissions_file, 'r') as f:
+                    temp_submissions = json.load(f)
+            except json.JSONDecodeError:
+                current_app.logger.warning(f"Could not parse JSON from {temp_submissions_file}")
+                temp_submissions = {}
+        else:
+            # Create empty file if it doesn't exist
+            try:
+                os.makedirs(os.path.dirname(temp_submissions_file), exist_ok=True)
+                with open(temp_submissions_file, 'w') as f:
+                    json.dump({}, f)
+                current_app.logger.info(f"Created empty temp_submissions.json file")
+            except Exception as e:
+                current_app.logger.error(f"Failed to create temp_submissions.json: {e}")
+                return jsonify({
+                    'success': False,
+                    'message': 'Failed to create temporary submissions file. Please try again.'
+                }), 500
         
         # Generate unique submission ID
         submission_id = str(uuid.uuid4())
@@ -166,6 +210,9 @@ def submit_community():
             'status': 'pending'
         }
 
+        # Add submission_id to form_data before saving
+        form_data['submission_id'] = submission_id
+
         # Save updated submissions
         try:
             with open(temp_submissions_file, 'w') as f:
@@ -177,32 +224,34 @@ def submit_community():
                 'message': 'Failed to save submission. Please try again.'
             }), 500
 
-        # Send confirmation email
+        # Send confirmation email if email configuration is available
         try:
-            confirm_url = url_for('main.confirm_community', submission_id=submission_id, action='confirm', _external=True)
-            reject_url = url_for('main.confirm_community', submission_id=submission_id, action='reject', _external=True)
-            
-            send_email(
-                subject='Community Submission Confirmation',
-                recipients=[form_data['email']],
-                template='email/confirm_community.html',
-                confirm_url=confirm_url,
-                reject_url=reject_url,
-                community_name=form_data['Name']
-            )
-            
-            return jsonify({
-                'success': True,
-                'message': 'Thank you! Please check your email for confirmation.'
-            })
-            
+            if current_app.config.get('SMTP_SERVER') and current_app.config.get('EMAIL_USER'):
+                # Get base URL from config or use current request host
+                base_url = current_app.config.get('BASE_URL', request.host_url.rstrip('/'))
+                
+                # Generate confirmation URLs manually
+                confirm_url = f"{base_url}/confirm-community/{submission_id}/accept"
+                reject_url = f"{base_url}/confirm-community/{submission_id}/reject"
+                
+                # Add confirmation URLs to form data
+                form_data['confirm_url'] = confirm_url
+                form_data['reject_url'] = reject_url
+                
+                # Send email with confirmation links
+                if not send_email(form_data, email_type='community_submission'):
+                    current_app.logger.error("Failed to send confirmation email")
+                    flash('An error occurred sending the confirmation email. Please try again.', 'error')
+                    return redirect(url_for('main.communities'))
+                flash('Thank you! Please check your email for confirmation.', 'success')
+            else:
+                flash('Thank you! Your submission has been received.', 'success')
         except Exception as e:
             current_app.logger.error(f"Error sending confirmation email: {e}")
-            return jsonify({
-                'success': False,
-                'message': 'Failed to send confirmation email. Please try again.'
-            }), 500
+            flash('Thank you! Your submission has been received.', 'success')
 
+        return redirect(url_for('main.communities'))
+            
     except Exception as e:
         current_app.logger.error(f"Error processing community submission: {e}")
         return jsonify({
@@ -212,79 +261,95 @@ def submit_community():
 
 @bp.route('/confirm-community/<submission_id>/<action>', methods=['GET'])
 def confirm_community(submission_id, action):
-    """Handle community confirmation from email buttons"""
+    """Handle community submission confirmation"""
     try:
+        # Log the incoming request
+        current_app.logger.info(f"Received confirmation request: ID={submission_id}, action={action}")
+        
         # Load temporary submissions
         temp_submissions_file = os.path.join(current_app.static_folder, 'temp_submissions.json')
         
         if not os.path.exists(temp_submissions_file):
-            return "Submission not found", 404
-            
-        with open(temp_submissions_file, 'r') as f:
-            temp_submissions = json.load(f)
-        
-        # Get submission_id from URL parameters
-        submission_id = request.args.get('submission_id')
-        if not submission_id:
-            return "Missing submission_id parameter", 400
-            
+            current_app.logger.error(f"Temporary submissions file not found: {temp_submissions_file}")
+            return jsonify({
+                "error": "Temporary submissions file not found",
+                "status": "error"
+            }), 404
+
+        try:
+            with open(temp_submissions_file, 'r') as f:
+                temp_submissions = json.load(f)
+        except json.JSONDecodeError as e:
+            current_app.logger.error(f"Error reading submissions file: {e}")
+            return jsonify({
+                "error": "Error reading submissions file",
+                "status": "error"
+            }), 500
+
         if submission_id not in temp_submissions:
-            return "Submission not found", 404
-            
+            current_app.logger.error(f"Submission ID not found: {submission_id}")
+            return jsonify({
+                "error": "Submission not found",
+                "status": "error"
+            }), 404
+
         community_data = temp_submissions[submission_id]
+        community_name = community_data['data'].get('Name', 'Unknown')
         
         if action == 'accept':
-            # Read existing communities
-            json_file = os.path.join(current_app.static_folder, 'data', 'communities_with_logos.json')
-            
-            communities = []
-            if os.path.exists(json_file):
-                with open(json_file, 'r', encoding='utf-8') as f:
-                    communities = json.load(f)
-            
-            # Create new community entry
-            new_community = {
-                "Name": community_data.get('Name', ''),
-                "Sport": community_data.get('Sport', ''),
-                "email": community_data.get('email', ''),
-                "website": community_data.get('website', ''),
-                "Location": community_data.get('Location', ''),
-                "Cost": community_data.get('Cost', ''),
-                "Int/Dutch": community_data.get('Int/Dutch', 'Both'),
-                "Student-based": community_data.get('Student-based', 'No'),
-                "image_url": community_data.get('image_url', '')
-            }
-            
-            # Add new community to the list
-            communities.append(new_community)
-            
-            # Save updated communities
-            os.makedirs(os.path.dirname(json_file), exist_ok=True)
-            with open(json_file, 'w', encoding='utf-8') as f:
-                json.dump(communities, f, indent=2, ensure_ascii=False)
-            
-            # Remove from temporary submissions
-            del temp_submissions[submission_id]
-            with open(temp_submissions_file, 'w') as f:
-                json.dump(temp_submissions, f, indent=2)
-            
-            current_app.logger.info(f"Community '{new_community['Name']}' added successfully")
-            return f"<h1>Community Added Successfully!</h1><p>The community '{new_community['Name']}' has been added to the platform.</p>"
-            
+            current_app.logger.info(f"Attempting to accept community: {community_name}")
+            # Save to main communities file
+            if save_to_main_json(submission_id, community_data):
+                # Remove from temp submissions
+                try:
+                    del temp_submissions[submission_id]
+                    with open(temp_submissions_file, 'w') as f:
+                        json.dump(temp_submissions, f, indent=2)
+                    current_app.logger.info(f"Successfully accepted community: {community_name}")
+                    # Redirect to communities page after successful acceptance
+                    return redirect(url_for('main.communities', suggestion_sent=True))
+                except Exception as e:
+                    current_app.logger.error(f"Error removing accepted submission: {e}")
+                    return jsonify({
+                        "error": "Failed to remove accepted submission",
+                        "status": "error"
+                    }), 500
+            else:
+                current_app.logger.error(f"Failed to save community to main file: {community_name}")
+                return jsonify({
+                    "error": "Failed to save community",
+                    "status": "error"
+                }), 500
+
         elif action == 'reject':
+            current_app.logger.info(f"Attempting to reject community: {community_name}")
             # Remove from temporary submissions
-            del temp_submissions[submission_id]
-            with open(temp_submissions_file, 'w') as f:
-                json.dump(temp_submissions, f, indent=2)
-            
-            current_app.logger.info(f"Community submission '{community_data.get('Name', 'Unknown')}' rejected")
-            return f"<h1>Community Rejected</h1><p>The community submission has been rejected and removed.</p>"
-            
-        return "Invalid action", 400
-        
+            try:
+                del temp_submissions[submission_id]
+                with open(temp_submissions_file, 'w') as f:
+                    json.dump(temp_submissions, f, indent=2)
+                current_app.logger.info(f"Successfully rejected community: {community_name}")
+                # Redirect to communities page after successful rejection
+                return redirect(url_for('main.communities'))
+            except Exception as e:
+                current_app.logger.error(f"Error removing rejected submission: {e}")
+                return jsonify({
+                    "error": "Failed to remove submission",
+                    "status": "error"
+                }), 500
+
+        return jsonify({
+            "error": "Invalid action",
+            "status": "error"
+        }), 400
+
     except Exception as e:
         current_app.logger.error(f"Error in community confirmation: {e}")
-        return f"An error occurred: {str(e)}", 500
+        return jsonify({
+            "success": False,
+            "error": "Internal server error",
+            "message": str(e)
+        }), 500
 
 @bp.route('/communities')
 def communities():

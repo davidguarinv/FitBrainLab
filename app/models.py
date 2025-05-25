@@ -255,7 +255,6 @@ class Challenge(db.Model):
 
     # Relationships
     completed_by = db.relationship('CompletedChallenge', backref='challenge', lazy='dynamic')
-    user_attempts = db.relationship('UserChallenge', backref='challenge', lazy='dynamic')
 
 
 # -------------------------
@@ -353,7 +352,7 @@ class UserChallenge(db.Model):
     
     # Relationships
     user = db.relationship('User', backref='user_challenges')
-    challenge = db.relationship('Challenge', backref='user_attempts')
+    challenge = db.relationship('Challenge', backref='challenge_attempts')
     
     # Composite unique constraint to ensure a user can only have one active attempt per challenge per week
     __table_args__ = (db.UniqueConstraint('user_id', 'challenge_id', 'week_number', 'year', name='_user_challenge_week_uc'),)

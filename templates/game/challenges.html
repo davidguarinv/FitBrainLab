@@ -39,13 +39,13 @@
     {% endif %}
 
     <!-- In Progress Challenges -->
-    {% if challenges.in_progress %}
+    {% if challenges['in_progress'] is defined %}
     <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-primary">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold">In Progress Challenges ({{ challenges.in_progress|length }}/2)</h3>
+            <h3 class="text-xl font-bold">In Progress Challenges ({{ challenges['in_progress']|length }}/2)</h3>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {% for challenge in challenges.in_progress %}
+            {% for challenge in challenges['in_progress'] %}
                 <div class="border rounded-lg p-4 hover:border-primary transition-colors bg-gray-50">
                     <div class="flex justify-between items-start mb-2">
                         <h4 class="font-medium">{{ challenge.title }}</h4>
@@ -85,7 +85,7 @@
                 </span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for slot in challenges.E %}
+                {% for slot in challenges['E'] %}
                     {% if slot.all_done %}
                         <!-- All done for the week -->
                         <div class="border rounded-lg p-4 bg-green-50 border-green-200">

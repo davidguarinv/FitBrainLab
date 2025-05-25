@@ -550,6 +550,53 @@ def abandon_challenge(challenge_id):
     flash('Challenge abandoned. Slot locked for 2 hours.', 'warning')
     return redirect(url_for('main.game', section='challenges'))
 
+# API endpoint to start (add to in-progress) a challenge
+@bp.route('/api/challenges/<int:challenge_id>/start', methods=['POST'])
+@login_required
+def start_challenge(challenge_id):
+    """Mark a challenge as in-progress (pending), enforcing the 2-slot limit."""
+    week = get_current_week_info()
+    try:
+        # Open a transaction; will auto-commit on success or rollback on exception
+        with db.session.begin():
+            # 1) Enforce max-2 in-progress slots
+            in_prog, count = get_in_progress_challenges(
+                current_user.id,
+                week['week_number'],
+                week['year']
+            )
+            if count >= 2:
+                flash('You already have 2 challenges in progress!', 'warning')
+                # Exiting block without error rolls back
+                return redirect(url_for('main.game', section='challenges'))
+
+            # 2) Create (or reuse) the pending UserChallenge record
+            uc = UserChallenge.query.filter_by(
+                user_id=current_user.id,
+                challenge_id=challenge_id,
+                status='pending'
+            ).first()
+            if not uc:
+                uc = UserChallenge(
+                    user_id=current_user.id,
+                    challenge_id=challenge_id,
+                    status='pending',
+                    week_number=week['week_number'],
+                    year=week['year'],
+                    started_at=datetime.utcnow()
+                )
+                db.session.add(uc)
+        # If we reach here, transaction committed successfully
+        flash('Challenge started!', 'success')
+    except Exception as e:
+        # Any exception rolls back automatically; explicit rollback to be safe
+        db.session.rollback()
+        current_app.logger.error(f"Error starting challenge: {e}")
+        flash('Could not start challenge. Please try again.', 'error')
+
+    return redirect(url_for('main.game', section='challenges'))
+
+
 # Profile Update Route (form submission)
 @bp.route('/update_profile', methods=['POST'])
 @login_required

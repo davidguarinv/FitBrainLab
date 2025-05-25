@@ -19,13 +19,12 @@
                         <div class="flex items-center justify-between">
                             <span class="text-primary font-medium">{{ slot.challenge.points }} points</span>
                             <div class="space-x-4">
-                                <form id="complete-challenge-form-{{ slot.challenge.id }}" action="/api/challenges/{{ slot.challenge.id }}/complete" method="POST" style="display: inline;">
-                                    <input type="hidden" name="challenge_id" value="{{ slot.challenge.id }}">
-                                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors complete-challenge-btn">
+                                <form id="complete-challenge-form-{{ slot.challenge.id }}" action="{{ url_for('main.complete_challenge', challenge_id=slot.challenge.id) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
                                         Complete Challenge
                                     </button>
                                 </form>
-                                <form action="/api/challenges/{{ slot.challenge.id }}/abandon" method="POST" style="display: inline;">
+                                <form action="{{ url_for('main.abandon_challenge', challenge_id=slot.challenge.id) }}" method="POST" style="display: inline;">
                                     <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
                                         Abandon
                                     </button>
@@ -57,11 +56,12 @@
                     <div class="flex justify-between items-center">
                         <span class="text-sm font-medium text-primary">{{ challenge.points }} points</span>
                         <div class="space-x-2">
-                            <button onclick="launchConfetti(); completeChallenge('{{ challenge.id }}');"
-                                    class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                Complete
-                            </button>
-                            <form action="/api/challenges/{{ challenge.id }}/abandon" method="POST" style="display: inline;">
+                            <form action="{{ url_for('main.complete_challenge', challenge_id=challenge.id) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
+                                    Complete
+                                </button>
+                            </form>
+                            <form action="{{ url_for('main.abandon_challenge', challenge_id=challenge.id) }}" method="POST" style="display: inline;">
                                 <button type="submit" class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded hover:bg-gray-200 transition-colors">
                                     Abandon
                                 </button>
@@ -105,9 +105,11 @@
                             <p class="text-sm text-gray-600 mb-4">{{ slot.challenge.description }}</p>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium text-primary">{{ slot.challenge.points }} points</span>
-                                <a href="/game?section=challenges&active={{ slot.challenge.id }}" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                    Start
-                                </a>
+                                <form action="{{ url_for('main.start_challenge', challenge_id=slot.challenge.id) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
+                                        Start
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     {% else %}
@@ -125,7 +127,7 @@
                 {% endfor %}
             </div>
         </div>
-        
+
         <!-- Medium Challenges -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
@@ -135,9 +137,8 @@
                 </span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for slot in challenges.M %}
+                {% for slot in challenges['M'] %}
                     {% if slot.all_done %}
-                        <!-- All done for the week -->
                         <div class="border rounded-lg p-4 bg-green-50 border-green-200">
                             <div class="flex justify-between items-center">
                                 <div>
@@ -147,7 +148,6 @@
                             </div>
                         </div>
                     {% elif slot.challenge %}
-                        <!-- Has a challenge -->
                         <div class="border rounded-lg p-4 hover:border-primary transition-colors">
                             <div class="flex justify-between items-start mb-2">
                                 <h4 class="font-medium">{{ slot.challenge.title }}</h4>
@@ -155,13 +155,14 @@
                             <p class="text-sm text-gray-600 mb-4">{{ slot.challenge.description }}</p>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium text-primary">{{ slot.challenge.points }} points</span>
-                                <a href="/game?section=challenges&active={{ slot.challenge.id }}" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                    Start
-                                </a>
+                                <form action="{{ url_for('main.start_challenge', challenge_id=slot.challenge.id) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
+                                        Start
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     {% else %}
-                        <!-- Regenerating -->
                         <div class="border rounded-lg p-4 bg-gray-50">
                             <div class="flex justify-between items-center">
                                 <div>
@@ -175,7 +176,7 @@
                 {% endfor %}
             </div>
         </div>
-        
+
         <!-- Hard Challenges -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
@@ -185,9 +186,8 @@
                 </span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for slot in challenges.H %}
+                {% for slot in challenges['H'] %}
                     {% if slot.all_done %}
-                        <!-- All done for the week -->
                         <div class="border rounded-lg p-4 bg-green-50 border-green-200">
                             <div class="flex justify-between items-center">
                                 <div>
@@ -197,7 +197,6 @@
                             </div>
                         </div>
                     {% elif slot.challenge %}
-                        <!-- Has a challenge -->
                         <div class="border rounded-lg p-4 hover:border-primary transition-colors">
                             <div class="flex justify-between items-start mb-2">
                                 <h4 class="font-medium">{{ slot.challenge.title }}</h4>
@@ -205,13 +204,14 @@
                             <p class="text-sm text-gray-600 mb-4">{{ slot.challenge.description }}</p>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium text-primary">{{ slot.challenge.points }} points</span>
-                                <a href="/game?section=challenges&active={{ slot.challenge.id }}" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
-                                    Start
-                                </a>
+                                <form action="{{ url_for('main.start_challenge', challenge_id=slot.challenge.id) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark transition-colors">
+                                        Start
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     {% else %}
-                        <!-- Regenerating -->
                         <div class="border rounded-lg p-4 bg-gray-50">
                             <div class="flex justify-between items-center">
                                 <div>
@@ -231,35 +231,18 @@
 <script>
 // Function to mark a challenge as complete via AJAX
 function completeChallenge(challengeId) {
-    // Launch confetti immediately for better user experience
     if (typeof launchConfetti === 'function') {
         launchConfetti();
     }
-    
-    // Create a form and submit it (this is more reliable than fetch for this case)
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '/api/challenges/' + challengeId + '/complete';
-    
     const input = document.createElement('input');
     input.type = 'hidden';
     input.name = 'challenge_id';
     input.value = challengeId;
     form.appendChild(input);
-    
-    // Add the form to the body and submit it
     document.body.appendChild(form);
     form.submit();
-}
-
-// Check if we can use the global launchConfetti function
-if (typeof launchConfetti === 'function') {
-    console.log('Using global confetti function');
-} else {
-    console.log('Confetti function not found, looking for it in parent window');
-    
-    if (window.parent && typeof window.parent.launchConfetti === 'function') {
-        window.launchConfetti = window.parent.launchConfetti;
-    }
 }
 </script>

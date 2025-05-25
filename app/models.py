@@ -381,123 +381,83 @@ class Achievement(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    condition = db.Column(db.String(100), nullable=False)  # e.g., '100_total', '50_easy'
-    message = db.Column(db.Text, nullable=False)
-    points_reward = db.Column(db.Integer, default=150)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    condition = db.Column(db.String(50), nullable=False)  # e.g. '5_easy', '3_weekly_streak'
+    message = db.Column(db.String(200), nullable=False)
+    points_reward = db.Column(db.Integer, nullable=False)
+    icon_type = db.Column(db.String(50), nullable=True)  # e.g. 'first_challenge', 'weekly_streak'
     
     # Relationship with UserAchievement
     user_achievements = db.relationship('UserAchievement', backref='achievement', lazy='dynamic')
     
+    ACHIEVEMENTS = [
+        {
+            'name': 'First Challenge!',
+            'condition': '1_total',
+            'message': 'Complete your first challenge.',
+            'points_reward': 50,
+            'icon_type': 'first_challenge'
+        },
+        {
+            'name': 'Getting Started',
+            'condition': '10_total',
+            'message': 'Complete 10 challenges of any difficulty.',
+            'points_reward': 100,
+            'icon_type': 'getting_started'
+        },
+        {
+            'name': 'Challenge Enthusiast',
+            'condition': '50_total',
+            'message': 'Complete 50 challenges of any difficulty.',
+            'points_reward': 200,
+            'icon_type': 'challenge_enthusiast'
+        },
+        {
+            'name': 'Weekly Streak',
+            'condition': '3_weekly_streak',
+            'message': 'Complete challenges for 3 weeks in a row.',
+            'points_reward': 150,
+            'icon_type': 'weekly_streak'
+        },
+        {
+            'name': 'Easy Beginner',
+            'condition': '10_easy',
+            'message': 'Complete 10 easy challenges.',
+            'points_reward': 75,
+            'icon_type': 'easy_beginner'
+        },
+        {
+            'name': 'Medium Beginner',
+            'condition': '10_medium',
+            'message': 'Complete 10 medium challenges.',
+            'points_reward': 100,
+            'icon_type': 'medium_beginner'
+        },
+        {
+            'name': 'Hard Beginner',
+            'condition': '10_hard',
+            'message': 'Complete 10 hard challenges.',
+            'points_reward': 150,
+            'icon_type': 'hard_beginner'
+        }
+    ]
+    
     @staticmethod
     def seed_achievements():
         """Seed the default achievements into the database."""
-        achievements = [
-            {
-                'name': 'First Steps',
-                'condition': '1_total',
-                'message': 'Complete your first challenge!',
-                'points_reward': 50
-            },
-            {
-                'name': 'Getting Started',
-                'condition': '10_total',
-                'message': 'Complete 10 challenges of any difficulty.',
-                'points_reward': 100
-            },
-            {
-                'name': 'Challenge Enthusiast',
-                'condition': '50_total',
-                'message': 'Complete 50 challenges of any difficulty.',
-                'points_reward': 200
-            },
-            {
-                'name': 'Challenge Master',
-                'condition': '100_total',
-                'message': 'Complete 100 challenges of any difficulty.',
-                'points_reward': 300
-            },
-            {
-                'name': 'Easy Beginner',
-                'condition': '10_easy',
-                'message': 'Complete 10 easy challenges.',
-                'points_reward': 75
-            },
-            {
-                'name': 'Easy Expert',
-                'condition': '50_easy',
-                'message': 'Complete 50 easy challenges.',
-                'points_reward': 150
-            },
-            {
-                'name': 'Medium Beginner',
-                'condition': '10_medium',
-                'message': 'Complete 10 medium challenges.',
-                'points_reward': 100
-            },
-            {
-                'name': 'Medium Expert',
-                'condition': '50_medium',
-                'message': 'Complete 50 medium challenges.',
-                'points_reward': 200
-            },
-            {
-                'name': 'Hard Beginner',
-                'condition': '10_hard',
-                'message': 'Complete 10 hard challenges.',
-                'points_reward': 150
-            },
-            {
-                'name': 'Hard Expert',
-                'condition': '30_hard',
-                'message': 'Complete 30 hard challenges.',
-                'points_reward': 300
-            },
-            {
-                'name': 'Weekly Warrior',
-                'condition': 'weekly_all',
-                'message': 'Complete all weekly challenge caps in a single week.',
-                'points_reward': 250
-            },
-            {
-                'name': 'Friend Challenger',
-                'condition': 'friend_1',
-                'message': 'Complete a challenge with a friend.',
-                'points_reward': 150
-            },
-            {
-                'name': 'Social Butterfly',
-                'condition': 'friend_10',
-                'message': 'Complete 10 challenges with friends.',
-                'points_reward': 300
-            },
-            {
-                'name': 'Habit Former',
-                'condition': 'habit_1',
-                'message': 'Complete a weekly habit challenge (all 7 days).',
-                'points_reward': 200
-            },
-            {
-                'name': 'Consistent Achiever',
-                'condition': 'habit_5',
-                'message': 'Complete 5 weekly habit challenges.',
-                'points_reward': 350
-            }
-        ]
-        
-        for achievement_data in achievements:
+        for achievement_data in Achievement.ACHIEVEMENTS:
             existing = Achievement.query.filter_by(name=achievement_data['name']).first()
             if not existing:
                 achievement = Achievement(
                     name=achievement_data['name'],
                     condition=achievement_data['condition'],
                     message=achievement_data['message'],
-                    points_reward=achievement_data['points_reward']
+                    points_reward=achievement_data['points_reward'],
+                    icon_type=achievement_data['icon_type']
                 )
                 db.session.add(achievement)
         
         db.session.commit()
-        return len(achievements)
+        return len(Achievement.ACHIEVEMENTS)
 
 
 # -------------------------

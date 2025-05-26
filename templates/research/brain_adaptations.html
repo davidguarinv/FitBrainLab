@@ -69,14 +69,14 @@
         </div>
 
         <div class="relative">
-        <div class="aspect-video w-full overflow-hidden rounded-xl border border-teal-300/30 bg-gradient-to-br from-teal-500/20 to-cyan-500/20 backdrop-blur">
-            <img
-            src="https://physicsworld.com/wp-content/uploads/2023/04/CoronalTDI.jpg"
-            alt="Brain Adaptations Project"
-            fill
-            class="object-cover"
-            />
-        </div>
+            <div class="relative h-full w-full overflow-hidden rounded-xl border border-teal-300/30 bg-gradient-to-br from-teal-500/20 to-cyan-500/20 backdrop-blur">
+                <img
+                src="{{ url_for('static', filename='images/brain_adaptations.png') }}"
+                alt="Brain Adaptations Project"
+                fill
+                class="object-cover"
+                />
+            </div>
         </div>
     </div>
     </div>
@@ -96,16 +96,7 @@
             Project Overview
             </h2>
             <p class="text-gray-700 leading-relaxed">
-                This research project investigates the neurobiological mechanisms through which regular physical
-                activity enhances resilience to stress. Using animal models, we are specifically focusing on the
-                role of ΔFOSB and other molecular adaptations in key brain regions that occur following voluntary
-                wheel running.
-            </p>
-            <p class="text-gray-700 leading-relaxed mt-4">
-                ΔFOSB is a transcription factor that accumulates in specific brain regions with repeated exposure to
-                various stimuli, including exercise. Our hypothesis is that exercise-induced ΔFOSB accumulation in
-                stress-regulatory brain circuits contributes to the stress-buffering effects of regular physical
-                activity.
+                This research project investigates the neurobiological mechanisms through which regular physical activity enhances resilience to stress. Using animal models, we are specifically focusing on the role of ΔFOSB and other molecular adaptations in key brain regions that occur following voluntary wheel running.
             </p>
         </div>
 
@@ -124,7 +115,7 @@
                     <!-- Flask icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-blue-600 lucide lucide-rat-icon lucide-rat"><path d="M13 22H4a2 2 0 0 1 0-4h12"/><path d="M13.236 18a3 3 0 0 0-2.2-5"/><path d="M16 9h.01"/><path d="M16.82 3.94a3 3 0 1 1 3.237 4.868l1.815 2.587a1.5 1.5 0 0 1-1.5 2.1l-2.872-.453a3 3 0 0 0-3.5 3"/><path d="M17 4.988a3 3 0 1 0-5.2 2.052A7 7 0 0 0 4 14.015 4 4 0 0 0 8 18"/></svg>
                     </div>
-                    <span>Voluntary wheel running paradigms to model regular exercise in rodents</span>
+                    <span class="text-gray-700">Voluntary wheel running paradigms to model regular exercise in rodents</span>
                 </li>
                 <li class="flex items-center gap-2">
                     <div class="rounded-full bg-blue-100 p-1 mt-0.5">
@@ -149,7 +140,7 @@
                         <path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"></path>
                     </svg>
                     </div>
-                    <span>
+                    <span class="text-gray-700">
                     Immunohistochemistry and fluorescence microscopy to visualize ΔFOSB expression in brain tissue
                     </span>
                 </li>
@@ -158,7 +149,7 @@
                     <!-- Brain icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-600"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg>
                     </div>
-                    <span>Viral-mediated gene transfer to manipulate ΔFOSB expression in specific brain regions</span>
+                    <span class="text-gray-700">Viral-mediated gene transfer to manipulate ΔFOSB expression in specific brain regions</span>
                 </li>
             </ul>
         </div>
@@ -207,6 +198,98 @@
     </div>
     </div>
 </section>
+
+<section class="relative w-full py-12 md:py-24 overflow-hidden">
+      <!-- Background -->
+      <div class="absolute inset-0 bg-gradient-to-br from-slate-100 to-blue-50">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(59,130,246,0.1)_1px,transparent_0)] bg-[size:25px_25px]"></div>
+      </div>
+
+      <div class="relative container px-4 md:px-6">
+        <div class="flex flex-col items-center text-center space-y-4 mb-8">
+          <h2 class="text-2xl font-bold tracking-tighter bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
+            Related Projects
+          </h2>
+          <p class="max-w-[800px] text-gray-600">
+            Explore other research projects from our lab that complement the Leopard Predict study.
+          </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+            <a href="/research/stayfine" class="group">
+                <div class="rounded-xl border border-emerald-200/50 bg-gradient-to-br from-white/80 to-emerald-50/80 backdrop-blur-sm shadow-lg h-full transition-all group-hover:shadow-xl group-hover:scale-105">
+                  <div class="p-6 space-y-4">
+                    <div class="relative h-40 w-full rounded-md overflow-hidden">
+                      <img
+                      src="https://stayfine.nl/wp-content/uploads/2020/06/Outro-Stayfine-V2_no_lline.png"
+                      alt="StayFine Project"
+                        fill
+                        class="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h3 class="text-xl font-bold group-hover:bg-gradient-to-r group-hover:from-emerald-600 group-hover:to-teal-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+                        StayFine
+                      </h3>
+                      <p class="text-sm text-gray-600 mt-2">
+                        Preventing relapse in adolescents with depression and anxiety disorders through personalized digital
+                        interventions.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+            </a>
+    
+            <a href="/research/stride4" class="group">
+            <div class="rounded-xl border border-teal-200/50 bg-gradient-to-br from-white/80 to-teal-50/80 backdrop-blur-sm shadow-lg h-full transition-all group-hover:shadow-xl group-hover:scale-105">
+                <div class="p-6 space-y-4">
+                <div class="relative h-40 w-full rounded-md overflow-hidden">
+                    <img
+                    src="https://www.uscsport.nl/wp-content/uploads/24-USC-Universum-Science-Park-306-e1724686521112.jpg"
+                    alt="STRIDE-4-Mental Health Project"
+                    fill
+                    class="object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold group-hover:bg-gradient-to-r group-hover:from-teal-600 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+                    STRIDE-4-Mental Health
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-2">
+                    Applying a network approach to uncover factors influencing exercise persistence in students.
+                    </p>
+                </div>
+                </div>
+            </div>
+            </a>
+    
+            <a href="/research/leopard_predict" class="group">
+            <div class="rounded-xl border border-emerald-200/50 bg-gradient-to-br from-white/80 to-emerald-50/80 backdrop-blur-sm shadow-lg h-full transition-all group-hover:shadow-xl group-hover:scale-105">
+              <div class="p-6 space-y-4">
+                <div class="relative h-40 w-full rounded-md overflow-hidden">
+                  <img
+                    src="{{ url_for('static', filename='images/mri_image.png') }}"
+                    alt="LEOPARD PREDICT Project"
+                    fill
+                    class="object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold group-hover:bg-gradient-to-r group-hover:from-emerald-600 group-hover:to-teal-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+                    LEOPARD PREDICT
+                  </h3>
+                  <p class="text-sm text-gray-600 mt-2">
+                    Predicting antidepressant-treatment response in depressed patients using rsfMRI data and
+                    physical activity parameters.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+</section>
+
 </main>
 
 {% endblock %}

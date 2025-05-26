@@ -2,464 +2,577 @@
 {% block title %}Home - Fit Brain Lab{% endblock %}
 {% block content %}
 
-<div class="flex min-h-screen flex-col">
-    <main class="flex-1">
-        <section class="relative w-full py-24 md:py-32 lg:py-40 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-            <!-- Animated Background Elements -->
-            <div class="absolute inset-0 overflow-hidden">
-            <div class="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-orange-400/20 to-red-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-400/20 to-blue-400/20 rounded-full blur-3xl animate-pulse delay-500"></div>
-        
-            <!-- Floating Icons -->
-            <div class="absolute top-32 left-1/4 animate-bounce delay-300">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-microscope-icon lucide-microscope w-8 h-8 text-blue-400/60"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
+<main class="flex-1 min-h-screen">
+    <section class="relative w-full py-24 md:py-32 lg:py-40 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-orange-400/20 to-red-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-400/20 to-blue-400/20 rounded-full blur-3xl animate-pulse delay-500"></div>
+    
+        <!-- Floating Icons -->
+        <div class="absolute top-32 left-1/4 animate-bounce delay-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-microscope-icon lucide-microscope w-8 h-8 text-blue-400/60"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
+        </div>
+        <div class="absolute bottom-40 right-1/4 animate-bounce delay-700">
+            <svg class="w-6 h-6 text-orange-400/60" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+        </div>
+        <div class="absolute top-1/3 right-20 animate-bounce delay-1000">
+            <svg class="w-7 h-7 text-blue-400/60" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+            </svg>
+        </div>
+    
+        <!-- Geometric Patterns -->
+        <div class="absolute top-16 right-16 w-32 h-32 border border-blue-400/20 rounded-lg rotate-45 animate-spin-slow"></div>
+        <div class="absolute bottom-16 left-16 w-24 h-24 border border-orange-400/20 rounded-full animate-pulse"></div>
+        </div>
+    
+        <div class="relative container mx-auto px-4 md:px-6 text-center">
+        <div class="max-w-6xl mx-auto space-y-8">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm border border-blue-400/30 px-6 py-3 text-blue-300 font-medium">
+            <span>Fit Brain Lab</span>
             </div>
-            <div class="absolute bottom-40 right-1/4 animate-bounce delay-700">
-                <svg class="w-6 h-6 text-orange-400/60" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
+    
+            <!-- Main Heading with Creative Typography -->
+            <div class="space-y-4">
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight overflow-visible">
+                <div class="bg-gradient-to-r from-white via-blue-200 to-indigo-200 bg-clip-text text-transparent">
+                Building
+                </div>
+                <div class="flex items-center justify-center gap-4 my-2">
+                <div class="h-1 w-16 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full"></div>
+                <span class="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    Resilience
+                </span>
+                <div class="h-1 w-16 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"></div>
+                </div>
+                <div class="bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent pb-2">
+                Through Movement
+                </div>
+            </h1>
             </div>
-            <div class="absolute top-1/3 right-20 animate-bounce delay-1000">
-                <svg class="w-7 h-7 text-blue-400/60" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                </svg>
+    
+            <!-- Subtitle -->
+            <p class="text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto leading-relaxed">
+            Exploring how physical activity enhances stress resilience in students through evidence-based research
+            and community engagement.
+            </p>
+    
+            <!-- Stats Row -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto py-8">
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                50+
+                </div>
+                <div class="text-slate-400 text-sm">Active Studies</div>
             </div>
-        
-            <!-- Geometric Patterns -->
-            <div class="absolute top-16 right-16 w-32 h-32 border border-blue-400/20 rounded-lg rotate-45 animate-spin-slow"></div>
-            <div class="absolute bottom-16 left-16 w-24 h-24 border border-orange-400/20 rounded-full animate-pulse"></div>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                1000+
+                </div>
+                <div class="text-slate-400 text-sm">Participants</div>
             </div>
-        
-            <div class="relative container mx-auto px-4 md:px-6 text-center">
-            <div class="max-w-6xl mx-auto space-y-8">
-                <!-- Badge -->
-                <div class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm border border-blue-400/30 px-6 py-3 text-blue-300 font-medium">
-                <span>Fit Brain Lab</span>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                25+
                 </div>
-        
-                <!-- Main Heading with Creative Typography -->
-                <div class="space-y-4">
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight overflow-visible">
-                    <div class="bg-gradient-to-r from-white via-blue-200 to-indigo-200 bg-clip-text text-transparent">
-                    Building
-                    </div>
-                    <div class="flex items-center justify-center gap-4 my-2">
-                    <div class="h-1 w-16 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full"></div>
-                    <span class="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                        Resilience
-                    </span>
-                    <div class="h-1 w-16 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"></div>
-                    </div>
-                    <div class="bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent pb-2">
-                    Through Movement
-                    </div>
-                </h1>
+                <div class="text-slate-400 text-sm">Publications</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                15+
                 </div>
-        
-                <!-- Subtitle -->
-                <p class="text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto leading-relaxed">
-                Exploring how physical activity enhances stress resilience in students through evidence-based research
-                and community engagement.
-                </p>
-        
-                <!-- Stats Row -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto py-8">
-                <div class="text-center">
-                    <div class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                    50+
-                    </div>
-                    <div class="text-slate-400 text-sm">Active Studies</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                    1000+
-                    </div>
-                    <div class="text-slate-400 text-sm">Participants</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-                    25+
-                    </div>
-                    <div class="text-slate-400 text-sm">Publications</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
-                    15+
-                    </div>
-                    <div class="text-slate-400 text-sm">Communities</div>
-                </div>
-                </div>
-        
-                <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <a
-                    href="/research"
-                    class="inline-flex items-center justify-center rounded-full text-lg font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 h-14 px-8 py-4 shadow-2xl shadow-blue-500/25 transition-all duration-300 hover:scale-105"
-                >
-                    Explore Our Research
-                </a>
-                <a
-                    href="/communities"
-                    class="inline-flex items-center justify-center rounded-full text-lg font-semibold border-2 border-orange-400/50 bg-orange-500/10 backdrop-blur-sm text-orange-200 hover:bg-orange-500/20 hover:border-orange-400 h-14 px-8 py-4 transition-all duration-300 hover:scale-105"
-                >
-                    Join Our Community
-                </a>
-                </div>
+                <div class="text-slate-400 text-sm">Communities</div>
             </div>
             </div>
-        </section>
+    
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <a
+                href="/research"
+                class="inline-flex items-center justify-center rounded-full text-lg font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 h-14 px-8 py-4 shadow-2xl shadow-blue-500/25 transition-all duration-300 hover:scale-105"
+            >
+                Explore Our Research
+            </a>
+            <a
+                href="/communities"
+                class="inline-flex items-center justify-center rounded-full text-lg font-semibold border-2 border-orange-400/50 bg-orange-500/10 backdrop-blur-sm text-orange-200 hover:bg-orange-500/20 hover:border-orange-400 h-14 px-8 py-4 transition-all duration-300 hover:scale-105"
+            >
+                Join Our Community
+            </a>
+            </div>
+        </div>
+        </div>
+    </section>
 
-        <!-- Fun Facts Section -->
-        <section class="w-full py-16 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-hidden">
-          <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-12">
-              <div class="inline-block rounded-lg bg-gradient-to-r from-blue-100 to-indigo-100 px-4 py-2 text-sm text-blue-600 font-medium mb-4">
-                Did You Know?
-              </div>
-              <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-                Exercise Facts That Might Surprise You
-              </h2>
-            </div>
-            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              <div class="relative rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-6 text-white shadow-2xl shadow-blue-500/25 hover:scale-105 transition-all duration-300">
-                
-                <h3 class="text-4xl font-bold mb-2">20 min</h3>
-                <p class="text-blue-100">
-                    Just 20 minutes of moderate exercise can boost your mood for up to 12 hours.                
-                </p>
-                <!--https://journals.sagepub.com/doi/abs/10.2466/02.06.13.15.PMS.111.5.333-342?-->
-
-              </div>
-              <div class="relative rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 p-6 text-white shadow-2xl shadow-indigo-500/25 hover:scale-105 transition-all duration-300">
-                
-                <h3 class="text-4xl font-bold mb-2">37%</h3>
-                <p class="text-indigo-100">
-                Physical activity alone accounts for a recution of 37% in stress levels amongst university students.
-                </p>
-                <!--https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2024.1296154/full-->
-              </div>
-              <div class="relative rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 p-6 text-white shadow-2xl shadow-orange-500/25 hover:scale-105 transition-all duration-300">
-                
-                <h3 class="text-4xl font-bold mb-2">3x</h3>
-                <p class="text-orange-100">
-                Group exercise can make you three times more likely to stick with your routine than solo workouts.
-                </p>
-                <!-- Get source-->
-              </div>
-              <div class="relative rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-600 p-6 text-white shadow-2xl shadow-yellow-500/25 hover:scale-105 transition-all duration-300">
-                
-                <h3 class="text-4xl font-bold mb-2">49%</h3>
-                <p class="text-yellow-100">
-                Students with high levels of physical activity have a 49% lower risk of experiencing poor sleep quality.
-                </p>
-                <!--https://pmc.ncbi.nlm.nih.gov/articles/PMC7159078/-->              
-              </div>
-            </div>
+    <!-- Fun Facts Section -->
+    <section class="w-full py-16 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-hidden">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="text-center mb-12">
+          <div class="inline-block rounded-lg bg-gradient-to-r from-blue-100 to-indigo-100 px-4 py-2 text-sm text-blue-600 font-medium mb-4">
+            Did You Know?
           </div>
-        </section>
+          <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+            Exercise Facts That Might Surprise You
+          </h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div class="relative rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-6 text-white shadow-2xl shadow-blue-500/25 hover:scale-105 transition-all duration-300">
+            
+            <h3 class="text-4xl font-bold mb-2">20 min</h3>
+            <p class="text-blue-100">
+                Just 20 minutes of moderate exercise can boost your mood for up to 12 hours.                
+            </p>
+            <!--https://journals.sagepub.com/doi/abs/10.2466/02.06.13.15.PMS.111.5.333-342?-->
 
-        <!-- Research Focus Section -->
-        <section class="w-full py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-          <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-12">
-              <div class="inline-block rounded-lg bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm border border-blue-400/30 px-4 py-2 text-sm text-blue-300 font-medium mb-4">
-                Our Focus
-              </div>
-              <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-blue-200 to-indigo-200 bg-clip-text text-transparent mb-4">
-                Exercise & Stress Resilience
-              </h2>
-              <p class="text-xl text-slate-300 max-w-4xl mx-auto">
-                Our lab investigates how physical activity can enhance stress resilience in university students,
-                developing evidence-based interventions to improve mental wellbeing.
-              </p>
-            </div>
-            <div class="grid gap-8 lg:grid-cols-2 items-center max-w-6xl mx-auto">
-              <div class="space-y-6">
-                <div class="space-y-4">
-                  <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center flex-shrink-0">
-                        <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        width="24" 
-                        height="24" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        stroke-width="2" 
-                        stroke-linecap="round" 
-                        stroke-linejoin="round" 
-                        class="h-6 w-6 text-white"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg>
-                    </div>
-                    <div>
-                      <h3 class="text-xl font-bold text-white mb-2">Neurobiological Mechanisms</h3>
-                      <p class="text-slate-400">
-                        Investigating how exercise affects brain function and stress response pathways.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-6 w-6 text-white"
-                    >
-                        <path d="m6.5 6.5 11 11"></path>
-                        <path d="m21 21-1-1"></path>
-                        <path d="m3 3 1 1"></path>
-                        <path d="m18 22 4-4"></path>
-                        <path d="m2 6 4-4"></path>
-                        <path d="m3 10 7-7"></path>
-                        <path d="m14 21 7-7"></path>
-                    </svg>
-                    </div>
-                    <div>
-                      <h3 class="text-xl font-bold text-white mb-2">Exercise Interventions</h3>
-                      <p class="text-slate-400">
-                        Developing and testing targeted physical activity programs for student populations.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-6 w-6 text-white"
-                    >
-                        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
-                        <path d="M5 3v4"></path>
-                        <path d="M19 17v4"></path>
-                        <path d="M3 5h4"></path>
-                        <path d="M17 19h4"></path>
-                    </svg>
-                    </div>
-                    <div>
-                      <h3 class="text-xl font-bold text-white mb-2">Habit Formation</h3>
-                      <p class="text-slate-400">
-                        Studying how sustainable exercise habits develop and persist in academic environments.
-                      </p>
-                    </div>
-                  </div>
+          </div>
+          <div class="relative rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 p-6 text-white shadow-2xl shadow-indigo-500/25 hover:scale-105 transition-all duration-300">
+            
+            <h3 class="text-4xl font-bold mb-2">37%</h3>
+            <p class="text-indigo-100">
+            Physical activity alone accounts for a recution of 37% in stress levels amongst university students.
+            </p>
+            <!--https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2024.1296154/full-->
+          </div>
+          <div class="relative rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 p-6 text-white shadow-2xl shadow-orange-500/25 hover:scale-105 transition-all duration-300">
+            
+            <h3 class="text-4xl font-bold mb-2">3x</h3>
+            <p class="text-orange-100">
+            Group exercise can make you three times more likely to stick with your routine than solo workouts.
+            </p>
+            <!-- Get source-->
+          </div>
+          <div class="relative rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-600 p-6 text-white shadow-2xl shadow-yellow-500/25 hover:scale-105 transition-all duration-300">
+            
+            <h3 class="text-4xl font-bold mb-2">49%</h3>
+            <p class="text-yellow-100">
+            Students with high levels of physical activity have a 49% lower risk of experiencing poor sleep quality.
+            </p>
+            <!--https://pmc.ncbi.nlm.nih.gov/articles/PMC7159078/-->              
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Research Focus Section -->
+    <section class="w-full py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="text-center mb-12">
+          <div class="inline-block rounded-lg bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm border border-blue-400/30 px-4 py-2 text-sm text-blue-300 font-medium mb-4">
+            Our Focus
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-blue-200 to-indigo-200 bg-clip-text text-transparent mb-4">
+            Exercise & Stress Resilience
+          </h2>
+          <p class="text-xl text-slate-300 max-w-4xl mx-auto">
+            Our lab investigates how physical activity can enhance stress resilience in university students,
+            developing evidence-based interventions to improve mental wellbeing.
+          </p>
+        </div>
+        <div class="grid gap-8 lg:grid-cols-2 items-center max-w-6xl mx-auto">
+          <div class="space-y-6">
+            <div class="space-y-4">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center flex-shrink-0">
+                    <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="2" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    class="h-6 w-6 text-white"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white mb-2">Neurobiological Mechanisms</h3>
+                  <p class="text-slate-400">
+                    Investigating how exercise affects brain function and stress response pathways.
+                  </p>
                 </div>
               </div>
-              <div class="space-y-6">
-                <h3 class="text-2xl font-bold text-white">Current Research Projects</h3>
-                <div class="grid gap-4">
-                  <a href="/research/stayfine" class="group">
-                    <div class="rounded-xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 backdrop-blur-sm border border-blue-400/20 p-4 hover:border-blue-400/40 transition-all">
-                      <h4 class="text-blue-400 font-semibold group-hover:text-blue-300">StayFine</h4>
-                      <p class="text-slate-400 text-sm">Mental health and exercise intervention research</p>
-                    </div>
-                  </a>
-                  <a href="/research/stride4" class="group">
-                    <div class="rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 backdrop-blur-sm border border-indigo-400/20 p-4 hover:border-indigo-400/40 transition-all">
-                      <h4 class="text-indigo-400 font-semibold group-hover:text-indigo-300">STRIDE-4 Mental Health</h4>
-                      <p class="text-slate-400 text-sm">Student resilience and exercise habits research</p>
-                    </div>
-                  </a>
-                  <a href="/research/brain_adaptations" class="group">
-                    <div class="rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 backdrop-blur-sm border border-purple-400/20 p-4 hover:border-purple-400/40 transition-all">
-                      <h4 class="text-purple-400 font-semibold group-hover:text-purple-300">Brain Adaptations</h4>
-                      <p class="text-slate-400 text-sm">Neuroplasticity and exercise-induced changes</p>
-                    </div>
-                  </a>
-                  <a href="/research/leopard_predict" class="group">
-                    <div class="rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-400/20 p-4 hover:border-blue-400/40 transition-all">
-                      <h4 class="text-blue-400 font-semibold group-hover:text-blue-300">Leopard Predict</h4>
-                      <p class="text-slate-400 text-sm">Predictive modeling for exercise adherence</p>
-                    </div>
-                  </a>
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-6 w-6 text-white"
+                >
+                    <path d="m6.5 6.5 11 11"></path>
+                    <path d="m21 21-1-1"></path>
+                    <path d="m3 3 1 1"></path>
+                    <path d="m18 22 4-4"></path>
+                    <path d="m2 6 4-4"></path>
+                    <path d="m3 10 7-7"></path>
+                    <path d="m14 21 7-7"></path>
+                </svg>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white mb-2">Exercise Interventions</h3>
+                  <p class="text-slate-400">
+                    Developing and testing targeted physical activity programs for student populations.
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-6 w-6 text-white"
+                >
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                    <path d="M5 3v4"></path>
+                    <path d="M19 17v4"></path>
+                    <path d="M3 5h4"></path>
+                    <path d="M17 19h4"></path>
+                </svg>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white mb-2">Habit Formation</h3>
+                  <p class="text-slate-400">
+                    Studying how sustainable exercise habits develop and persist in academic environments.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+          <div class="space-y-6">
+            <h3 class="text-2xl font-bold text-white">Current Research Projects</h3>
+            <div class="grid gap-4">
+              <a href="/research/stayfine" class="group">
+                <div class="rounded-xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 backdrop-blur-sm border border-blue-400/20 p-4 hover:border-blue-400/40 transition-all">
+                  <h4 class="text-blue-400 font-semibold group-hover:text-blue-300">StayFine</h4>
+                  <p class="text-slate-400 text-sm">Mental health and exercise intervention research</p>
+                </div>
+              </a>
+              <a href="/research/stride4" class="group">
+                <div class="rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 backdrop-blur-sm border border-indigo-400/20 p-4 hover:border-indigo-400/40 transition-all">
+                  <h4 class="text-indigo-400 font-semibold group-hover:text-indigo-300">STRIDE-4 Mental Health</h4>
+                  <p class="text-slate-400 text-sm">Student resilience and exercise habits research</p>
+                </div>
+              </a>
+              <a href="/research/brain_adaptations" class="group">
+                <div class="rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 backdrop-blur-sm border border-purple-400/20 p-4 hover:border-purple-400/40 transition-all">
+                  <h4 class="text-purple-400 font-semibold group-hover:text-purple-300">Brain Adaptations</h4>
+                  <p class="text-slate-400 text-sm">Neuroplasticity and exercise-induced changes</p>
+                </div>
+              </a>
+              <a href="/research/leopard_predict" class="group">
+                <div class="rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-400/20 p-4 hover:border-blue-400/40 transition-all">
+                  <h4 class="text-blue-400 font-semibold group-hover:text-blue-300">Leopard Predict</h4>
+                  <p class="text-slate-400 text-sm">Predictive modeling for exercise adherence</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- Combined Habit Building Game & Sample Challenges Section -->
-        <section
-          id="game"
-          class="w-full py-20 bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50 overflow-hidden"
-        >
-          <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16">
-              <div class="inline-block rounded-lg bg-gradient-to-r from-orange-100 to-red-100 px-4 py-2 text-sm text-orange-600 font-medium mb-4">
-                Fit Quest
+    <!-- Combined Habit Building Game & Sample Challenges Section -->
+    <section
+      id="game"
+      class="w-full py-20 bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50 overflow-hidden"
+    >
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="text-center mb-16">
+          <div class="inline-block rounded-lg bg-gradient-to-r from-orange-100 to-red-100 px-4 py-2 text-sm text-orange-600 font-medium mb-4">
+            Fit Quest
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">
+            Make Exercise a Fun Challenge
+          </h2>
+          <p class="text-xl text-slate-600 max-w-4xl mx-auto">
+            Turn exercise into a fun habit with simple challenges, streaks, and
+            friendly competition.
+          </p>
+        </div>
+
+        <!-- Game Overview -->
+        <div class="grid gap-12 lg:grid-cols-2 items-center max-w-6xl mx-auto mb-16">
+          <div class="space-y-6">
+            <div class="space-y-4">
+              <div class="flex items-center gap-3 mb-6">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-8 w-8 text-orange-600"
+            >
+                <line x1="6" x2="10" y1="12" y2="12"></line>
+                <line x1="8" x2="8" y1="10" y2="14"></line>
+                <line x1="15" x2="15.01" y1="13" y2="13"></line>
+                <line x1="18" x2="18.01" y1="11" y2="11"></line>
+                <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+            </svg>
+                <h3 class="text-2xl font-bold text-slate-800">How It Works</h3>
               </div>
-              <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">
-                Make Exercise a Fun Challenge
-              </h2>
-              <p class="text-xl text-slate-600 max-w-4xl mx-auto">
-                Turn exercise into a fun habit with simple challenges, streaks, and
-                friendly competition.
+              <p class="text-slate-600 text-lg">
+                We've created a game that makes building exercise habits
+                easier and more enjoyable for students.
               </p>
             </div>
 
-            <!-- Game Overview -->
-            <div class="grid gap-12 lg:grid-cols-2 items-center max-w-6xl mx-auto mb-16">
-              <div class="space-y-6">
-                <div class="space-y-4">
-                  <div class="flex items-center gap-3 mb-6">
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-8 w-8 text-orange-600"
-                >
-                    <line x1="6" x2="10" y1="12" y2="12"></line>
-                    <line x1="8" x2="8" y1="10" y2="14"></line>
-                    <line x1="15" x2="15.01" y1="13" y2="13"></line>
-                    <line x1="18" x2="18.01" y1="11" y2="11"></line>
-                    <rect width="20" height="12" x="2" y="6" rx="2"></rect>
-                </svg>
-                    <h3 class="text-2xl font-bold text-slate-800">How It Works</h3>
-                  </div>
-                  <p class="text-slate-600 text-lg">
-                    We've created a game that makes building exercise habits
-                    easier and more enjoyable for students.
+            <div class="space-y-4">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0 text-white font-bold">
+                  1
+                </div>
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-1">Choose your challenges</h4>
+                  <p class="text-slate-600 text-sm">
+                    Select from over 50 research-backed exercise challenges tailored to student life and schedules.
                   </p>
                 </div>
-
-                <div class="space-y-4">
-                  <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0 text-white font-bold">
-                      1
-                    </div>
-                    <div>
-                      <h4 class="font-semibold text-slate-800 mb-1">Choose your challenges</h4>
-                      <p class="text-slate-600 text-sm">
-                        Select from over 50 research-backed exercise challenges tailored to student life and schedules.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center flex-shrink-0 text-white font-bold">
-                      2
-                    </div>
-                    <div>
-                      <h4 class="font-semibold text-slate-800 mb-1">Track your progress</h4>
-                      <p class="text-slate-600 text-sm">
-                        Build streaks, earn points, and unlock achievements as you establish consistent exercise habits.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-center flex-shrink-0 text-white font-bold">
-                      3
-                    </div>
-                    <div>
-                      <h4 class="font-semibold text-slate-800 mb-1">Climb the Leaderboard</h4>
-                      <p class="text-slate-600 text-sm">
-                        Form teams, join challenges together, and motivate each other through friendly competition.
-                    </p>
-                    </div>
-                  </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center flex-shrink-0 text-white font-bold">
+                  2
+                </div>
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-1">Track your progress</h4>
+                  <p class="text-slate-600 text-sm">
+                    Build streaks, earn points, and unlock achievements as you establish consistent exercise habits.
+                  </p>
                 </div>
               </div>
-
-              <div class="relative">
-                <div class="aspect-video rounded-2xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 p-8 shadow-2xl shadow-orange-500/25 flex items-center justify-center">
-                  <div class="text-center text-white">
-                    <svg class="w-24 h-24 mx-auto mb-4 text-orange-200" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                    <p class="text-2xl font-bold">Habit Game Interface</p>
-                    <p class="text-orange-200">Build streaks, earn rewards</p>
-                  </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-center flex-shrink-0 text-white font-bold">
+                  3
+                </div>
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-1">Climb the Leaderboard</h4>
+                  <p class="text-slate-600 text-sm">
+                    Form teams, join challenges together, and motivate each other through friendly competition.
+                </p>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Sample Challenges -->
-            <div class="space-y-8">
-              <div class="text-center">
-                <h3 class="text-2xl md:text-3xl font-bold text-slate-800 mb-4">
-                  Try These Sample Challenges Today
-                </h3>
-                <p class="text-lg text-slate-600 max-w-3xl mx-auto">
-                  These research-backed mini-challenges are taken directly from our game. Try one today and see the
-                  difference it makes!
-                </p>
+          <div class="relative">
+            <div class="aspect-video rounded-2xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 p-8 shadow-2xl shadow-orange-500/25 flex items-center justify-center">
+              <div class="text-center text-white">
+                <svg class="w-24 h-24 mx-auto mb-4 text-orange-200" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <p class="text-2xl font-bold">Habit Game Interface</p>
+                <p class="text-orange-200">Build streaks, earn rewards</p>
               </div>
+            </div>
+          </div>
+        </div>
 
-              <div class="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
-                <div class="rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 p-6 text-white shadow-2xl shadow-orange-500/25 hover:scale-105 transition-all duration-300 border-l-4 border-l-yellow-400">
-                  <div class="flex items-center gap-3 mb-4">
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-8 w-8 text-orange-200">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
+        <!-- Sample Challenges -->
+        <div class="space-y-8">
+          <div class="text-center">
+            <h3 class="text-2xl md:text-3xl font-bold text-slate-800 mb-4">
+              Try These Sample Challenges Today
+            </h3>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+              These research-backed mini-challenges are taken directly from our game. Try one today and see the
+              difference it makes!
+            </p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+            <div class="rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 p-6 text-white shadow-2xl shadow-orange-500/25 hover:scale-105 transition-all duration-300 border-l-4 border-l-yellow-400">
+              <div class="flex items-center gap-3 mb-4">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-8 w-8 text-orange-200">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+                <h4 class="text-xl font-bold">5-Minute Study Break</h4>
+              </div>
+              <p class="text-orange-100 mb-4">
+                For every hour of studying, take a 5-minute break to do jumping jacks, stretches, or a quick walk.
+                Our research shows this improves information retention by 18%.
+              </p>
+              <div class="text-xs text-orange-200 bg-orange-600/30 rounded-lg px-3 py-1 inline-block">
+                🎯 Beginner Challenge
+              </div>
+            </div>
+            <div class="rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-600 p-6 text-white shadow-2xl shadow-yellow-500/25 hover:scale-105 transition-all duration-300 border-l-4 border-l-red-400">
+              <div class="flex items-center gap-3 mb-4">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-8 w-8 text-yellow-200">
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                <line x1="16" x2="16" y1="2" y2="6"></line>
+                <line x1="8" x2="8" y1="2" y2="6"></line>
+                <line x1="3" x2="21" y1="10" y2="10"></line>
+            </svg>
+                <h4 class="text-xl font-bold">Morning Movement</h4>
+              </div>
+              <p class="text-yellow-100 mb-4">
+                Start your day with 10 minutes of gentle movement. Try stretching, jumping jacks, or a brisk walk.
+                This activates your brain and improves focus for your first classes.
+              </p>
+              <div class="text-xs text-yellow-200 bg-yellow-600/30 rounded-lg px-3 py-1 inline-block">
+                ⭐ Popular Challenge
+              </div>
+            </div>
+            <div class="rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 p-6 text-white shadow-2xl shadow-red-500/25 hover:scale-105 transition-all duration-300 border-l-4 border-l-orange-400">
+              <div class="flex items-center gap-3 mb-4">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-8 w-8   text-red-200"
+            >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+                <h4 class="text-xl font-bold">Social Movement</h4>
+              </div>
+              <p class="text-red-100 mb-4">
+                Invite a friend to join you for a 20-minute walk or workout. Social exercise increases enjoyment by
+                26% and makes you more likely to stick with it long-term.
+              </p>
+              <div class="text-xs text-red-200 bg-red-600/30 rounded-lg px-3 py-1 inline-block">
+                👥 Team Challenge
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+            <a
+              href="/game"
+              class="inline-flex items-center justify-center rounded-full text-lg font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 h-12 px-6 py-3 shadow-xl shadow-orange-500/25 transition-all duration-300 hover:scale-105"
+            >
+              Try the Habit Builder
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Community Maps Section -->
+    <section id="community" class="w-full py-16 bg-gradient-to-br from-orange-100 via-yellow-50 to-red-50">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="text-center mb-12">
+          <div class="inline-block rounded-lg bg-gradient-to-r from-orange-100 to-red-100 px-4 py-2 text-sm text-orange-600 font-medium mb-4">
+            Community Maps
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">
+            Find Your Exercise Community
+          </h2>
+          <p class="text-xl text-slate-600 max-w-4xl mx-auto">
+            Turn individual habits into social connections. Our interactive map helps you find sports communities
+            and workout groups across Amsterdam.
+          </p>
+        </div>
+
+        <div class="grid gap-12 lg:grid-cols-2 items-center max-w-6xl mx-auto">
+          <div class="relative order-2 lg:order-1">
+            <div class="aspect-square rounded-2xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 p-8 shadow-2xl shadow-orange-500/25 flex items-center justify-center">
+              <div class="text-center text-white">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-24 w-24 mb-4 mx-auto text-white"
+                >
+                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                    <line x1="9" x2="9" y1="3" y2="18"></line>
+                    <line x1="15" x2="15" y1="6" y2="21"></line>
                 </svg>
-                    <h4 class="text-xl font-bold">5-Minute Study Break</h4>
-                  </div>
-                  <p class="text-orange-100 mb-4">
-                    For every hour of studying, take a 5-minute break to do jumping jacks, stretches, or a quick walk.
-                    Our research shows this improves information retention by 18%.
-                  </p>
-                  <div class="text-xs text-orange-200 bg-orange-600/30 rounded-lg px-3 py-1 inline-block">
-                    🎯 Beginner Challenge
-                  </div>
-                </div>
-                <div class="rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-600 p-6 text-white shadow-2xl shadow-yellow-500/25 hover:scale-105 transition-all duration-300 border-l-4 border-l-red-400">
-                  <div class="flex items-center gap-3 mb-4">
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-8 w-8 text-yellow-200">
-                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-                    <line x1="16" x2="16" y1="2" y2="6"></line>
-                    <line x1="8" x2="8" y1="2" y2="6"></line>
-                    <line x1="3" x2="21" y1="10" y2="10"></line>
+                <p class="text-2xl font-bold">Amsterdam Sports Map</p>
+                <p class="text-orange-200">Interactive Community Finder</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-6 order-1 lg:order-2">
+            <div class="space-y-4">
+              <div class="flex items-center gap-3 mb-6">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-8 w-8 text-orange-600"
+                >
+                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                    <line x1="9" x2="9" y1="3" y2="18"></line>
+                    <line x1="15" x2="15" y1="6" y2="21"></line>
                 </svg>
-                    <h4 class="text-xl font-bold">Morning Movement</h4>
-                  </div>
-                  <p class="text-yellow-100 mb-4">
-                    Start your day with 10 minutes of gentle movement. Try stretching, jumping jacks, or a brisk walk.
-                    This activates your brain and improves focus for your first classes.
-                  </p>
-                  <div class="text-xs text-yellow-200 bg-yellow-600/30 rounded-lg px-3 py-1 inline-block">
-                    ⭐ Popular Challenge
-                  </div>
-                </div>
-                <div class="rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 p-6 text-white shadow-2xl shadow-red-500/25 hover:scale-105 transition-all duration-300 border-l-4 border-l-orange-400">
-                  <div class="flex items-center gap-3 mb-4">
+                <h3 class="text-2xl font-bold text-slate-800">Connect With Others</h3>
+              </div>
+              <p class="text-slate-600 text-lg">
+                Our research shows that students who exercise in groups are 3x more likely to maintain their habits.
+                Find your community today.
+              </p>
+            </div>
+
+            <div class="space-y-4">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0">
                     <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -470,58 +583,48 @@
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="h-8 w-8   text-red-200"
+                    class="h-5 w-5 text-white"
+                >
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-1">50+ Verified Communities</h4>
+                  <p class="text-slate-600 text-sm">
+                    From running clubs to yoga groups, find the perfect match for your interests and skill level.
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-5 w-5 text-white"
                 >
                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
                     <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
-                    <h4 class="text-xl font-bold">Social Movement</h4>
-                  </div>
-                  <p class="text-red-100 mb-4">
-                    Invite a friend to join you for a 20-minute walk or workout. Social exercise increases enjoyment by
-                    26% and makes you more likely to stick with it long-term.
+                </div>
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-1">International Student Focus</h4>
+                  <p class="text-slate-600 text-sm">
+                    Specially curated for international students looking to continue their sports or try new ones.
                   </p>
-                  <div class="text-xs text-red-200 bg-red-600/30 rounded-lg px-3 py-1 inline-block">
-                    👥 Team Challenge
-                  </div>
                 </div>
               </div>
-
-              <div class="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-                <a
-                  href="/game"
-                  class="inline-flex items-center justify-center rounded-full text-lg font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 h-12 px-6 py-3 shadow-xl shadow-orange-500/25 transition-all duration-300 hover:scale-105"
-                >
-                  Try the Habit Builder
-                </a>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        <!-- Community Maps Section -->
-        <section id="community" class="w-full py-16 bg-gradient-to-br from-orange-100 via-yellow-50 to-red-50">
-          <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-12">
-              <div class="inline-block rounded-lg bg-gradient-to-r from-orange-100 to-red-100 px-4 py-2 text-sm text-orange-600 font-medium mb-4">
-                Community Maps
-              </div>
-              <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">
-                Find Your Exercise Community
-              </h2>
-              <p class="text-xl text-slate-600 max-w-4xl mx-auto">
-                Turn individual habits into social connections. Our interactive map helps you find sports communities
-                and workout groups across Amsterdam.
-              </p>
-            </div>
-
-            <div class="grid gap-12 lg:grid-cols-2 items-center max-w-6xl mx-auto">
-              <div class="relative order-2 lg:order-1">
-                <div class="aspect-square rounded-2xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 p-8 shadow-2xl shadow-orange-500/25 flex items-center justify-center">
-                  <div class="text-center text-white">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-center flex-shrink-0">
                     <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -532,204 +635,100 @@
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="h-24 w-24 mb-4 mx-auto text-white"
-                    >
-                        <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
-                        <line x1="9" x2="9" y1="3" y2="18"></line>
-                        <line x1="15" x2="15" y1="6" y2="21"></line>
-                    </svg>
-                    <p class="text-2xl font-bold">Amsterdam Sports Map</p>
-                    <p class="text-orange-200">Interactive Community Finder</p>
-                  </div>
+                    class="h-5 w-5 text-white"
+                >
+                    <path d="m6.5 6.5 11 11"></path>
+                    <path d="m21 21-1-1"></path>
+                    <path d="m3 3 1 1"></path>
+                    <path d="m18 22 4-4"></path>
+                    <path d="m2 6 4-4"></path>
+                    <path d="m3 10 7-7"></path>
+                    <path d="m14 21 7-7"></path>
+                </svg>
                 </div>
-              </div>
-
-              <div class="space-y-6 order-1 lg:order-2">
-                <div class="space-y-4">
-                  <div class="flex items-center gap-3 mb-6">
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-8 w-8 text-orange-600"
-                    >
-                        <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
-                        <line x1="9" x2="9" y1="3" y2="18"></line>
-                        <line x1="15" x2="15" y1="6" y2="21"></line>
-                    </svg>
-                    <h3 class="text-2xl font-bold text-slate-800">Connect With Others</h3>
-                  </div>
-                  <p class="text-slate-600 text-lg">
-                    Our research shows that students who exercise in groups are 3x more likely to maintain their habits.
-                    Find your community today.
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-1">Filter By Your Needs</h4>
+                  <p class="text-slate-600 text-sm">
+                    Search by sport type, location, language spoken, cost, and skill level to find your perfect fit.
                   </p>
                 </div>
-
-                <div class="space-y-4">
-                  <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0">
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-5 w-5 text-white"
-                    >
-                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    </div>
-                    <div>
-                      <h4 class="font-semibold text-slate-800 mb-1">50+ Verified Communities</h4>
-                      <p class="text-slate-600 text-sm">
-                        From running clubs to yoga groups, find the perfect match for your interests and skill level.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-5 w-5 text-white"
-                    >
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                    </div>
-                    <div>
-                      <h4 class="font-semibold text-slate-800 mb-1">International Student Focus</h4>
-                      <p class="text-slate-600 text-sm">
-                        Specially curated for international students looking to continue their sports or try new ones.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-center flex-shrink-0">
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-5 w-5 text-white"
-                    >
-                        <path d="m6.5 6.5 11 11"></path>
-                        <path d="m21 21-1-1"></path>
-                        <path d="m3 3 1 1"></path>
-                        <path d="m18 22 4-4"></path>
-                        <path d="m2 6 4-4"></path>
-                        <path d="m3 10 7-7"></path>
-                        <path d="m14 21 7-7"></path>
-                    </svg>
-                    </div>
-                    <div>
-                      <h4 class="font-semibold text-slate-800 mb-1">Filter By Your Needs</h4>
-                      <p class="text-slate-600 text-sm">
-                        Search by sport type, location, language spoken, cost, and skill level to find your perfect fit.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <a
-                  href="/communities"
-                  class="inline-flex items-center justify-center rounded-full text-lg font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 h-12 px-6 py-3 shadow-xl shadow-orange-500/25 transition-all duration-300 hover:scale-105"
-                >
-                  Find Your Community
-                </a>
               </div>
             </div>
+
+            <a
+              href="/communities"
+              class="inline-flex items-center justify-center rounded-full text-lg font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 h-12 px-6 py-3 shadow-xl shadow-orange-500/25 transition-all duration-300 hover:scale-105"
+            >
+              Find Your Community
+            </a>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
 
-        <!-- Team Section -->
-        <section id="team" class="w-full py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-          <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-12">
-              <div class="inline-block rounded-lg bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm border border-blue-400/30 px-4 py-2 text-sm text-blue-300 font-medium mb-4">
-                Research Team
-              </div>
-              <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-blue-200 to-indigo-200 bg-clip-text text-transparent mb-4">
-                Meet Our Team
-              </h2>
-              <p class="text-xl text-slate-300 max-w-4xl mx-auto">
-                The interdisciplinary team of researchers, students, and staff behind our work.
-              </p>
+    <!-- Team Section -->
+    <section id="team" class="w-full py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="text-center mb-12">
+          <div class="inline-block rounded-lg bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm border border-blue-400/30 px-4 py-2 text-sm text-blue-300 font-medium mb-4">
+            Research Team
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-blue-200 to-indigo-200 bg-clip-text text-transparent mb-4">
+            Meet Our Team
+          </h2>
+          <p class="text-xl text-slate-300 max-w-4xl mx-auto">
+            The interdisciplinary team of researchers, students, and staff behind our work.
+          </p>
+        </div>
+        <div class="flex justify-center my-8">
+            <div class="w-full max-w-xl">
+                <img
+                    src="{{ url_for('static', filename='images/team_pictures/full_team.jpeg') }}"
+                    alt="The research team"
+                    class="w-full h-auto rounded-lg shadow-lg object-cover"
+                />
             </div>
-            <div class="flex justify-center my-8">
-                <div class="w-full max-w-xl">
-                    <img
-                        src="{{ url_for('static', filename='images/team_pictures/full_team.jpeg') }}"
-                        alt="The research team"
-                        class="w-full h-auto rounded-lg shadow-lg object-cover"
-                    />
-                </div>
+        </div>
+        <div class="flex justify-center mt-8">
+          <a
+            href="/about"
+            class="inline-flex items-center justify-center rounded-full text-lg font-semibold border-2 border-blue-400/50 bg-blue-500/10 backdrop-blur-sm text-blue-200 hover:bg-blue-500/20 hover:border-blue-400 h-12 px-6 py-3 transition-all duration-300 hover:scale-105"
+          >
+            Meet the Full Team
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section id="contact" class="w-full py-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="grid gap-6 lg:grid-cols-2 max-w-6xl mx-auto">
+          <div class="space-y-6">
+            <div class="inline-block rounded-lg bg-gradient-to-r from-blue-100 to-indigo-100 px-4 py-2 text-sm text-blue-600 font-medium">
+              Get Involved
             </div>
-            <div class="flex justify-center mt-8">
+            <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+              Join Our Research Community
+            </h2>
+            <p class="text-slate-600 text-lg">
+              Whether you're a student interested in participating in our research, a potential collaborator, or
+              just curious about our work, we'd love to hear from you.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
               <a
-                href="/about"
-                class="inline-flex items-center justify-center rounded-full text-lg font-semibold border-2 border-blue-400/50 bg-blue-500/10 backdrop-blur-sm text-blue-200 hover:bg-blue-500/20 hover:border-blue-400 h-12 px-6 py-3 transition-all duration-300 hover:scale-105"
+                href="/about#join-us"
+                class="inline-flex items-center justify-center rounded-full text-lg font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 h-12 px-6 py-3 shadow-xl shadow-blue-500/25 transition-all duration-300 hover:scale-105"
               >
-                Meet the Full Team
+                Contact Us
               </a>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
+</main>
 
-        <!-- Call to Action Section -->
-        <section id="contact" class="w-full py-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-          <div class="container mx-auto px-4 md:px-6">
-            <div class="grid gap-6 lg:grid-cols-2 max-w-6xl mx-auto">
-              <div class="space-y-6">
-                <div class="inline-block rounded-lg bg-gradient-to-r from-blue-100 to-indigo-100 px-4 py-2 text-sm text-blue-600 font-medium">
-                  Get Involved
-                </div>
-                <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-                  Join Our Research Community
-                </h2>
-                <p class="text-slate-600 text-lg">
-                  Whether you're a student interested in participating in our research, a potential collaborator, or
-                  just curious about our work, we'd love to hear from you.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                  <a
-                    href="/about#join-us"
-                    class="inline-flex items-center justify-center rounded-full text-lg font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 h-12 px-6 py-3 shadow-xl shadow-blue-500/25 transition-all duration-300 hover:scale-105"
-                  >
-                    Contact Us
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-    </main>
-</div>
 
 
   {% endblock %}

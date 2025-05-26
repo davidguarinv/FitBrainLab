@@ -4560,6 +4560,10 @@ body {
     align-items: center;
   }
 
+  .md\:gap-2 {
+    gap: 0.5rem;
+  }
+
   .md\:self-end {
     align-self: flex-end;
   }

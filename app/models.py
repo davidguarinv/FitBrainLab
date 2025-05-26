@@ -383,7 +383,6 @@ class Achievement(db.Model):
     name = db.Column(db.String(100), nullable=False)
     condition = db.Column(db.String(50), nullable=False)  # e.g. '5_easy', '3_weekly_streak'
     message = db.Column(db.String(200), nullable=False)
-    points_reward = db.Column(db.Integer, nullable=False)
     icon_type = db.Column(db.String(50), nullable=True)  # e.g. 'first_challenge', 'weekly_streak'
     
     # Relationship with UserAchievement
@@ -394,49 +393,37 @@ class Achievement(db.Model):
             'name': 'First Challenge!',
             'condition': '1_total',
             'message': 'Complete your first challenge.',
-            'points_reward': 50,
             'icon_type': 'first_challenge'
         },
         {
             'name': 'Getting Started',
             'condition': '10_total',
             'message': 'Complete 10 challenges of any difficulty.',
-            'points_reward': 100,
             'icon_type': 'getting_started'
         },
         {
             'name': 'Challenge Enthusiast',
             'condition': '50_total',
             'message': 'Complete 50 challenges of any difficulty.',
-            'points_reward': 200,
             'icon_type': 'challenge_enthusiast'
         },
-        {
-            'name': 'Weekly Streak',
-            'condition': '3_weekly_streak',
-            'message': 'Complete challenges for 3 weeks in a row.',
-            'points_reward': 150,
-            'icon_type': 'weekly_streak'
-        },
+
         {
             'name': 'Easy Beginner',
             'condition': '10_easy',
             'message': 'Complete 10 easy challenges.',
-            'points_reward': 75,
             'icon_type': 'easy_beginner'
         },
         {
             'name': 'Medium Beginner',
             'condition': '10_medium',
             'message': 'Complete 10 medium challenges.',
-            'points_reward': 100,
             'icon_type': 'medium_beginner'
         },
         {
             'name': 'Hard Beginner',
             'condition': '10_hard',
             'message': 'Complete 10 hard challenges.',
-            'points_reward': 150,
             'icon_type': 'hard_beginner'
         }
     ]
@@ -451,7 +438,6 @@ class Achievement(db.Model):
                     name=achievement_data['name'],
                     condition=achievement_data['condition'],
                     message=achievement_data['message'],
-                    points_reward=achievement_data['points_reward'],
                     icon_type=achievement_data['icon_type']
                 )
                 db.session.add(achievement)
@@ -567,8 +553,7 @@ class UserAchievement(db.Model):
                 db.session.add(new_achievement)
                 newly_earned.append({
                     'name': achievement.name,
-                    'message': achievement.message,
-                    'points_reward': achievement.points_reward
+                    'message': achievement.message
                 })
                 
         if newly_earned:

@@ -1,4 +1,3 @@
-
 from datetime import datetime, timedelta
 import json
 import math
@@ -911,6 +910,20 @@ def complete_challenge_with_friend(challenge_id):
             else:
                 flash("Friend request updated. Waiting for the other user to confirm.", "info")
         else:
+            # Check if the user has only 1 token left and has a pending friend request
+            tokens_left = get_friend_tokens_left(current_user)
+            
+            # Check for pending friend requests initiated by this user
+            pending_requests = FriendChallengeLink.query.filter(
+                FriendChallengeLink.user1_id == current_user.id,
+                FriendChallengeLink.user2_confirmed == False,
+                FriendChallengeLink.expires_at > datetime.utcnow()
+            ).count()
+            
+            if tokens_left == 1 and pending_requests > 0:
+                flash("You cannot send a new friend request when you have only 1 token left and another request is pending.", "error")
+                return redirect(url_for('main.game', section='challenges'))
+            
             # New link
             new_link = FriendChallengeLink(
                 challenge_id=challenge_id,
@@ -1120,9 +1133,13 @@ def game(section='challenges'):
     # Active challenge ID
     active_challenge_id = request.args.get('active', type=int)
 
-    # User progress
+    # User progress and achievements
     user_progress = None
+    user_achievements = []
+    next_achievements = []
+    
     if current_user.is_authenticated:
+        # Get completed challenges
         recent_completed = (
             CompletedChallenge.query
             .filter_by(user_id=current_user.id)
@@ -1130,7 +1147,10 @@ def game(section='challenges'):
             .limit(5)
             .all()
         )
+        
+        # Get total points
         user_pts = current_user.points or 0
+        
         # Count users with higher points than the current user
         # Using a subquery to avoid the MultipleResultsFound error
         higher_ranked_query = (
@@ -1140,10 +1160,98 @@ def game(section='challenges'):
             .having(func.sum(CompletedChallenge.points_earned) > user_pts)
         )
         higher_ranked = db.session.query(func.count()).select_from(higher_ranked_query.subquery()).scalar() or 0
+        
+        # User progress data
+        user_progress = {
+            'completed_challenges': completed_challenges,
+            'total_points': total_points
+        } if current_user.is_authenticated else None
+        
+        # Get user's earned achievements
+        from app.models import UserAchievement, Achievement, Challenge
+        earned_achievements = (
+            UserAchievement.query
+            .filter_by(user_id=current_user.id)
+            .join(Achievement, UserAchievement.achievement_id == Achievement.id)
+            .order_by(UserAchievement.achieved_at.desc())
+            .all()
+        )
+        
+        for ua in earned_achievements:
+            user_achievements.append({
+                'name': ua.achievement.name,
+                'message': ua.achievement.message,
+                'icon': ua.achievement.icon_type,
+                'achieved_at': ua.achieved_at
+            })
+        
+        # Get achievements the user hasn't earned yet
+        earned_achievement_ids = [ua.achievement_id for ua in earned_achievements]
+        unearned_achievements = Achievement.query.filter(~Achievement.id.in_(earned_achievement_ids)).all()
+        
+        # Calculate progress toward each unearned achievement
+        achievement_progress = []
+        
+        for achievement in unearned_achievements:
+            condition = achievement.condition
+            progress = 0
+            target = 0
+            
+            # Total challenges
+            if condition.endswith('_total'):
+                target = int(condition.split('_')[0])
+                progress = CompletedChallenge.query.filter_by(user_id=current_user.id).count()
+            
+            # Easy challenges
+            elif condition.endswith('_easy'):
+                target = int(condition.split('_')[0])
+                progress = CompletedChallenge.query.join(Challenge).filter(
+                    CompletedChallenge.user_id == current_user.id,
+                    Challenge.difficulty == 'E'
+                ).count()
+            
+            # Medium challenges
+            elif condition.endswith('_medium'):
+                target = int(condition.split('_')[0])
+                progress = CompletedChallenge.query.join(Challenge).filter(
+                    CompletedChallenge.user_id == current_user.id,
+                    Challenge.difficulty == 'M'
+                ).count()
+            
+            # Hard challenges
+            elif condition.endswith('_hard'):
+                target = int(condition.split('_')[0])
+                progress = CompletedChallenge.query.join(Challenge).filter(
+                    CompletedChallenge.user_id == current_user.id,
+                    Challenge.difficulty == 'H'
+                ).count()
+            
+            # Weekly streak
+            elif condition.endswith('_weekly_streak'):
+                target = int(condition.split('_')[0])
+                # This would require more complex logic to track weekly streaks
+                # For now, we'll use a placeholder value
+                progress = 0
+            
+            # Calculate percentage and add to list
+            if target > 0:
+                percentage = min(100, int((progress / target) * 100))
+                achievement_progress.append({
+                    'achievement': achievement,
+                    'progress': progress,
+                    'target': target,
+                    'percentage': percentage
+                })
+        
+        # Sort by percentage completion (highest first) and take top 3
+        achievement_progress.sort(key=lambda x: x['percentage'], reverse=True)
+        next_achievements = achievement_progress[:3]
+        
+        # Build user progress object
         user_progress = {
             'completed_challenges': recent_completed,
             'total_points': user_pts,
-            'rank': higher_ranked + 1,
+            'rank': higher_ranked + 1
         }
 
     # Weekly challenge setup
@@ -1273,6 +1381,8 @@ def game(section='challenges'):
         active_challenge_id=active_challenge_id,
         active_count=active_count,
         user_progress=user_progress,
+        user_achievements=user_achievements,
+        next_achievements=next_achievements,
         friend_tokens_left=friend_tokens_left,
         weekly_challenge_counts=weekly_challenge_counts,
         weekly_challenge_caps=weekly_challenge_caps,

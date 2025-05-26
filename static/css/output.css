@@ -3690,6 +3690,10 @@ body {
   color: rgb(190 24 93 / var(--tw-text-opacity, 1));
 }
 
+.text-pink-400\/60 {
+  color: rgb(244 114 182 / 0.6);
+}
+
 .opacity-0 {
   opacity: 0;
 }

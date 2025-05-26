@@ -118,11 +118,12 @@
                 <!-- User Stats Card -->
                 <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 mr-3 bg-gray-100 rounded-full flex items-center justify-center">
-                            {% if current_user.profile_image %}
-                                <img src="{{ current_user.profile_image }}" alt="{{ current_user.username }}" class="w-8 h-8 rounded-full object-cover">
+                        <div class="w-10 h-10 mr-3 bg-blue-100 rounded-full flex items-center justify-center shadow-sm">
+                            {% if current_user.top_sport_category %}
+                                {% set category_slug = current_user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
+                                <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ current_user.top_sport_category }}" class="w-6 h-6">
                             {% else %}
-                                <span class="text-gray-500 text-lg font-medium">{{ current_user.username[0]|upper }}</span>
+                                <span class="text-blue-600 text-lg font-bold">{{ current_user.username[0]|upper }}</span>
                             {% endif %}
                         </div>
                         <h3 class="text-lg font-semibold">Your Stats</h3>

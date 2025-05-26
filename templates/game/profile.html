@@ -4,9 +4,19 @@
     <!-- Profile Overview -->
     <div class="bg-white rounded-lg shadow-sm p-6">
         <div class="flex items-start justify-between mb-6">
-            <div>
-                <h2 class="text-2xl font-bold">{{ current_user.username }}</h2>
-                <p class="text-gray-600">Member since {{ current_user.created_at.strftime('%B %Y') }}</p>
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-2xl font-bold text-blue-600 shadow-md">
+                    {% if current_user.top_sport_category %}
+                        {% set category_slug = current_user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
+                        <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ current_user.top_sport_category }}" class="w-10 h-10">
+                    {% else %}
+                        {{ current_user.username[0]|upper }}
+                    {% endif %}
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">{{ current_user.username }}</h2>
+                    <p class="text-gray-600">Member since {{ current_user.created_at.strftime('%B %Y') }}</p>
+                </div>
             </div>
             <button onclick="toggleProfileVisibility();"
                     class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-orange-100 transition-colors">
@@ -148,140 +158,6 @@
                 </button>
             </div>
         </form>
-    </div>
-
-    <!-- Achievement Progress -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <h3 class="text-xl font-bold mb-4 flex items-center">
-            <span class="mr-2">Achievements</span>
-            <span class="text-sm font-normal text-gray-500">
-                {{ user_achievements|default([])|length }} earned
-            </span>
-        </h3>
-        
-        <!-- Achievement Display -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            {% if user_achievements|default([]) %}
-                {% for achievement in user_achievements %}
-                <div class="p-4 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border border-primary/20 hover:shadow-md transition-all">
-                    <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary bg-opacity-10 text-primary mr-4">
-                            {% if achievement.icon_type %}
-                                <img src="{{ url_for('static', filename='images/svg/achievements/' ~ achievement.icon_type ~ '.svg') }}" 
-                                     class="w-8 h-8" 
-                                     alt="{{ achievement.name }}">
-                            {% else %}
-                                {{ achievement.icon }}
-                            {% endif %}
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-primary">{{ achievement.name }}</h4>
-                            <p class="text-sm text-gray-600 mt-1">{{ achievement.message }}</p>
-                            <div class="mt-2 flex items-center text-sm font-medium text-primary">
-                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 12.984c-1.664 0-3-1.336-3-3s1.336-3 3-3 3 1.336 3 3-1.336 3-3 3zm0-9c-3.312 0-6 2.688-6 6s2.688 6 6 6 6-2.688 6-6-2.688-6-6-6z"/>
-                                </svg>
-                                +{{ achievement.points_reward }} points
-                            </div>
-                            <div class="text-xs text-gray-500 mt-1">
-                                Earned {{ achievement.achieved_at.strftime('%b %d, %Y') }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="col-span-1 md:col-span-2 p-6 bg-gray-50 rounded-lg text-center">
-                    <p class="text-gray-500">No achievements earned yet. Complete challenges to unlock them!</p>
-                </div>
-            {% endif %}
-        </div>
-        
-        <!-- Achievement Progress -->
-        <h4 class="font-bold text-lg mb-3">Progress Towards Next Achievements</h4>
-        <div class="space-y-4">
-            <!-- Challenge Count Achievements -->
-            {% set total_completed = user_progress.completed_challenges|length %}
-            {% set next_milestone = 100 if total_completed < 100 else 200 %}
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                        {% if total_completed < 100 %}
-                            <span class="text-xl">🔥</span>
-                        {% else %}
-                            <span class="text-xl">🏆</span>
-                        {% endif %}
-                    </div>
-                    <div>
-                        <h4 class="font-medium">
-                            {% if total_completed < 100 %}
-                                Centurion
-                            {% else %}
-                                Challenge Master
-                            {% endif %}
-                        </h4>
-                        <p class="text-sm text-gray-600">
-                            {% if total_completed < 100 %}
-                                Complete 100 challenges
-                            {% else %}
-                                Complete 200 challenges
-                            {% endif %}
-                        </p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p class="text-sm font-medium text-primary">{{ total_completed }}/{{ next_milestone }}</p>
-                    <div class="w-32 h-2 bg-gray-200 rounded-full mt-2">
-                        {% set progress_percent = 0 %}
-                        {% if total_completed and next_milestone %}
-                            {% set progress_percent = (total_completed / next_milestone * 100)|int %}
-                        {% endif %}
-                        <div class="h-full bg-primary rounded-full progress-bar" data-width="{{ progress_percent }}"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Points Progress -->
-            {% set total_points = user_progress.total_points|default(0) %}
-            {% set next_point_milestone = 50000 if total_points < 50000 else 100000 %}
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                        {% if total_points < 50000 %}
-                            <span class="text-xl">🌟</span>
-                        {% else %}
-                            <span class="text-xl">👑</span>
-                        {% endif %}
-                    </div>
-                    <div>
-                        <h4 class="font-medium">
-                            {% if total_points < 50000 %}
-                                Point Prodigy
-                            {% else %}
-                                Ultimate Champion
-                            {% endif %}
-                        </h4>
-                        <p class="text-sm text-gray-600">
-                            {% if total_points < 50000 %}
-                                Earn 50,000 total points
-                            {% else %}
-                                Earn 100,000 total points
-                            {% endif %}
-                        </p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p class="text-sm font-medium text-primary">{{ total_points|int }}/{{ next_point_milestone }}</p>
-                    <div class="w-32 h-2 bg-gray-200 rounded-full mt-2">
-                        {% set points_percent = 0 %}
-                        {% if total_points and next_point_milestone %}
-                            {% set points_percent = (total_points / next_point_milestone * 100)|int %}
-                        {% endif %}
-                        <div class="h-full bg-primary rounded-full progress-bar" data-width="{{ points_percent }}"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 {% endif %}

@@ -6,20 +6,10 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
-from .models import (
-    User,
-    Challenge,
-    CompletedChallenge,
-    ChallengeRegeneration,
-    UserChallenge,
-    WeeklyChallengeSet,
-    UserWeeklyOrder,
-    WeeklyHabitChallenge,
-    FunFact,
-    FriendChallengeLink,
-    ChallengeOfTheWeek,
-    FriendTokenUsage
-)
+from .models import User, Challenge, CompletedChallenge, UserChallenge, \
+    ChallengeRegeneration, WeeklyChallengeSet, FriendChallengeLink, \
+    FriendTokenUsage, FunFact, Notification, WeeklyHabitChallenge, \
+    UserWeeklyOrder, ChallengeOfTheWeek
 from .forms import LoginForm, RegistrationForm
 from .email_handler import send_email
 import logging
@@ -508,11 +498,13 @@ def complete_challenge(challenge_id):
         friend_link = FriendChallengeLink.query.filter_by(challenge_id=challenge_id).filter(
             ((FriendChallengeLink.user1_id == current_user.id) | (FriendChallengeLink.user2_id == current_user.id)) &
             (FriendChallengeLink.user1_confirmed == True) & 
-            (FriendChallengeLink.user2_confirmed == True)
+            (FriendChallengeLink.user2_confirmed == True) &
+            (FriendChallengeLink.expired == False)
         ).first()
         
         points_multiplier = 1.0
         friend_id = None
+        is_second_completer = False
         
         if friend_link:
             # This is a friend-linked challenge
@@ -520,10 +512,16 @@ def complete_challenge(challenge_id):
                 friend_id = friend_link.user2_id
                 friend_link.user1_completed = True
                 friend_link.user1_completed_at = datetime.utcnow()
+                # Check if friend already completed
+                if friend_link.user2_completed:
+                    is_second_completer = True
             else:
                 friend_id = friend_link.user1_id
                 friend_link.user2_completed = True
                 friend_link.user2_completed_at = datetime.utcnow()
+                # Check if friend already completed
+                if friend_link.user1_completed:
+                    is_second_completer = True
             
             # Set expiration for the other user to complete
             if not friend_link.completion_expires_at:
@@ -531,11 +529,41 @@ def complete_challenge(challenge_id):
             
             # Check if both users have completed the challenge
             if friend_link.user1_completed and friend_link.user2_completed:
-                # Both completed - award bonus points
-                points_multiplier = 1.5
+                # Both completed - award bonus points to the first completer
                 friend = User.query.get(friend_id)
-                if friend:
-                    flash(f"You and {friend.username} both completed the challenge! Bonus points awarded!", "success")
+                
+                if is_second_completer:
+                    # This user is the second to complete - give them 1.5x points right away
+                    points_multiplier = 1.5
+                    
+                    # Also update the first completer's points
+                    first_user_id = friend_id  # The friend was the first to complete
+                    
+                    # Find the first user's completed challenge record
+                    first_user_completion = CompletedChallenge.query.filter_by(
+                        user_id=first_user_id, 
+                        challenge_id=challenge_id
+                    ).first()
+                    
+                    if first_user_completion:
+                        # Calculate and add the bonus points (0.5x)
+                        bonus_points = int(challenge.points * 0.5)
+                        first_user_completion.points_earned += bonus_points
+                        
+                        # Notify the first user about the bonus points
+                        # This will be shown next time they log in
+                        notification = Notification(
+                            user_id=first_user_id,
+                            message=f"Your friend completed the challenge! You earned {bonus_points} bonus points!",
+                            created_at=datetime.utcnow()
+                        )
+                        db.session.add(notification)
+                    
+                    if friend:
+                        flash(f"You and {friend.username} both completed the challenge! Bonus points awarded!", "success")
+                else:
+                    # This user is the first to complete - give them 1.0x points for now
+                    flash("Challenge completed! Your friend has 24 hours to complete it for bonus points.", "success")
             else:
                 flash("Challenge completed! Your friend has 24 hours to complete it for bonus points.", "success")
         
@@ -870,7 +898,15 @@ def complete_challenge_with_friend(challenge_id):
             if link.user1_confirmed and link.user2_confirmed:
                 # Only add token usage for the second user (first user already used token when creating the link)
                 if current_user.id == link.user2_id:
+                    # Check if this user still has tokens left
+                    tokens_left = get_friend_tokens_left(current_user)
+                    if tokens_left <= 0:
+                        flash("You've used all your friend tokens this week.", "error")
+                        return redirect(url_for('main.game', section='challenges'))
+                    
+                    # Add token usage record
                     db.session.add(FriendTokenUsage(user_id=current_user.id, used_at=datetime.utcnow()))
+                    
                 flash("Challenge successfully linked with your friend! Complete it within 24 hours of each other for bonus points.", "success")
             else:
                 flash("Friend request updated. Waiting for the other user to confirm.", "info")
@@ -901,6 +937,8 @@ def complete_challenge_with_friend(challenge_id):
 def get_friend_tokens_left(user):
     now = datetime.utcnow()
     week_start = now - timedelta(days=now.weekday())
+    # Force a fresh query with no caching
+    db.session.expire_all()
     tokens_used = FriendTokenUsage.query.filter(
         FriendTokenUsage.user_id == user.id,
         FriendTokenUsage.used_at >= week_start
@@ -1009,9 +1047,34 @@ def game(section='challenges'):
         .filter(User.is_public == True)
         .group_by(User.id)
         .order_by(func.coalesce(func.sum(CompletedChallenge.points_earned), 0).desc())
-        .limit(10)
+        .limit(20)
         .all()
     )
+    
+    # Get current user's rank in all-time leaderboard if authenticated
+    current_user_rank = None
+    current_user_points = None
+    if current_user.is_authenticated:
+        # Subquery to get all users and their points
+        all_users_ranked = db.session.query(
+            User.id,
+            func.coalesce(func.sum(CompletedChallenge.points_earned), 0).label('points'),
+            func.rank().over(
+                order_by=func.coalesce(func.sum(CompletedChallenge.points_earned), 0).desc()
+            ).label('rank')
+        ).outerjoin(
+            CompletedChallenge, User.id == CompletedChallenge.user_id
+        ).group_by(User.id).subquery()
+        
+        # Get current user's rank
+        user_rank_query = db.session.query(
+            all_users_ranked.c.rank,
+            all_users_ranked.c.points
+        ).filter(all_users_ranked.c.id == current_user.id).first()
+        
+        if user_rank_query:
+            current_user_rank = user_rank_query[0]
+            current_user_points = user_rank_query[1]
     weekly_users = (
         db.session.query(
             User,
@@ -1024,9 +1087,35 @@ def game(section='challenges'):
         .filter(User.is_public == True)
         .group_by(User.id)
         .order_by(func.coalesce(func.sum(CompletedChallenge.points_earned), 0).desc())
-        .limit(10)
+        .limit(20)
         .all()
     )
+    
+    # Get current user's rank in weekly leaderboard if authenticated
+    current_user_weekly_rank = None
+    current_user_weekly_points = None
+    if current_user.is_authenticated:
+        # Subquery to get all users and their weekly points
+        weekly_users_ranked = db.session.query(
+            User.id,
+            func.coalesce(func.sum(CompletedChallenge.points_earned), 0).label('points'),
+            func.rank().over(
+                order_by=func.coalesce(func.sum(CompletedChallenge.points_earned), 0).desc()
+            ).label('rank')
+        ).outerjoin(
+            CompletedChallenge, 
+            (User.id == CompletedChallenge.user_id) & (CompletedChallenge.completed_at >= one_week_ago)
+        ).group_by(User.id).subquery()
+        
+        # Get current user's weekly rank
+        user_weekly_rank_query = db.session.query(
+            weekly_users_ranked.c.rank,
+            weekly_users_ranked.c.points
+        ).filter(weekly_users_ranked.c.id == current_user.id).first()
+        
+        if user_weekly_rank_query:
+            current_user_weekly_rank = user_weekly_rank_query[0]
+            current_user_weekly_points = user_weekly_rank_query[1]
 
     # Active challenge ID
     active_challenge_id = request.args.get('active', type=int)
@@ -1165,6 +1254,8 @@ def game(section='challenges'):
     weekly_challenge_caps = None
     
     if current_user.is_authenticated:
+        # Force a database refresh to get accurate token count
+        db.session.expire_all()
         friend_tokens_left = get_friend_tokens_left(current_user)
         weekly_challenge_counts = current_user.get_weekly_challenge_counts()
         weekly_challenge_caps = {
@@ -1186,6 +1277,10 @@ def game(section='challenges'):
         weekly_challenge_counts=weekly_challenge_counts,
         weekly_challenge_caps=weekly_challenge_caps,
         friend_linked_challenges=friend_linked_challenges,
+        current_user_rank=current_user_rank,
+        current_user_points=current_user_points,
+        current_user_weekly_rank=current_user_weekly_rank,
+        current_user_weekly_points=current_user_weekly_points,
         login_form=(LoginForm() if section == 'auth' else None),
         signup_form=(RegistrationForm() if section == 'auth' else None)
     )

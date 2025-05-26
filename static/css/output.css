@@ -3650,6 +3650,11 @@ body {
   color: rgb(124 45 18 / 0.9);
 }
 
+.text-blue-500 {
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246 / var(--tw-text-opacity, 1));
+}
+
 .placeholder-orange-100\/70::-moz-placeholder {
   color: rgb(255 237 213 / 0.7);
 }

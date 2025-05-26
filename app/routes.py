@@ -865,13 +865,15 @@ def game(section='challenges'):
             .all()
         )
         user_pts = current_user.points or 0
-        higher_ranked = (
-            db.session.query(func.count(User.id))
+        # Count users with higher points than the current user
+        # Using a subquery to avoid the MultipleResultsFound error
+        higher_ranked_query = (
+            db.session.query(User.id)
             .join(CompletedChallenge, User.id == CompletedChallenge.user_id)
             .group_by(User.id)
             .having(func.sum(CompletedChallenge.points_earned) > user_pts)
-            .scalar() or 0
         )
+        higher_ranked = db.session.query(func.count()).select_from(higher_ranked_query.subquery()).scalar() or 0
         user_progress = {
             'completed_challenges': recent_completed,
             'total_points': user_pts,

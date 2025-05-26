@@ -3,46 +3,75 @@
 {% block content %}
 
 <main class="flex-1">
-<!-- Project Header -->
-<section class="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-gray-100 to-gray-200">
-    <div class="container mx-auto px-4 md:px-6">
-    <div class="flex flex-col space-y-4">
+<!-- Hero Section -->
+<section class="relative w-full py-12 md:py-24 lg:py-32 overflow-hidden">
+    <!-- Neural Network Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-teal-900 via-cyan-900 to-blue-900">
+    <!-- Animated Neural Nodes -->
+    <div class="absolute top-20 left-10 w-4 h-4 bg-teal-400/60 rounded-full animate-pulse"></div>
+    <div class="absolute top-40 right-20 w-6 h-6 bg-cyan-400/60 rounded-full animate-ping"></div>
+    <div class="absolute bottom-32 left-1/4 w-3 h-3 bg-blue-400/60 rounded-full animate-pulse"></div>
+    <div class="absolute top-1/3 right-1/3 w-5 h-5 bg-teal-300/60 rounded-full animate-bounce"></div>
+    <div class="absolute bottom-20 right-10 w-4 h-4 bg-cyan-300/60 rounded-full animate-pulse"></div>
+
+    <!-- Neural Connection Lines -->
+    <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 1000 600">
+        <defs>
+        <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.3" />
+        </linearGradient>
+        </defs>
+        <path d="M100,150 Q300,100 500,200 T900,180" stroke="url(#neuralGradient)" stroke-width="2" fill="none" />
+        <path d="M150,300 Q400,250 650,350 T950,320" stroke="url(#neuralGradient)" stroke-width="2" fill="none" />
+        <path d="M80,450 Q350,400 600,500 T920,480" stroke="url(#neuralGradient)" stroke-width="2" fill="none" />
+    </svg>
+
+    <!-- Synaptic Pattern -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_2px_2px,rgba(20,184,166,0.1)_2px,transparent_0)] bg-[size:40px_40px]"></div>
+    </div>
+
+    <div class="relative container mx-auto px-4 md:px-6">
+    <div class="mb-8">
         <a
         href="/research"
-        class="flex items-center text-blue-600 hover:text-blue-500 transition-colors mb-2"
+        class="inline-flex items-center text-sm font-medium text-teal-200 hover:text-teal-100 transition-colors mb-4"
         >
-        <!-- Arrow left icon -->
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="mr-2 h-4 w-4"
+            class="mr-1"
         >
-            <path d="m12 19-7-7 7-7"></path>
-            <path d="M19 12H5"></path>
+            <path d="m15 18-6-6 6-6"></path>
         </svg>
         Back to Research Projects
         </a>
+    </div>
 
-        <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-        <div class="space-y-4">
-            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 items-center">
+        <div class="space-y-6">
+        <div class="inline-block rounded-lg bg-teal-100/90 backdrop-blur px-3 py-1 text-sm text-teal-700 font-medium">
             Animal Model Research
-            </div>
-            <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Brain Adaptations</h1>
-            <p class="text-xl text-gray-500">
-            Investigating neural mechanisms of stress resilience following voluntary exercise
-            </p>
         </div>
-        <div class="relative h-[300px] rounded-xl overflow-hidden">
+        <h1 class="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+            Brain Adaptations
+        </h1>
+        <p class="text-xl text-teal-100">
+            Investigating neural mechanisms of stress resilience following voluntary exercise
+        </p>
+        </div>
+
+        <div class="relative">
+        <div class="aspect-video w-full overflow-hidden rounded-xl border border-teal-300/30 bg-gradient-to-br from-teal-500/20 to-cyan-500/20 backdrop-blur">
             <img
-            src="/placeholder.svg?height=300&width=600&text=Brain+Adaptations"
+            src="https://physicsworld.com/wp-content/uploads/2023/04/CoronalTDI.jpg"
             alt="Brain Adaptations Project"
             fill
             class="object-cover"
@@ -53,596 +82,149 @@
     </div>
 </section>
 
-<!-- Project Details -->
-<section class="w-full py-12 md:py-24 bg-white">
-    <div class="container mx-auto px-4 md:px-6">
-    <div class="grid gap-10 lg:grid-cols-3">
+<!-- Content Section -->
+<section class="relative w-full py-12 md:py-24 bg-gradient-to-b from-slate-50 to-white">
+    <!-- Neural Pattern Background -->
+    <div class="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.03)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
+
+    <div class="relative container mx-auto px-4 md:px-6">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div class="lg:col-span-2 space-y-8">
-        <div class="space-y-4">
-            <h2 class="text-2xl font-bold tracking-tighter">Project Overview</h2>
-            <p class="text-gray-500">
-            This research project investigates the neurobiological mechanisms through which regular physical
-            activity enhances resilience to stress. Using animal models, we are specifically focusing on the
-            role of ΔFOSB and other molecular adaptations in key brain regions that occur following voluntary
-            wheel running.
+        <!-- Project Overview -->
+        <div class="rounded-xl border border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-6 shadow-lg">
+            <h2 class="mb-4 text-2xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+            Project Overview
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+                This research project investigates the neurobiological mechanisms through which regular physical
+                activity enhances resilience to stress. Using animal models, we are specifically focusing on the
+                role of ΔFOSB and other molecular adaptations in key brain regions that occur following voluntary
+                wheel running.
             </p>
-            <p class="text-gray-500">
-            ΔFOSB is a transcription factor that accumulates in specific brain regions with repeated exposure to
-            various stimuli, including exercise. Our hypothesis is that exercise-induced ΔFOSB accumulation in
-            stress-regulatory brain circuits contributes to the stress-buffering effects of regular physical
-            activity.
-            </p>
-        </div>
-
-        <div class="space-y-4">
-            <h2 class="text-2xl font-bold tracking-tighter">Research Methodology</h2>
-            <p class="text-gray-500">Our research employs several advanced techniques:</p>
-            <ul class="space-y-2 text-gray-500">
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <!-- Flask icon -->
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M9 3h6"></path>
-                    <path d="M10 3v4"></path>
-                    <path d="M14 3v4"></path>
-                    <path d="M6 8h12a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2Z"></path>
-                    <path d="M5 14h14a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1Z"></path>
-                    <path d="M5 18h14a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1Z"></path>
-                </svg>
-                </div>
-                <span>Voluntary wheel running paradigms to model regular exercise in rodents</span>
-            </li>
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <!-- Microscope icon -->
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M6 18h8"></path>
-                    <path d="M3 22h18"></path>
-                    <path d="M14 22a7 7 0 1 0 0-14h-1"></path>
-                    <path d="M9 14h2"></path>
-                    <path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"></path>
-                    <path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"></path>
-                </svg>
-                </div>
-                <span>
-                Immunohistochemistry and fluorescence microscopy to visualize ΔFOSB expression in brain tissue
-                </span>
-            </li>
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <!-- Brain icon -->
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                    <path d="M7 22v-3"></path>
-                    <path d="M17 22v-3"></path>
-                    <path d="M12 22v-6"></path>
-                    <path d="M12 13v-3"></path>
-                    <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                </svg>
-                </div>
-                <span>Behavioral testing to assess stress resilience and anxiety-like behaviors</span>
-            </li>
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <!-- Brain icon -->
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                    <path d="M7 22v-3"></path>
-                    <path d="M17 22v-3"></path>
-                    <path d="M12 22v-6"></path>
-                    <path d="M12 13v-3"></path>
-                    <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                </svg>
-                </div>
-                <span>Viral-mediated gene transfer to manipulate ΔFOSB expression in specific brain regions</span>
-            </li>
-            </ul>
-        </div>
-
-        <div class="space-y-4">
-            <h2 class="text-2xl font-bold tracking-tighter">Current Progress</h2>
-            <p class="text-gray-500">Our research has made significant progress in several areas:</p>
-            <ul class="space-y-2 text-gray-500">
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <!-- File text icon -->
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <line x1="10" y1="9" x2="8" y2="9"></line>
-                </svg>
-                </div>
-                <span>
-                Mapped the pattern of ΔFOSB accumulation in multiple brain regions following different durations
-                of voluntary wheel running
-                </span>
-            </li>
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <line x1="10" y1="9" x2="8" y2="9"></line>
-                </svg>
-                </div>
-                <span>
-                Identified correlations between regional ΔFOSB expression and behavioral measures of stress
-                resilience
-                </span>
-            </li>
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <line x1="10" y1="9" x2="8" y2="9"></line>
-                </svg>
-                </div>
-                <span>
-                Developed viral vectors to selectively manipulate ΔFOSB expression in specific neuronal
-                populations
-                </span>
-            </li>
-            </ul>
-            <p class="text-gray-500">
-            We are currently conducting experiments to determine the causal role of ΔFOSB in exercise-induced
-            stress resilience by selectively increasing or decreasing its expression in key brain regions.
+            <p class="text-gray-700 leading-relaxed mt-4">
+                ΔFOSB is a transcription factor that accumulates in specific brain regions with repeated exposure to
+                various stimuli, including exercise. Our hypothesis is that exercise-induced ΔFOSB accumulation in
+                stress-regulatory brain circuits contributes to the stress-buffering effects of regular physical
+                activity.
             </p>
         </div>
 
-        <div class="space-y-4">
-            <h2 class="text-2xl font-bold tracking-tighter">Key Findings</h2>
-            <p class="text-gray-500">Our research has yielded several important findings:</p>
-            <ul class="space-y-2 text-gray-500">
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                    <path d="M7 22v-3"></path>
-                    <path d="M17 22v-3"></path>
-                    <path d="M12 22v-6"></path>
-                    <path d="M12 13v-3"></path>
-                    <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                </svg>
-                </div>
-                <span>
-                Voluntary wheel running leads to significant ΔFOSB accumulation in the prefrontal cortex,
-                hippocampus, and amygdala - key regions involved in stress regulation
-                </span>
-            </li>
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                    <path d="M7 22v-3"></path>
-                    <path d="M17 22v-3"></path>
-                    <path d="M12 22v-6"></path>
-                    <path d="M12 13v-3"></path>
-                    <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                </svg>
-                </div>
-                <span>
-                The pattern of ΔFOSB expression differs between acute and chronic exercise, suggesting distinct
-                neuroadaptations with regular physical activity
-                </span>
-            </li>
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                    <path d="M7 22v-3"></path>
-                    <path d="M17 22v-3"></path>
-                    <path d="M12 22v-6"></path>
-                    <path d="M12 13v-3"></path>
-                    <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                </svg>
-                </div>
-                <span>
-                Animals with higher ΔFOSB expression in the prefrontal cortex show enhanced resilience to stress
-                in behavioral tests
-                </span>
-            </li>
+
+        <!-- Methodology -->
+
+
+        <div class="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 shadow-lg">
+            <h2 class="mb-4 text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            Research Methodology
+            </h2>
+            <p class="text-gray-700 mb-4">Our research employs several advanced techniques:</p>
+            <ul class="space-y-3">
+                <li class="flex items-start gap-3">
+                    <div class="rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 p-1 mt-1">
+                    <!-- Flask icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-blue-600"
+                    >
+                        <path d="M9 3h6"></path>
+                        <path d="M10 3v4"></path>
+                        <path d="M14 3v4"></path>
+                        <path d="M6 8h12a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2Z"></path>
+                        <path d="M5 14h14a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1Z"></path>
+                        <path d="M5 18h14a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1Z"></path>
+                    </svg>
+                    </div>
+                    <span>Voluntary wheel running paradigms to model regular exercise in rodents</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <!-- Microscope icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="h-4 w-4 text-blue-600"
+                    >
+                        <path d="M6 18h8"></path>
+                        <path d="M3 22h18"></path>
+                        <path d="M14 22a7 7 0 1 0 0-14h-1"></path>
+                        <path d="M9 14h2"></path>
+                        <path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"></path>
+                        <path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"></path>
+                    </svg>
+                    </div>
+                    <span>
+                    Immunohistochemistry and fluorescence microscopy to visualize ΔFOSB expression in brain tissue
+                    </span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
+                    <!-- Brain icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-600"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg>
+                    </div>
+                    <span>Viral-mediated gene transfer to manipulate ΔFOSB expression in specific brain regions</span>
+                </li>
             </ul>
         </div>
 
-        <div class="space-y-4">
-            <h2 class="text-2xl font-bold tracking-tighter">Translational Implications</h2>
-            <p class="text-gray-500">
-            This research has important implications for understanding how exercise benefits mental health in
-            humans:
-            </p>
-            <ul class="space-y-2 text-gray-500">
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                    <path d="M7 22v-3"></path>
-                    <path d="M17 22v-3"></path>
-                    <path d="M12 22v-6"></path>
-                    <path d="M12 13v-3"></path>
-                    <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                </svg>
-                </div>
-                <span>
-                Identifying the molecular mechanisms of exercise-induced stress resilience may lead to novel
-                therapeutic targets for stress-related disorders
-                </span>
-            </li>
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                    <path d="M7 22v-3"></path>
-                    <path d="M17 22v-3"></path>
-                    <path d="M12 22v-6"></path>
-                    <path d="M12 13v-3"></path>
-                    <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                </svg>
-                </div>
-                <span>
-                Understanding the time course and dose-response relationship of these neuroadaptations can
-                inform exercise prescription guidelines
-                </span>
-            </li>
-            <li class="flex items-start gap-2">
-                <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-4 w-4 text-blue-600"
-                >
-                    <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                    <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                    <path d="M7 22v-3"></path>
-                    <path d="M17 22v-3"></path>
-                    <path d="M12 22v-6"></path>
-                    <path d="M12 13v-3"></path>
-                    <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                </svg>
-                </div>
-                <span>
-                The findings may help explain individual differences in the mental health benefits of exercise,
-                potentially leading to personalized exercise recommendations
-                </span>
-            </li>
-            </ul>
-        </div>
         </div>
 
+        <!-- Sidebar -->
         <div class="space-y-6">
-        <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <div class="p-6 space-y-4">
-            <h3 class="text-xl font-bold">Project Details</h3>
 
-            <div class="space-y-2">
-                <div class="flex justify-between">
-                <span class="text-sm font-medium">Status:</span>
-                <span class="text-sm text-gray-500">Ongoing</span>
-                </div>
-                <div class="flex justify-between">
-                <span class="text-sm font-medium">Timeline:</span>
-                <span class="text-sm text-gray-500">2020-2024</span>
-                </div>
-                <div class="flex justify-between">
-                <span class="text-sm font-medium">Model:</span>
-                <span class="text-sm text-gray-500">Rodent (mice)</span>
-                </div>
-                <div class="flex justify-between">
-                <span class="text-sm font-medium">Focus:</span>
-                <span class="text-sm text-gray-500">ΔFOSB signaling</span>
-                </div>
-            </div>
+            <div class="rounded-xl border border-indigo-200/50 bg-gradient-to-br from-white/80 to-indigo-50/80 backdrop-blur-sm shadow-lg">
+                <div class="p-6 space-y-4">
+                    <h3 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Project Details</h3>
 
-            <div class="pt-4 border-t border-gray-200">
-                <h4 class="text-sm font-medium mb-2">Key Brain Regions:</h4>
-                <ul class="space-y-1 text-sm text-gray-500">
-                <li>Prefrontal Cortex</li>
-                <li>Hippocampus</li>
-                <li>Amygdala</li>
-                <li>Nucleus Accumbens</li>
-                </ul>
-            </div>
-            </div>
-        </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-indigo-50/50">
+                            <span class="text-sm font-medium text-indigo-700">Status:</span>
+                            <span class="text-sm text-indigo-600 font-semibold">Ongoing</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-purple-50/50">
+                            <span class="text-sm font-medium text-purple-700">Timeline:</span>
+                            <span class="text-sm text-purple-600 font-semibold">2020-2024</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-pink-50/50">
+                            <span class="text-sm font-medium text-pink-700">Model:</span>
+                            <span class="text-sm text-pink-600 font-semibold">Rodent (mice)</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-fuchsia-50/50">
+                            <span class="text-sm font-medium text-fuchsia-700">Focus:</span>
+                            <span class="text-sm text-fuchsia-600 font-semibold">ΔFOSB signaling</span>
+                        </div>
+                    </div>
 
-        <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <div class="p-6 space-y-4">
-            <h3 class="text-xl font-bold">Related Publications</h3>
-
-            <div class="space-y-4">
-                <div class="space-y-1">
-                <p class="text-sm font-medium">ΔFOSB Expression Following Voluntary Exercise</p>
-                <p class="text-xs text-gray-500">Journal of Neuroscience, 2022</p>
+                    <div class="pt-4 border-t border-purple-200/50">
+                        <h4 class="text-sm font-medium mb-3 text-purple-700">Project Partners:</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
+                                <span class="text-sm text-gray-600">VU (Jaspers)</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="space-y-1">
-                <p class="text-sm font-medium">
-                    Molecular Mechanisms of Exercise-Induced Stress Resilience
-                </p>
-                <p class="text-xs text-gray-500">Neuropsychopharmacology, 2021</p>
-                </div>
-            </div>
-
-            <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full mt-2">
-                View All Publications
-            </button>
-            </div>
-        </div>
-
-        <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <div class="p-6 space-y-4">
-            <h3 class="text-xl font-bold">Research Team</h3>
-
-            <div class="space-y-4">
-                <div class="flex items-center gap-3">
-                <div class="relative h-10 w-10 overflow-hidden rounded-full">
-                    <img
-                    src="/placeholder.svg?height=40&width=40&text=RB"
-                    alt="Dr. Robert Brown"
-                    fill
-                    class="object-cover"
-                    />
-                </div>
-                <div>
-                    <p class="text-sm font-medium">Dr. Robert Brown</p>
-                    <p class="text-xs text-gray-500">Principal Investigator</p>
-                </div>
-                </div>
-                <div class="flex items-center gap-3">
-                <div class="relative h-10 w-10 overflow-hidden rounded-full">
-                    <img
-                    src="/placeholder.svg?height=40&width=40&text=KL"
-                    alt="Dr. Karen Lee"
-                    fill
-                    class="object-cover"
-                    />
-                </div>
-                <div>
-                    <p class="text-sm font-medium">Dr. Karen Lee</p>
-                    <p class="text-xs text-gray-500">Neuroscientist</p>
-                </div>
-                </div>
-                <div class="flex items-center gap-3">
-                <div class="relative h-10 w-10 overflow-hidden rounded-full">
-                    <img
-                    src="/placeholder.svg?height=40&width=40&text=TN"
-                    alt="Thomas Nguyen"
-                    fill
-                    class="object-cover"
-                    />
-                </div>
-                <div>
-                    <p class="text-sm font-medium">Thomas Nguyen, MSc</p>
-                    <p class="text-xs text-gray-500">PhD Candidate</p>
-                </div>
-                </div>
-            </div>
-
-            <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full mt-2">
-                View Full Team
-            </button>
             </div>
         </div>
         </div>
-    </div>
-    </div>
-</section>
-
-<!-- Related Projects -->
-<section class="w-full py-12 md:py-24 bg-gray-100/30">
-    <div class="container mx-auto px-4 md:px-6">
-    <div class="flex flex-col items-center text-center space-y-4 mb-8">
-        <h2 class="text-2xl font-bold tracking-tighter">Related Research</h2>
-    </div>
-
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-        <a href="/research/leopard-predict" class="group">
-        <div class="rounded-lg border border-gray-200 bg-white shadow-sm h-full transition-all group-hover:shadow-md">
-            <div class="p-6 space-y-4">
-            <div class="relative h-40 w-full rounded-md overflow-hidden">
-                <img
-                src="/placeholder.svg?height=160&width=320&text=LEOPARD"
-                alt="LEOPARD PREDICT Project"
-                fill
-                class="object-cover"
-                />
-            </div>
-            <div>
-                <h3 class="text-xl font-bold group-hover:text-blue-600 transition-colors">LEOPARD PREDICT</h3>
-                <p class="text-sm text-gray-500 mt-2">
-                Predicting antidepressant-treatment response in depressed patients using rsfMRI data and
-                physical activity parameters.
-                </p>
-            </div>
-            </div>
-        </div>
-        </a>
-
-        <a href="/research/stride-4" class="group">
-        <div class="rounded-lg border border-gray-200 bg-white shadow-sm h-full transition-all group-hover:shadow-md">
-            <div class="p-6 space-y-4">
-            <div class="relative h-40 w-full rounded-md overflow-hidden">
-                <img
-                src="/placeholder.svg?height=160&width=320&text=STRIDE-4"
-                alt="STRIDE-4-Mental Health Project"
-                fill
-                class="object-cover"
-                />
-            </div>
-            <div>
-                <h3 class="text-xl font-bold group-hover:text-blue-600 transition-colors">
-                STRIDE-4-Mental Health
-                </h3>
-                <p class="text-sm text-gray-500 mt-2">
-                Applying a network approach to uncover factors influencing exercise persistence in students.
-                </p>
-            </div>
-            </div>
-        </div>
-        </a>
     </div>
     </div>
 </section>
 </main>
-
 
 {% endblock %}

@@ -158,6 +158,45 @@ function adjustLayoutForMap() {
     if (isMapVisible) {
         mapContainer.classList.remove('hidden');
         mapContainer.classList.add('lg:w-1/2');
+        communitiesWrapper.classList.remove('lg:w-full');
+        communitiesWrapper.classList.add('lg:w-1/2');
+        
+        communitiesContainer.style.height = '600px';
+        communitiesContainer.style.overflowY = 'auto';
+        communitiesContainer.classList.add('custom-scrollbar');
+
+        communitiesGrid.classList.remove('md:grid-cols-2', 'xl:grid-cols-3');
+        communitiesGrid.classList.add('grid-cols-1');
+        communitiesGrid.classList.add('md:grid-cols-1', 'xl:grid-cols-1');
+
+        mapToggle.innerHTML = svgHideMap;
+        
+        if (!map) {
+            initializeMap();
+        } else {
+            map.invalidateSize();
+            updateMapMarkers();
+        }
+    } else {
+        mapContainer.classList.add('hidden');
+        mapContainer.classList.remove('lg:w-1/2');
+        communitiesWrapper.classList.remove('lg:w-1/2');
+        communitiesWrapper.classList.add('lg:w-full');
+
+        communitiesContainer.style.height = 'auto';
+        communitiesContainer.style.overflowY = 'visible';
+        communitiesContainer.classList.remove('custom-scrollbar');
+
+        communitiesGrid.classList.remove('grid-cols-1', 'md:grid-cols-1', 'xl:grid-cols-1');
+        communitiesGrid.classList.add('md:grid-cols-2', 'xl:grid-cols-3');
+
+        mapToggle.innerHTML = svgShowMap;
+    }
+    renderCommunities();
+
+    if (isMapVisible) {
+        mapContainer.classList.remove('hidden');
+        mapContainer.classList.add('lg:w-1/2');
         communitiesWrapper.classList.remove('lg:w-full'); // Explicitly remove if it was set
         communitiesWrapper.classList.add('lg:w-1/2');
         
@@ -412,8 +451,7 @@ function renderCommunities() {
                 <div class="space-y-3 ${detailsMbClass} flex-grow">
                     <div class="flex items-center gap-2 text-sm text-gray-600">
                         <div class="${sportIconOuter} bg-orange-500 rounded-full flex items-center justify-center">
-                        <span class="${sportIconInner} text-white font-bold">S</span>
-                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volleyball-icon lucide-volleyball text-white"><path d="M11.1 7.1a16.55 16.55 0 0 1 10.9 4"/><path d="M12 12a12.6 12.6 0 0 1-8.7 5"/><path d="M16.8 13.6a16.55 16.55 0 0 1-9 7.5"/><path d="M20.7 17a12.8 12.8 0 0 0-8.7-5 13.3 13.3 0 0 1 0-10"/><path d="M6.3 3.8a16.55 16.55 0 0 0 1.9 11.5"/><circle cx="12" cy="12" r="10"/></svg></div>
                         <span>${community.Sport || 'N/A'}</span>
                     </div>
                     <div class="flex items-center gap-2 text-sm text-gray-600">

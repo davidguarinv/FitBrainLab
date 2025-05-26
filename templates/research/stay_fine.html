@@ -1,545 +1,374 @@
 {% extends "base.html" %}
 {% block title %}About{% endblock %}
 {% block content %}
+
 <main class="flex-1">
     <!-- Project Header -->
-    <section class="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-gray-100 to-gray-200">
-        <div class="container mx-auto px-4 md:px-6">
+    <section class="relative w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-cyan-50 via-teal-50 to-blue-50 overflow-hidden">
+      <!-- Animated Background Elements -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-20 left-10 w-20 h-20 bg-cyan-200/30 rounded-full animate-pulse"></div>
+        <div
+          class="absolute top-40 right-20 w-16 h-16 bg-teal-200/30 rounded-full animate-bounce delay-1000"
+
+        ></div>
+        <div
+          class="absolute bottom-40 left-20 w-24 h-24 bg-blue-200/30 rounded-full animate-pulse delay-2000"
+ 
+        ></div>
+        <div
+          class="absolute bottom-20 right-10 w-12 h-12 bg-purple-200/30 rounded-full animate-bounce delay-1000"
+        ></div>
+
+        <!-- Floating wellness symbols -->
+        <div class="absolute top-32 left-1/4 text-cyan-300/40 animate-float">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+        </div>
+        <div
+          class="absolute top-60 right-1/3 text-teal-300/40 animate-float delay-1000"
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="container relative mx-auto px-4 md:px-6">
         <div class="flex flex-col space-y-4">
-            <a
+          <a
             href="/research"
-            class="flex items-center text-blue-600 hover:text-blue-500 transition-colors mb-2"
-            >
-            <!-- Arrow left icon -->
+            class="flex items-center text-cyan-600 hover:text-cyan-500 transition-colors mb-2"
+          >
             <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="mr-2 h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="mr-2 h-4 w-4"
             >
-                <path d="m12 19-7-7 7-7"></path>
-                <path d="M19 12H5"></path>
+              <path d="m12 19-7-7 7-7"></path>
+              <path d="M19 12H5"></path>
             </svg>
             Back to Research Projects
-            </a>
+          </a>
 
-            <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+          <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
             <div class="space-y-4">
-                <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600">
-                Research Project
-                </div>
-                <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">StayFine Project</h1>
-                <p class="text-xl text-gray-500">
-                Preventing relapse in adolescents with depression and anxiety disorders
-                </p>
+              <div class="inline-block rounded-lg bg-gradient-to-r from-cyan-100 to-teal-100 px-3 py-1 text-sm text-cyan-700 border border-cyan-200">
+                Mental Health Research Project
+              </div>
+              <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
+                StayFine Project
+              </h1>
+              <p class="text-xl text-gray-600">
+                Preventing relapse in adolescents with depression and anxiety disorders through personalized digital
+                interventions
+              </p>
 
-                <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2">
                 <a href="https://stayfine.nl/" target="_blank" rel="noopener noreferrer">
-                    <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-9 px-4 py-2 gap-1">
-                    <!-- External link icon -->
+                  <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gradient-to-r from-cyan-500 to-teal-500 text-white hover:from-cyan-600 hover:to-teal-600 h-10 px-6 py-2 gap-2 shadow-lg">
                     <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="h-4 w-4"
                     >
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" x2="21" y1="14" y2="3"></line>
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" x2="21" y1="14" y2="3"></line>
                     </svg>
                     Visit Project Website
-                    </button>
+                  </button>
                 </a>
-                </div>
+              </div>
             </div>
-            <div class="relative h-[300px] rounded-xl overflow-hidden">
-                <img
-                src="/placeholder.svg?height=300&width=600&text=StayFine+Project"
+            <div class="relative h-[300px] rounded-xl overflow-hidden shadow-2xl border border-emerald-200/50">
+              <img
+                src="https://stayfine.nl/wp-content/uploads/2020/06/Outro-Stayfine-V2_no_lline.png"
                 alt="StayFine Project"
-                fill
                 class="object-cover"
-                />
+              />
             </div>
-            </div>
+          </div>
         </div>
-        </div>
+      </div>
     </section>
 
     <!-- Project Details -->
-    <section class="w-full py-12 md:py-24 bg-white">
-        <div class="container mx-auto px-4 md:px-6">
+    <section class="relative w-full py-12 md:py-24 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 overflow-hidden">
+      <!-- Background Pattern -->
+      <div class="absolute inset-0 opacity-5">
+        <div
+          class="absolute inset-0"
+          style="background: radial-gradient(circle at 25% 25%, #06b6d4 2px, transparent 2px),
+                 radial-gradient(circle at 75% 75%, #0d9488 2px, transparent 2px);
+                 background-size: 50px 50px;"
+        ></div>
+      </div>
+
+      <div class="container relative mx-auto px-4 md:px-6">
         <div class="grid gap-10 lg:grid-cols-3">
-            <div class="lg:col-span-2 space-y-8">
-            <div class="space-y-4">
-                <h2 class="text-2xl font-bold tracking-tighter">Project Overview</h2>
-                <p class="text-gray-500">
+          <div class="lg:col-span-2 space-y-8">
+            <div class="space-y-4 p-6 rounded-xl bg-gradient-to-br from-cyan-50/80 to-teal-50/80 backdrop-blur-sm border border-cyan-200/50">
+              <h2 class="text-2xl font-bold tracking-tighter bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent">
+                Project Overview
+              </h2>
+              <p class="text-gray-600 leading-relaxed">
                 Adolescence is a vulnerable period for the development of stress-related disorders, such as anxiety
                 and depressive disorders. Following remission, up to 60% of adolescents relapses within three years.
                 The StayFine study is an ongoing longitudinal randomized control trial that assesses the efficacy of
                 a personalized app to prevent relapse in adolescents (13-21 years) that remitted from depression
                 and/or anxiety disorders.
-                </p>
-                <p class="text-gray-500">
+              </p>
+              <p class="text-gray-600 leading-relaxed">
                 Participants are monitored during five 2-week periods in three years and data is collected using
                 clinical interviews, questionnaires, ecological momentary assessment, and wearables. Within this
                 project, our goal is to gain insights into the role of physical activity and inactivity during
                 remission and relapse (prevention) using complex analyses.
-                </p>
+              </p>
             </div>
 
-            <div class="space-y-4">
-                <h2 class="text-2xl font-bold tracking-tighter">Research Methodology</h2>
-                <p class="text-gray-500">
+            <div class="space-y-4 p-6 rounded-xl bg-gradient-to-br from-teal-50/80 to-blue-50/80 backdrop-blur-sm border border-teal-200/50">
+              <h2 class="text-2xl font-bold tracking-tighter bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                Research Methodology
+              </h2>
+              <p class="text-gray-600">
                 Our research methodology combines multiple data collection approaches:
-                </p>
-                <ul class="space-y-2 text-gray-500">
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <!-- Brain icon -->
+              </p>
+              <ul class="space-y-3 text-gray-600">
+                <li class="flex items-start gap-3">
+                  <div class="rounded-full bg-gradient-to-r from-cyan-100 to-cyan-200 p-2 mt-0.5 border border-cyan-300/50">
                     <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="h-4 w-4 text-cyan-600"
                     >
-                        <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                        <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                        <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                        <path d="M7 22v-3"></path>
-                        <path d="M17 22v-3"></path>
-                        <path d="M12 22v-6"></path>
-                        <path d="M12 13v-3"></path>
-                        <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
+                      <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
+                      <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
+                      <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
+                      <path d="M7 22v-3"></path>
+                      <path d="M17 22v-3"></path>
+                      <path d="M12 22v-6"></path>
+                      <path d="M12 13v-3"></path>
+                      <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
                     </svg>
-                    </div>
-                    <span>Clinical interviews and standardized questionnaires to assess mental health status</span>
+                  </div>
+                  <span>Clinical interviews and standardized questionnaires to assess mental health status</span>
                 </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <!-- Users icon -->
+                <li class="flex items-start gap-3">
+                  <div class="rounded-full bg-gradient-to-r from-teal-100 to-teal-200 p-2 mt-0.5 border border-teal-300/50">
                     <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="h-4 w-4 text-teal-600"
                     >
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
-                    </div>
-                    <span>
+                  </div>
+                  <span>
                     Ecological momentary assessment (EMA) to capture real-time data on mood, stress, and activities
-                    </span>
+                  </span>
                 </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <!-- Calendar icon -->
+                <li class="flex items-start gap-3">
+                  <div class="rounded-full bg-gradient-to-r from-blue-100 to-blue-200 p-2 mt-0.5 border border-blue-300/50">
                     <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="h-4 w-4 text-blue-600"
                     >
-                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-                        <line x1="16" x2="16" y1="2" y2="6"></line>
-                        <line x1="8" x2="8" y1="2" y2="6"></line>
-                        <line x1="3" x2="21" y1="10" y2="10"></line>
+                      <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                      <line x1="16" x2="16" y1="2" y2="6"></line>
+                      <line x1="8" x2="8" y1="2" y2="6"></line>
+                      <line x1="3" x2="21" y1="10" y2="10"></line>
                     </svg>
-                    </div>
-                    <span>
+                  </div>
+                  <span>
                     Wearable devices to monitor physical activity patterns, sleep quality, and physiological markers
-                    </span>
+                  </span>
                 </li>
-                </ul>
+              </ul>
             </div>
+          </div>
 
-            <div class="space-y-4">
-                <h2 class="text-2xl font-bold tracking-tighter">Current Progress</h2>
-                <p class="text-gray-500">
-                The StayFine study is currently in its data collection phase. We have successfully:
-                </p>
-                <ul class="space-y-2 text-gray-500">
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <!-- File text icon -->
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" x2="8" y1="13" y2="13"></line>
-                        <line x1="16" x2="8" y1="17" y2="17"></line>
-                        <line x1="10" x2="8" y1="9" y2="9"></line>
-                    </svg>
-                    </div>
-                    <span>
-                    Recruited over 200 adolescents who have remitted from depression and/or anxiety disorders
-                    </span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" x2="8" y1="13" y2="13"></line>
-                        <line x1="16" x2="8" y1="17" y2="17"></line>
-                        <line x1="10" x2="8" y1="9" y2="9"></line>
-                    </svg>
-                    </div>
-                    <span>Developed and implemented the personalized app intervention</span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" x2="8" y1="13" y2="13"></line>
-                        <line x1="16" x2="8" y1="17" y2="17"></line>
-                        <line x1="10" x2="8" y1="9" y2="9"></line>
-                    </svg>
-                    </div>
-                    <span>Completed the first two assessment periods for the initial cohort of participants</span>
-                </li>
-                </ul>
-                <p class="text-gray-500">
-                Preliminary analyses are underway to examine the relationships between physical activity patterns
-                and mental health outcomes during the early phases of remission.
-                </p>
-            </div>
+          <div class="space-y-6">
+            <div class="rounded-xl border border-cyan-200/50 bg-gradient-to-br from-white/80 to-cyan-50/80 backdrop-blur-sm shadow-lg">
+              <div class="p-6 space-y-4">
+                <h3 class="text-xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent">
+                  Project Details
+                </h3>
 
-            <div class="space-y-4">
-                <h2 class="text-2xl font-bold tracking-tighter">Expected Outcomes</h2>
-                <p class="text-gray-500">Through this research, we aim to:</p>
-                <ul class="space-y-2 text-gray-500">
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <!-- Brain icon -->
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                        <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                        <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                        <path d="M7 22v-3"></path>
-                        <path d="M17 22v-3"></path>
-                        <path d="M12 22v-6"></path>
-                        <path d="M12 13v-3"></path>
-                        <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                    </svg>
-                    </div>
-                    <span>
-                    Identify specific physical activity patterns that contribute to sustained remission from
-                    depression and anxiety
-                    </span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                        <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                        <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                        <path d="M7 22v-3"></path>
-                        <path d="M17 22v-3"></path>
-                        <path d="M12 22v-6"></path>
-                        <path d="M12 13v-3"></path>
-                        <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                    </svg>
-                    </div>
-                    <span>
-                    Develop personalized physical activity recommendations for adolescents based on their individual
-                    profiles
-                    </span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <div class="rounded-full bg-blue-100 p-1 mt-0.5">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4 text-blue-600"
-                    >
-                        <path d="M9.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                        <path d="M14.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"></path>
-                        <path d="M3 7v9a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V7"></path>
-                        <path d="M7 22v-3"></path>
-                        <path d="M17 22v-3"></path>
-                        <path d="M12 22v-6"></path>
-                        <path d="M12 13v-3"></path>
-                        <path d="M5 7v0a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0"></path>
-                    </svg>
-                    </div>
-                    <span>
-                    Enhance the app intervention with evidence-based exercise components to further improve relapse
-                    prevention
-                    </span>
-                </li>
-                </ul>
-            </div>
-            </div>
-
-            <div class="space-y-6">
-            <div class="rounded-lg border bg-white shadow-sm">
-                <div class="p-6 space-y-4">
-                <h3 class="text-xl font-bold">Project Details</h3>
-
-                <div class="space-y-2">
-                    <div class="flex justify-between">
-                    <span class="text-sm font-medium">Status:</span>
-                    <span class="text-sm text-gray-500">Ongoing</span>
-                    </div>
-                    <div class="flex justify-between">
-                    <span class="text-sm font-medium">Timeline:</span>
-                    <span class="text-sm text-gray-500">2020-2024</span>
-                    </div>
-                    <div class="flex justify-between">
-                    <span class="text-sm font-medium">Participants:</span>
-                    <span class="text-sm text-gray-500">Adolescents (13-21 years)</span>
-                    </div>
-                    <div class="flex justify-between">
-                    <span class="text-sm font-medium">Sample Size:</span>
-                    <span class="text-sm text-gray-500">Target N=300</span>
-                    </div>
+                <div class="space-y-3">
+                  <div class="flex justify-between items-center p-2 rounded-lg bg-cyan-50/50">
+                    <span class="text-sm font-medium text-cyan-700">Status:</span>
+                    <span class="text-sm text-cyan-600 font-semibold">Ongoing</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 rounded-lg bg-teal-50/50">
+                    <span class="text-sm font-medium text-teal-700">Timeline:</span>
+                    <span class="text-sm text-teal-600 font-semibold">2020-2024</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 rounded-lg bg-blue-50/50">
+                    <span class="text-sm font-medium text-blue-700">Participants:</span>
+                    <span class="text-sm text-blue-600 font-semibold">Adolescents (13-21 years)</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 rounded-lg bg-purple-50/50">
+                    <span class="text-sm font-medium text-purple-700">Sample Size:</span>
+                    <span class="text-sm text-purple-600 font-semibold">Target N=300</span>
+                  </div>
                 </div>
 
-                <div class="pt-4 border-t">
-                    <h4 class="text-sm font-medium mb-2">Project Partners:</h4>
-                    <ul class="space-y-1 text-sm text-gray-500">
-                    <li>GGZ Brabant Oost (Stikkelbroek)</li>
-                    <li>Amsterdam UMC (Bockting)</li>
-                    <li>RUG (Nauta)</li>
-                    </ul>
+                <div class="pt-4 border-t border-emerald-200/50">
+                  <h4 class="text-sm font-medium mb-3 text-emerald-700">Project Partners:</h4>
+                  <ul class="space-y-2 text-sm text-gray-600">
+                    <li class="flex items-center gap-2">
+                      <div class="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                      GGZ Brabant Oost (Stikkelbroek)
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <div class="w-2 h-2 bg-teal-400 rounded-full"></div>
+                      Amsterdam UMC (Bockting)
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                      RUG (Nauta)
+                    </li>
+                  </ul>
                 </div>
-                </div>
+              </div>
             </div>
 
-            <div class="rounded-lg border bg-white shadow-sm">
-                <div class="p-6 space-y-4">
-                <h3 class="text-xl font-bold">Related Publications</h3>
-
-                <div class="space-y-4">
-                    <div class="space-y-1">
-                    <p class="text-sm font-medium">
-                        Physical Activity Patterns and Mental Health in Adolescents
-                    </p>
-                    <p class="text-xs text-gray-500">Journal of Adolescent Health, 2022</p>
-                    </div>
-                    <div class="space-y-1">
-                    <p class="text-sm font-medium">Digital Interventions for Relapse Prevention in Youth</p>
-                    <p class="text-xs text-gray-500">Digital Health, 2021</p>
-                    </div>
-                </div>
-
-                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full mt-2">
-                    View All Publications
-                </button>
-                </div>
-            </div>
-
-            <div class="rounded-lg border bg-white shadow-sm">
-                <div class="p-6 space-y-4">
-                <h3 class="text-xl font-bold">Research Team</h3>
-
-                <div class="space-y-4">
-                    <div class="flex items-center gap-3">
-                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
-                        <img
-                        src="/placeholder.svg?height=40&width=40&text=JS"
-                        alt="Dr. Jane Smith"
-                        fill
-                        class="object-cover"
-                        />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium">Dr. Jane Smith</p>
-                        <p class="text-xs text-gray-500">Principal Investigator</p>
-                    </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
-                        <img
-                        src="/placeholder.svg?height=40&width=40&text=MJ"
-                        alt="Dr. Michael Johnson"
-                        fill
-                        class="object-cover"
-                        />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium">Dr. Michael Johnson</p>
-                        <p class="text-xs text-gray-500">Co-Investigator</p>
-                    </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                    <div class="relative h-10 w-10 overflow-hidden rounded-full">
-                        <img
-                        src="/placeholder.svg?height=40&width=40&text=SW"
-                        alt="Sarah Williams"
-                        fill
-                        class="object-cover"
-                        />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium">Sarah Williams, MSc</p>
-                        <p class="text-xs text-gray-500">PhD Candidate</p>
-                    </div>
-                    </div>
-                </div>
-
-                <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 hover:text-blue-600 h-10 px-4 py-2 w-full mt-2">
-                    View Full Team
-                </button>
-                </div>
-            </div>
-            </div>
+          </div>
         </div>
-        </div>
+      </div>
     </section>
 
     <!-- Related Projects -->
-    <section class="w-full py-12 md:py-24 bg-gray-100/30">
-        <div class="container mx-auto px-4 md:px-6">
+    <section class="relative w-full py-12 md:py-24 bg-gradient-to-br from-gray-50 via-emerald-50/30 to-teal-50/30 overflow-hidden">
+      <!-- Background Elements -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-10 left-10 w-32 h-32 bg-emerald-200/20 rounded-full blur-xl"></div>
+        <div class="absolute bottom-10 right-10 w-40 h-40 bg-teal-200/20 rounded-full blur-xl"></div>
+      </div>
+
+      <div class="container relative mx-auto px-4 md:px-6">
         <div class="flex flex-col items-center text-center space-y-4 mb-8">
-            <h2 class="text-2xl font-bold tracking-tighter">Related Projects</h2>
-            <p class="max-w-[800px] text-gray-500">
+          <h2 class="text-2xl font-bold tracking-tighter bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            Related Projects
+          </h2>
+          <p class="max-w-[800px] text-gray-600">
             Explore other research projects from our lab that complement the StayFine study.
-            </p>
+          </p>
         </div>
 
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-            <a href="/research/leopard-predict" class="group">
-            <div class="rounded-lg border bg-white shadow-sm h-full transition-all group-hover:shadow-md">
-                <div class="p-6 space-y-4">
+          <a href="/research/leopard_predict" class="group">
+            <div class="rounded-xl border border-emerald-200/50 bg-gradient-to-br from-white/80 to-emerald-50/80 backdrop-blur-sm shadow-lg h-full transition-all group-hover:shadow-xl group-hover:scale-105">
+              <div class="p-6 space-y-4">
                 <div class="relative h-40 w-full rounded-md overflow-hidden">
-                    <img
-                    src="/placeholder.svg?height=160&width=320&text=LEOPARD"
+                  <img
+                    src="{{ url_for('static', filename='images/mri_image.png') }}"
                     alt="LEOPARD PREDICT Project"
                     fill
                     class="object-cover"
-                    />
+                  />
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold group-hover:text-blue-600 transition-colors">LEOPARD PREDICT</h3>
-                    <p class="text-sm text-gray-500 mt-2">
+                  <h3 class="text-xl font-bold group-hover:bg-gradient-to-r group-hover:from-emerald-600 group-hover:to-teal-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+                    LEOPARD PREDICT
+                  </h3>
+                  <p class="text-sm text-gray-600 mt-2">
                     Predicting antidepressant-treatment response in depressed patients using rsfMRI data and
                     physical activity parameters.
-                    </p>
+                  </p>
                 </div>
-                </div>
+              </div>
             </div>
-            </a>
+          </a>
 
-            <a href="/research/stride-4" class="group">
-            <div class="rounded-lg border bg-white shadow-sm h-full transition-all group-hover:shadow-md">
-                <div class="p-6 space-y-4">
+          <a href="/research/stride4" class="group">
+            <div class="rounded-xl border border-teal-200/50 bg-gradient-to-br from-white/80 to-teal-50/80 backdrop-blur-sm shadow-lg h-full transition-all group-hover:shadow-xl group-hover:scale-105">
+              <div class="p-6 space-y-4">
                 <div class="relative h-40 w-full rounded-md overflow-hidden">
-                    <img
-                    src="/placeholder.svg?height=160&width=320&text=STRIDE-4"
+                  <img
+                    src="https://www.uscsport.nl/wp-content/uploads/24-USC-Universum-Science-Park-306-e1724686521112.jpg"
                     alt="STRIDE-4-Mental Health Project"
                     fill
                     class="object-cover"
-                    />
+                  />
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold group-hover:text-blue-600 transition-colors">
+                  <h3 class="text-xl font-bold group-hover:bg-gradient-to-r group-hover:from-teal-600 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
                     STRIDE-4-Mental Health
-                    </h3>
-                    <p class="text-sm text-gray-500 mt-2">
+                  </h3>
+                  <p class="text-sm text-gray-600 mt-2">
                     Applying a network approach to uncover factors influencing exercise persistence in students.
-                    </p>
+                  </p>
                 </div>
-                </div>
+              </div>
             </div>
-            </a>
+          </a>
+
+          <a href="/research/brain_adaptations" class="group">
+            <div class="rounded-xl border border-emerald-200/50 bg-gradient-to-br from-white/80 to-emerald-50/80 backdrop-blur-sm shadow-lg h-full transition-all group-hover:shadow-xl group-hover:scale-105">
+              <div class="p-6 space-y-4">
+                <div class="relative h-40 w-full rounded-md overflow-hidden">
+                  <img
+                    src="https://physicsworld.com/wp-content/uploads/2023/04/CoronalTDI.jpg"
+                    alt="Brain Adaptations Project"
+                    fill
+                    class="object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold group-hover:bg-gradient-to-r group-hover:from-emerald-600 group-hover:to-teal-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+                    Brain Adaptations
+                  </h3>
+                  <p class="text-sm text-gray-600 mt-2">
+                    Investigating brain adaptations in adolescents with depression and anxiety disorders.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </a>
         </div>
-        </div>
+      </div>
     </section>
 </main>
 

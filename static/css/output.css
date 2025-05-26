@@ -3246,6 +3246,10 @@ body {
   --tw-gradient-to: #cffafe var(--tw-gradient-to-position);
 }
 
+.to-purple-900 {
+  --tw-gradient-to: #581c87 var(--tw-gradient-to-position);
+}
+
 .bg-\[size\:100px_100px\] {
   background-size: 100px 100px;
 }

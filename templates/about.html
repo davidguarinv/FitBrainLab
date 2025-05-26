@@ -3,16 +3,28 @@
 {% block content %}
 <main class="flex-1">
     <!-- Hero Section -->
-    <section class="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-blue-50 to-blue-100/50 hero-section">
-        <img src="{{ url_for('static', filename='images/yellow.png') }}" alt="About Hero Background" class="hero-background about-hero-background">
-        <div class="container mx-auto px-4 md:px-6">
+    <section class="relative w-full py-12 md:py-24 lg:py-32 overflow-hidden">
+        <!-- Animated Background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-blue-900 to-cyan-900">
+            <!-- Floating Academic Elements -->
+            <div class="absolute top-1/4 left-1/3 w-16 h-16 border-2 border-indigo-300/30 rounded-lg rotate-12 animate-pulse"></div>
+            <div class="absolute top-2/3 right-1/5 w-12 h-12 border-2 border-blue-300/30 rounded-full animate-bounce"></div>
+            <div class="absolute bottom-1/3 left-1/5 w-20 h-20 border-2 border-cyan-300/30 rounded-lg -rotate-12 animate-pulse"></div>
+            <div class="absolute top-1/4 right-1/4 w-8 h-8 bg-indigo-400/20 rounded-full animate-ping"></div>
+            <div class="absolute bottom-1/4 right-1/3 w-14 h-14 border-2 border-blue-400/30 rounded-lg rotate-45 animate-pulse"></div>
+
+        </div>
+
+        <div class="relative container mx-auto px-4 md:px-6">
         <div class="flex flex-col items-center text-center space-y-4 mb-8">
             <div class="space-y-2">
-            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            <div class="inline-block rounded-lg bg-gradient-to-r from-indigo-100 to-blue-100 px-3 py-1 text-sm text-indigo-700 font-medium mb-2">
                 Meet Our Researchers
             </div>
-            <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">The Fit Brain Lab Team</h1>
-            <p class="max-w-[800px] text-gray-500 md:text-xl">
+            <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-white">
+                The Fit Brain Lab Team
+            </h1>
+            <p class="max-w-[800px] text-indigo-100 md:text-xl">
                 Meet our interdisciplinary team of researchers dedicated to understanding the connections between
                 exercise, brain function, and mental health.
             </p>
@@ -22,14 +34,17 @@
     </section>
 
     <!-- Lab Mission Section -->
-    <section class="w-full py-12 md:py-24 bg-white">
-        <div class="container mx-auto px-4 md:px-6">
+    <section class="relative w-full py-12 md:py-24 bg-gradient-to-b from-slate-50 to-white">
+        <!-- Subtle Pattern -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(59,130,246,0.05)_1px,transparent_0)] bg-[size:20px_20px]"></div>
+
+        <div class="relative container mx-auto px-4 md:px-6">
         <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
             <div class="space-y-4">
-            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            <div class="inline-block rounded-lg bg-gradient-to-r from-blue-100 to-cyan-100 px-3 py-1 text-sm text-blue-700 font-medium mb-2">
                 Our Purpose
             </div>
-            <h2 class="text-3xl font-bold tracking-tighter">Our Mission</h2>
+            <h2 class="text-3xl font-bold tracking-tighter bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Our Mission</h2>
             <p class="text-gray-500">
                 The Fit Brain Lab investigates how physical activity affects brain function and mental health. Our
                 research spans from molecular mechanisms to behavioral interventions, with the goal of developing
@@ -103,13 +118,16 @@
     </section>
 
     <!-- Principal Investigator Section -->
-    <section class="w-full py-12 md:py-24 bg-blue-50">
-        <div class="container mx-auto px-4 md:px-6">
+    <section class="relative w-full py-12 md:py-24 bg-gradient-to-br from-indigo-50 to-blue-50/50">
+        <!-- Subtle Pattern -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(59,130,246,0.05)_1px,transparent_0)] bg-[size:20px_20px]"></div>
+
+        <div class="relative container mx-auto px-4 md:px-6">
         <div class="flex flex-col items-start space-y-4 mb-8">
-            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
+            <div class="inline-block rounded-lg bg-gradient-to-r from-indigo-100 to-blue-100 px-3 py-1 text-sm text-indigo-700 font-medium mb-2">
             Lab Director
             </div>
-            <h2 class="text-2xl font-bold tracking-tighter md:text-3xl">Principal Investigator</h2>
+            <h2 class="text-2xl font-bold tracking-tighter md:text-3xl bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Principal Investigator</h2>
         </div>
 
         <div class="grid gap-8 md:grid-cols-3 items-start">
@@ -409,13 +427,16 @@
     </section>
 
     <!-- PhD and Postdoc Alumni Section -->
-    <section class="w-full py-12 md:py-24 bg-blue-50">
-        <div class="container mx-auto px-4 md:px-6">
+    <section class="relative w-full py-12 md:py-24 bg-gradient-to-br from-cyan-50 to-indigo-50/50">
+        <!-- Subtle Pattern -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(59,130,246,0.05)_1px,transparent_0)] bg-[size:20px_20px]"></div>
+
+        <div class="relative container mx-auto px-4 md:px-6">
         <div class="flex flex-col items-start space-y-4 mb-8">
-            <div class="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-600 font-medium mb-2">
-            Former Members
+            <div class="inline-block rounded-lg bg-gradient-to-r from-cyan-100 to-indigo-100 px-3 py-1 text-sm text-cyan-700 font-medium mb-2">
+            Alumni
             </div>
-            <h2 class="text-2xl font-bold tracking-tighter md:text-3xl">PhD and Postdoc Alumni</h2>
+            <h2 class="text-2xl font-bold tracking-tighter md:text-3xl bg-gradient-to-r from-cyan-600 to-indigo-600 bg-clip-text text-transparent">PhD and Postdoc Alumni</h2>
             <p class="max-w-[800px] text-gray-500">
             Former members of our lab who have contributed to our research mission.
             </p>

@@ -19,7 +19,8 @@
         <!-- Login Form -->
         <div class="space-y-6" x-show="activeTab === 'login'" x-transition>
             <h3 class="text-xl font-semibold">Login</h3>
-            <form method="POST" action="/login" class="space-y-4">
+            <form method="POST" action="{{ url_for('main.auth') }}" class="space-y-4">
+                <input type="hidden" name="form_type" value="login">
                 {{ login_form.csrf_token }}
                 <div>
                     <label for="loginUsername" class="block text-sm font-medium text-gray-700">Username</label>
@@ -41,7 +42,8 @@
         <!-- Sign Up Form -->
         <div class="space-y-6" x-show="activeTab === 'signup'" x-transition>
             <h3 class="text-xl font-semibold">Sign Up</h3>
-            <form method="POST" action="/signup" class="space-y-4">
+            <form method="POST" action="{{ url_for('main.auth') }}" class="space-y-4">
+                <input type="hidden" name="form_type" value="signup">
                 {{ signup_form.csrf_token }}
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Username</label>

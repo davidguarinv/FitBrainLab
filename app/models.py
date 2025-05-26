@@ -666,6 +666,7 @@ class WeeklyLeaderboardReward(db.Model):
     __table_args__ = (db.UniqueConstraint('user_id', 'week_number', 'year', name='_user_weekly_reward_uc'),)
 
 
+
 # -------------------------
 # Fun Fact Model
 # -------------------------

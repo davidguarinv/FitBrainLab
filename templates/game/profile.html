@@ -127,8 +127,14 @@
                 {% for achievement in user_achievements %}
                 <div class="p-4 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border border-primary/20 hover:shadow-md transition-all">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center text-2xl">
-                            {{ achievement.icon }}
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary bg-opacity-10 text-primary mr-4">
+                            {% if achievement.icon_type %}
+                                <img src="{{ url_for('static', filename='images/svg/achievements/' ~ achievement.icon_type ~ '.svg') }}" 
+                                     class="w-8 h-8" 
+                                     alt="{{ achievement.name }}">
+                            {% else %}
+                                {{ achievement.icon }}
+                            {% endif %}
                         </div>
                         <div class="flex-1">
                             <h4 class="font-bold text-primary">{{ achievement.name }}</h4>

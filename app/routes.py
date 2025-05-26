@@ -17,7 +17,8 @@ from .models import (
     WeeklyHabitChallenge,
     FunFact,
     FriendChallengeLink,
-    ChallengeOfTheWeek
+    ChallengeOfTheWeek,
+    FriendTokenUsage
 )
 from .forms import LoginForm, RegistrationForm
 from .email_handler import send_email
@@ -761,7 +762,7 @@ def complete_challenge_with_friend(challenge_id):
         user_id=friend.id, challenge_id=challenge_id, status='pending'
     ).first()
     if not friend_challenge:
-        flash("Your friend hasn't started this challenge yet.", 'error')
+        flash("Waiting for friend to start challenge.", 'error')
         return redirect(url_for('main.game', section='challenges'))
 
     try:

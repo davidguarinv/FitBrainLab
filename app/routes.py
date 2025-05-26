@@ -555,44 +555,50 @@ def abandon_challenge(challenge_id):
 @login_required
 def start_challenge(challenge_id):
     """Mark a challenge as in-progress (pending), enforcing the 2-slot limit."""
-    week = get_current_week_info()
     try:
-        # Open a transaction; will auto-commit on success or rollback on exception
-        with db.session.begin():
-            # 1) Enforce max-2 in-progress slots
-            in_prog, count = get_in_progress_challenges(
-                current_user.id,
-                week['week_number'],
-                week['year']
-            )
-            if count >= 2:
-                flash('You already have 2 challenges in progress!', 'warning')
-                # Exiting block without error rolls back
-                return redirect(url_for('main.game', section='challenges'))
+        week = get_current_week_info()
+        in_prog, count = get_in_progress_challenges(
+            current_user.id,
+            week['week_number'],
+            week['year']
+        )
+        if count >= 2:
+            flash('You already have 2 challenges in progress!', 'warning')
+            return redirect(url_for('main.game', section='challenges'))
 
-            # 2) Create (or reuse) the pending UserChallenge record
-            uc = UserChallenge.query.filter_by(
+        uc = UserChallenge.query.filter_by(
+            user_id=current_user.id,
+            challenge_id=challenge_id,
+            status='pending'
+        ).first()
+
+        if not uc:
+            uc = UserChallenge(
                 user_id=current_user.id,
                 challenge_id=challenge_id,
-                status='pending'
-            ).first()
-            if not uc:
-                uc = UserChallenge(
-                    user_id=current_user.id,
-                    challenge_id=challenge_id,
-                    status='pending',
-                    week_number=week['week_number'],
-                    year=week['year'],
-                    started_at=datetime.utcnow()
-                )
-                db.session.add(uc)
-        # If we reach here, transaction committed successfully
+                status='pending',
+                week_number=week['week_number'],
+                year=week['year'],
+                started_at=datetime.utcnow()
+            )
+            db.session.add(uc)
+
+        db.session.commit()
         flash('Challenge started!', 'success')
+
     except Exception as e:
-        # Any exception rolls back automatically; explicit rollback to be safe
         db.session.rollback()
         current_app.logger.error(f"Error starting challenge: {e}")
-        flash('Could not start challenge. Please try again.', 'error')
+        
+        # Provide more specific error messages based on the exception
+        if 'UNIQUE constraint failed' in str(e):
+            flash('You have already started this challenge this week.', 'error')
+        elif 'FOREIGN KEY constraint failed' in str(e):
+            flash('Challenge not found. Please try a different challenge.', 'error')
+        elif 'database is locked' in str(e):
+            flash('Database is busy. Please wait a moment and try again.', 'error')
+        else:
+            flash('Could not start challenge. Please try again.', 'error')
 
     return redirect(url_for('main.game', section='challenges'))
 
@@ -872,64 +878,70 @@ def game(section='challenges'):
             'rank': higher_ranked + 1,
         }
 
-    # Weekly challenge setup - DISABLED to prevent database locks
+    # Weekly challenge setup
     current_week = get_current_week_info()
-    current_app.logger.info("Weekly challenge setup disabled to prevent database locks")
-    # Commented out to prevent database locks during signup
-    # populate_weekly_challenge_set()
-    # if current_user.is_authenticated and current_user.is_first_visit_of_week():
-    #     create_user_weekly_order(current_user.id)
-    #     current_user.update_last_visit_week()
-
-    # In-Progress Challenges - SIMPLIFIED to prevent database locks
+    current_app.logger.info("Weekly challenge setup")
+    
+    try:
+        populate_weekly_challenge_set()
+    except Exception as e:
+        current_app.logger.warning(f"Error populating weekly challenge set: {str(e)}")
+        db.session.rollback()
+    
+    if current_user.is_authenticated and current_user.is_first_visit_of_week():
+        create_user_weekly_order(current_user.id)
+        current_user.update_last_visit_week()
+    
+    # In-Progress Challenges
     in_progress, active_count = ([], 0)
     if current_user.is_authenticated:
         try:
-            # Use a simple approach to avoid database locks
-            current_app.logger.info("Using simplified in-progress challenges to prevent database locks")
-            # Commented out to prevent database locks during signup
-            # in_progress, active_count = get_in_progress_challenges(
-            #     current_user.id,
-            #     current_week['week_number'],
-            #     current_week['year']
-            # )
+            current_app.logger.info("Using in-progress challenges")
+            in_progress, active_count = get_in_progress_challenges(
+                current_user.id,
+                current_week['week_number'],
+                current_week['year']
+            )
         except Exception as e:
             current_app.logger.warning(f"Error getting in-progress challenges: {str(e)}")
             db.session.rollback()
-
+    
     # Build weekly slots: 4E, 3M, 2H
     display_slots = {'E': 4, 'M': 3, 'H': 2}
     challenges_by_difficulty = {'E': [], 'M': [], 'H': []}
-
+    
     if current_user.is_authenticated:
         try:
-            # Use a simplified approach to avoid database locks
-            current_app.logger.info("Using simplified weekly challenges to prevent database locks")
-            
-            # Just show some placeholder challenges
+            current_app.logger.info("Using weekly challenges")
             import random
+            from app.models import WeeklyChallengeSet, Challenge
+    
+            weekly_challenges = WeeklyChallengeSet.query.filter_by(
+                week_number=current_week['week_number'],
+                year=current_week['year']
+            ).all()
+    
+            challenges_pool = {'E': [], 'M': [], 'H': []}
+    
+            for wc in weekly_challenges:
+                challenge = Challenge.query.get(wc.challenge_id)
+                if challenge:
+                    challenges_pool[wc.difficulty].append(challenge)
+    
             for diff, slots in display_slots.items():
-                # Get a few random challenges for each difficulty
-                sample_challenges = Challenge.query.filter_by(difficulty=diff).limit(10).all()
-                
-                for _ in range(slots):
-                    if sample_challenges:
-                        choice = random.choice(sample_challenges)
-                        challenges_by_difficulty[diff].append({'challenge': choice, 'all_done': False})
-                    else:
-                        challenges_by_difficulty[diff].append({'challenge': None, 'all_done': False})
+                selected = random.sample(challenges_pool[diff], min(slots, len(challenges_pool[diff])))
+                for ch in selected:
+                    challenges_by_difficulty[diff].append({'challenge': ch, 'all_done': False})
+    
+                while len(challenges_by_difficulty[diff]) < slots:
+                    challenges_by_difficulty[diff].append({'challenge': None, 'all_done': False})
         except Exception as e:
             current_app.logger.warning(f"Error building weekly challenges: {str(e)}")
             db.session.rollback()
-            # Provide default empty challenges if there's an error
             for diff, slots in display_slots.items():
                 for _ in range(slots):
                     challenges_by_difficulty[diff].append({'challenge': None, 'all_done': False})
-    else:
-        for diff, slots in display_slots.items():
-            for _ in range(slots):
-                challenges_by_difficulty[diff].append({'challenge': None})
-
+    
     # Final context for template
     challenges = {
         'in_progress': in_progress,
@@ -937,10 +949,10 @@ def game(section='challenges'):
         'M': challenges_by_difficulty['M'],
         'H': challenges_by_difficulty['H'],
     }
-
-    print("🔍 DEBUG: challenges keys →", challenges.keys())
-    print("🔍 DEBUG: in_progress contents →", challenges.get('in_progress'))
-
+    
+    print("DEBUG: challenges keys →", challenges.keys())
+    print("DEBUG: in_progress contents →", challenges.get('in_progress'))
+    
     return render_template(
         'game.html',
         section=section,

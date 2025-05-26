@@ -1,8 +1,36 @@
-{% extends "base.html" %}
-{% block title %}Communities - Fit Brain Lab{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communities - Fit Brain Lab</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <style>
+        /* Custom scrollbar for communities container when map is visible */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Ensure Font Awesome icons have a fixed width for alignment */
+        .fas {
+            width: 1.25em; /* Adjust as needed for your icon set */
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
     <main class="container mx-auto px-4 py-8">
-        <!-- Hero Section -->
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-gray-900 mb-4">Find Your Community</h1>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -10,18 +38,14 @@
             </p>
         </div>
 
-        <!-- Controls Section -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex flex-wrap gap-4 items-center justify-between">
-                <!-- Left side controls -->
                 <div class="flex flex-wrap gap-3 items-center">
-                    <!-- Map Toggle -->
                     <button id="mapToggle" class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                         <i class="fas fa-map"></i>
                         <span>Show Map</span>
                     </button>
 
-                    <!-- Search -->
                     <div class="relative">
                         <input 
                             type="text" 
@@ -33,9 +57,7 @@
                     </div>
                 </div>
 
-                <!-- Right side filters -->
                 <div class="flex flex-wrap gap-3 items-center">
-                    <!-- Cost Filter -->
                     <select id="costFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">All Costs</option>
                         <option value="Free">Free</option>
@@ -43,19 +65,16 @@
                         <option value="NA">Not Specified</option>
                     </select>
 
-                    <!-- Student Filter -->
                     <select id="studentFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">All Groups</option>
                         <option value="Yes">Student-Based</option>
                         <option value="No">Open to All</option>
                     </select>
 
-                    <!-- Sport Filter -->
                     <select id="sportFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">All Sports</option>
                     </select>
 
-                    <!-- Clear Filters -->
                     <button id="clearFilters" class="text-gray-600 hover:text-gray-800 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         <i class="fas fa-times"></i> Clear
                     </button>
@@ -63,62 +82,77 @@
             </div>
         </div>
 
-        <!-- Main Content Area -->
-        <div class="flex gap-6">
-            <!-- Map Section -->
-            <div id="mapContainer" class="hidden bg-white rounded-lg shadow-sm overflow-hidden" style="width: 50%; height: 600px;">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div id="mapContainer" class="hidden lg:w-1/2 bg-white rounded-lg shadow-sm overflow-hidden" style="height: 600px;">
                 <div id="map" class="w-full h-full"></div>
             </div>
 
-            <!-- Communities Grid -->
-            <div id="communitiesContainer" class="w-full">
-                <div id="communitiesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <!-- Communities will be dynamically loaded here -->
-                </div>
-                
-                <!-- Loading State -->
-                <div id="loadingState" class="text-center py-12">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p class="text-gray-600">Loading communities...</p>
-                </div>
+            <div id="communitiesWrapper" class="w-full lg:w-1/2">
+                <div id="communitiesContainer" class="w-full">
+                    <div id="communitiesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 hidden">
+                    </div>
+                    
+                    <div id="loadingState" class="text-center py-12">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <p class="text-gray-600">Loading communities...</p>
+                    </div>
 
-                <!-- No Results State -->
-                <div id="noResults" class="text-center py-12 hidden">
-                    <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
-                    <h3 class="text-xl font-semibold text-gray-700 mb-2">No communities found</h3>
-                    <p class="text-gray-600">Try adjusting your filters or search terms</p>
+                    <div id="noResults" class="text-center py-12 hidden">
+                        <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">No communities found</h3>
+                        <p class="text-gray-600">Try adjusting your filters or search terms</p>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script>
+        // Load configuration
+        const config = {
+            OPENCAGE_API_KEY: '48bcf64904a14f418e6920d63a9945a8'
+        };
+
         let communities = [];
         let filteredCommunities = [];
         let map = null;
-        let markers = [];
+        let markerClusterGroup = null; // Renamed from markers for clarity with L.markerClusterGroup
         let isMapVisible = false;
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
+            // Ensure Font Awesome is loaded if you're using it, or replace icons with SVGs/text
+            // For example, you might need to add a Font Awesome CDN link in your <head>
+            // Or, if using a local setup, ensure it's properly configured.
+            // This check is just a placeholder for demonstration.
+            if (typeof FontAwesome === 'undefined') { // Basic check, might need adjustment
+                console.warn("Font Awesome not detected. Icons (e.g. <i class='fas...'>) may not display.");
+            }
             loadCommunities();
             setupEventListeners();
+            adjustLayoutForMap(); // Initial layout adjustment
         });
 
         // Load communities from JSON
         async function loadCommunities() {
+            showLoadingState();
             try {
-                const response = await fetch('/static/data/communities.json');
+                const response = await fetch('/static/data/communities.json'); // Make sure this path is correct
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 communities = await response.json();
                 filteredCommunities = [...communities];
                 
                 populateSportFilter();
                 renderCommunities();
-                hideLoadingState();
             } catch (error) {
                 console.error('Error loading communities:', error);
+                showNoResults(); // Show no results if loading fails
+            } finally {
                 hideLoadingState();
-                showNoResults();
             }
         }
 
@@ -143,31 +177,39 @@
                 }
             });
 
-            const sportFilter = document.getElementById('sportFilter');
+            const sportFilterEl = document.getElementById('sportFilter');
+            // Clear existing options except the first one ("All Sports")
+            while (sportFilterEl.options.length > 1) {
+                sportFilterEl.remove(1);
+            }
             sports.forEach(sport => {
                 const option = document.createElement('option');
                 option.value = sport;
                 option.textContent = sport;
-                sportFilter.appendChild(option);
+                sportFilterEl.appendChild(option);
             });
         }
-
-        // Toggle map visibility
-        function toggleMap() {
+        
+        function adjustLayoutForMap() {
             const mapContainer = document.getElementById('mapContainer');
+            const communitiesWrapper = document.getElementById('communitiesWrapper');
             const communitiesContainer = document.getElementById('communitiesContainer');
-            const mapToggle = document.getElementById('mapToggle');
             const communitiesGrid = document.getElementById('communitiesGrid');
-
-            isMapVisible = !isMapVisible;
+            const mapToggle = document.getElementById('mapToggle');
 
             if (isMapVisible) {
                 mapContainer.classList.remove('hidden');
-                communitiesContainer.style.width = '50%';
-                communitiesContainer.style.height = '600px';
+                mapContainer.classList.add('lg:w-1/2'); // Make map take half width on large screens
+                communitiesWrapper.classList.remove('lg:w-full');
+                communitiesWrapper.classList.add('lg:w-1/2');
+                
+                communitiesContainer.style.height = '600px'; // Match map height
                 communitiesContainer.style.overflowY = 'auto';
-                communitiesGrid.classList.remove('xl:grid-cols-3');
-                communitiesGrid.classList.add('xl:grid-cols-1');
+                communitiesContainer.classList.add('custom-scrollbar');
+
+                communitiesGrid.classList.remove('md:grid-cols-2', 'xl:grid-cols-3');
+                communitiesGrid.classList.add('md:grid-cols-1', 'xl:grid-cols-1'); // Single column when map is visible
+
                 mapToggle.innerHTML = '<i class="fas fa-list"></i><span>Hide Map</span>';
                 mapToggle.classList.remove('bg-blue-600', 'hover:bg-blue-700');
                 mapToggle.classList.add('bg-gray-600', 'hover:bg-gray-700');
@@ -175,98 +217,123 @@
                 if (!map) {
                     initializeMap();
                 } else {
+                    map.invalidateSize(); // Ensure map renders correctly after container resize
                     updateMapMarkers();
                 }
             } else {
                 mapContainer.classList.add('hidden');
-                communitiesContainer.style.width = '100%';
+                mapContainer.classList.remove('lg:w-1/2');
+                communitiesWrapper.classList.add('lg:w-full');
+                communitiesWrapper.classList.remove('lg:w-1/2');
+
                 communitiesContainer.style.height = 'auto';
                 communitiesContainer.style.overflowY = 'visible';
-                communitiesGrid.classList.add('xl:grid-cols-3');
-                communitiesGrid.classList.remove('xl:grid-cols-1');
+                communitiesContainer.classList.remove('custom-scrollbar');
+
+                communitiesGrid.classList.remove('md:grid-cols-1', 'xl:grid-cols-1');
+                communitiesGrid.classList.add('md:grid-cols-2', 'xl:grid-cols-3');  // Revert to multi-column
+
                 mapToggle.innerHTML = '<i class="fas fa-map"></i><span>Show Map</span>';
-                mapToggle.classList.add('bg-blue-600', 'hover:bg-blue-700');
                 mapToggle.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                mapToggle.classList.add('bg-blue-600', 'hover:bg-blue-700');
             }
         }
 
-        // Initialize Google Map
-        function initializeMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 11,
-                center: { lat: 52.3676, lng: 4.9041 }, // Amsterdam center
-                styles: [
-                    {
-                        featureType: 'poi',
-                        elementType: 'labels',
-                        stylers: [{ visibility: 'off' }]
-                    }
-                ]
-            });
 
-            updateMapMarkers();
+        // Toggle map visibility
+        function toggleMap() {
+            isMapVisible = !isMapVisible;
+            adjustLayoutForMap();
+        }
+
+        // Initialize Leaflet Map
+        function initializeMap() {
+            try {
+                map = L.map('map').setView([52.3676, 4.9041], 11); // Amsterdam center
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                markerClusterGroup = L.markerClusterGroup();
+                map.addLayer(markerClusterGroup);
+
+                updateMapMarkers();
+                map.invalidateSize(); // Adjust map size after initialization if container was hidden
+            } catch (error) {
+                console.error('Error initializing map:', error);
+                // Optionally, disable map functionality or show an error message to the user
+                const mapToggle = document.getElementById('mapToggle');
+                mapToggle.disabled = true;
+                mapToggle.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Map Error</span>';
+            }
         }
 
         // Update map markers based on filtered communities
         function updateMapMarkers() {
-            if (!map) return;
+            if (!map || !markerClusterGroup) return;
 
-            // Clear existing markers
-            markers.forEach(marker => marker.setMap(null));
-            markers = [];
+            try {
+                markerClusterGroup.clearLayers();
 
-            // Add new markers
-            filteredCommunities.forEach((community, index) => {
-                if (community.Location) {
-                    geocodeAddress(community.Location, community, index);
-                }
-            });
+                filteredCommunities.forEach((community) => { // Removed index as it wasn't used
+                    if (community.Location && community.Name) { // Ensure location and name exist
+                        // Assuming geocoding is needed. If you have lat/lng in JSON, use those directly.
+                        geocodeAddress(community.Location, community);
+                    }
+                });
+            } catch (error) {
+                console.error('Error updating map markers:', error);
+            }
         }
 
         // Geocode address to coordinates
-        function geocodeAddress(address, community, index) {
-            const geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ address: address + ', Amsterdam, Netherlands' }, (results, status) => {
-                if (status === 'OK') {
-                    const marker = new google.maps.Marker({
-                        position: results[0].geometry.location,
-                        map: map,
+        async function geocodeAddress(address, community) {
+            // Get API key from configuration
+            const apiKey = config.OPENCAGE_API_KEY;
+            if (!apiKey || apiKey === 'YOUR_OPENCAGE_API_KEY') {
+                console.error("OpenCage API key is not properly configured. Please set it in config.js");
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}&pretty=1&limit=1&countrycode=NL&bounds=4.7271_52.2780_5.0791_52.4311`); // Added Amsterdam bounds
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    const result = data.results[0];
+                    const position = [result.geometry.lat, result.geometry.lng];
+
+                    const marker = L.marker(position, {
                         title: community.Name,
-                        icon: {
-                            url: 'data:image/svg+xml;base64,' + btoa(`
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40">
-                                    <path fill="#2563eb" d="M15 0C6.7 0 0 6.7 0 15c0 8.3 15 25 15 25s15-16.7 15-25C30 6.7 23.3 0 15 0zm0 20c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
-                                </svg>
-                            `),
-                            scaledSize: new google.maps.Size(30, 40)
-                        }
+                        icon: L.icon({
+                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34]
+                        })
                     });
 
-                    const infoWindow = new google.maps.InfoWindow({
-                        content: `
-                            <div class="p-2">
-                                <h3 class="font-bold text-lg mb-2">${community.Name}</h3>
-                                <p class="text-sm text-gray-600 mb-1"><strong>Sport:</strong> ${community.Sport}</p>
-                                <p class="text-sm text-gray-600 mb-1"><strong>Location:</strong> ${community.Location}</p>
-                                <p class="text-sm text-gray-600 mb-1"><strong>Cost:</strong> ${community.Cost}</p>
-                                <p class="text-sm text-gray-600 mb-1"><strong>Student-based:</strong> ${community['Student-based']}</p>
-                                ${community.website ? `<a href="${community.website}" target="_blank" class="text-blue-600 hover:underline text-sm">Visit Website</a>` : ''}
-                            </div>
-                        `
-                    });
-
-                    marker.addListener('click', () => {
-                        infoWindow.open(map, marker);
-                    });
-
-                    markers.push(marker);
+                    marker.bindPopup(`
+                        <div class="p-1 max-w-xs"> <h3 class="font-bold text-md mb-1">${community.Name}</h3>
+                            <p class="text-xs mb-0.5">Sport: ${community.Sport || 'N/A'}</p>
+                            <p class="text-xs mb-0.5">Cost: ${community.Cost || 'N/A'}</p>
+                            <p class="text-xs mb-0.5">Student: ${community['Student-based'] || 'N/A'}</p>
+                            <p class="text-xs mb-0.5">Location: ${community.Location || 'N/A'}</p>
+                            ${community.website ? `<p class="text-xs"><a href="${community.website}" target="_blank" class="text-blue-600 hover:text-blue-800">Visit Website</a></p>` : ''}
+                        </div>
+                    `);
+                    markerClusterGroup.addLayer(marker);
+                } else {
+                    console.warn(`Geocoding failed for address: ${address}. No results found. Response:`, data);
                 }
-            });
+            } catch (error) {
+                console.error(`Error geocoding address '${address}':`, error);
+            }
         }
-
-        // Handle search
-        function handleSearch(event) {
-            const searchTerm = event.target.value.toLowerCase();
+        
+        // Handle search input
+        function handleSearch() {
             applyFilters();
         }
 
@@ -278,28 +345,33 @@
         // Apply all filters
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const costFilter = document.getElementById('costFilter').value;
-            const studentFilter = document.getElementById('studentFilter').value;
-            const sportFilter = document.getElementById('sportFilter').value;
+            const costFilterValue = document.getElementById('costFilter').value;
+            const studentFilterValue = document.getElementById('studentFilter').value;
+            const sportFilterValue = document.getElementById('sportFilter').value;
 
             filteredCommunities = communities.filter(community => {
-                // Search filter
+                const name = community.Name ? community.Name.toLowerCase() : '';
+                const sport = community.Sport ? community.Sport.toLowerCase() : '';
+                const location = community.Location ? community.Location.toLowerCase() : '';
+                
                 const matchesSearch = !searchTerm || 
-                    community.Name.toLowerCase().includes(searchTerm) ||
-                    community.Sport.toLowerCase().includes(searchTerm) ||
-                    community.Location.toLowerCase().includes(searchTerm);
+                    name.includes(searchTerm) ||
+                    sport.includes(searchTerm) ||
+                    location.includes(searchTerm);
 
-                // Cost filter
-                const matchesCost = !costFilter || 
-                    (costFilter === 'Free' && (community.Cost === 'Free' || community.Cost === '0')) ||
-                    (costFilter === 'Paid' && community.Cost !== 'Free' && community.Cost !== '0' && community.Cost !== 'NA') ||
-                    (costFilter === 'NA' && community.Cost === 'NA');
+                const communityCost = community.Cost ? String(community.Cost) : 'NA';
+                const matchesCost = !costFilterValue ||
+                    (costFilterValue === 'Free' && (communityCost === 'Free' || communityCost === '0')) ||
+                    (costFilterValue === 'Paid' && communityCost !== 'Free' && communityCost !== '0' && communityCost !== 'NA') ||
+                    (costFilterValue === 'NA' && communityCost === 'NA') ||
+                    (costFilterValue === communityCost);
 
-                // Student filter
-                const matchesStudent = !studentFilter || community['Student-based'] === studentFilter;
 
-                // Sport filter
-                const matchesSport = !sportFilter || community.Sport.includes(sportFilter);
+                const communityStudentBased = community['Student-based'] || '';
+                const matchesStudent = !studentFilterValue || communityStudentBased === studentFilterValue;
+                
+                const communitySport = community.Sport || '';
+                const matchesSport = !sportFilterValue || communitySport.toLowerCase().includes(sportFilterValue.toLowerCase());
 
                 return matchesSearch && matchesCost && matchesStudent && matchesSport;
             });
@@ -316,7 +388,8 @@
             document.getElementById('costFilter').value = '';
             document.getElementById('studentFilter').value = '';
             document.getElementById('sportFilter').value = '';
-            filteredCommunities = [...communities];
+            
+            filteredCommunities = [...communities]; // Reset to all communities
             renderCommunities();
             if (isMapVisible) {
                 updateMapMarkers();
@@ -326,71 +399,78 @@
         // Render communities
         function renderCommunities() {
             const grid = document.getElementById('communitiesGrid');
-            const noResults = document.getElementById('noResults');
+            const noResultsEl = document.getElementById('noResults');
 
             if (filteredCommunities.length === 0) {
-                grid.innerHTML = '';
-                noResults.classList.remove('hidden');
+                grid.innerHTML = ''; // Clear existing cards
+                noResultsEl.classList.remove('hidden');
                 return;
             }
 
-            noResults.classList.add('hidden');
+            noResultsEl.classList.add('hidden');
             
             grid.innerHTML = filteredCommunities.map(community => `
-                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col">
                     <div class="aspect-w-16 aspect-h-9 bg-gray-200">
                         <img 
                             src="${community.image_url || '/static/images/default-community.jpg'}" 
-                            alt="${community.Name}"
+                            alt="${community.Name || 'Community Image'}"
                             class="w-full h-48 object-cover"
-                            onerror="this.src='/static/images/default-community.jpg'"
+                            onerror="this.onerror=null; this.src='/static/images/default-community.jpg';"
                         >
                     </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">${community.Name}</h3>
-                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">${community.Name || 'Unnamed Community'}</h3>
+                        <div class="space-y-2 text-sm text-gray-600 mb-4 flex-grow">
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-dumbbell text-blue-600 w-4"></i>
-                                <span>${community.Sport}</span>
+                                <span>${community.Sport || 'N/A'}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-map-marker-alt text-blue-600 w-4"></i>
-                                <span>${community.Location}</span>
+                                <span>${community.Location || 'N/A'}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-dollar-sign text-blue-600 w-4"></i>
-                                <span>${community.Cost === 'NA' ? 'Contact for pricing' : community.Cost}</span>
+                                <span>${community.Cost === 'NA' ? 'Contact for pricing' : (community.Cost || 'N/A')}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-users text-blue-600 w-4"></i>
-                                <span>${community['Student-based'] === 'Yes' ? 'Student-focused' : 'Open to all'}</span>
+                                <span>${community['Student-based'] === 'Yes' ? 'Student-focused' : (community['Student-based'] === 'No' ? 'Open to all' : 'N/A')}</span>
                             </div>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 mt-auto">
                             ${community.website ? `
                                 <a href="${community.website}" target="_blank" class="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                                     Visit Website
                                 </a>
-                            ` : ''}
+                            ` : '<div class="flex-1"></div>' /* Placeholder to maintain layout if only one button */}
                             ${community.email ? `
                                 <a href="mailto:${community.email}" class="flex-1 bg-gray-600 text-white text-center py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium">
                                     Contact
                                 </a>
-                            ` : ''}
+                            ` : '<div class="flex-1"></div>' /* Placeholder */}
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Hide loading state
+        // Show/Hide loading state
+        function showLoadingState() {
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('communitiesGrid').classList.add('hidden');
+            document.getElementById('noResults').classList.add('hidden');
+        }
         function hideLoadingState() {
-            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('communitiesGrid').classList.remove('hidden');
         }
 
-        // Show no results
+        // Show no results message
         function showNoResults() {
             document.getElementById('noResults').classList.remove('hidden');
+            document.getElementById('communitiesGrid').innerHTML = ''; // Ensure grid is empty
         }
 
         // Debounce function for search
@@ -406,9 +486,5 @@
             };
         }
     </script>
-
-    <!-- Google Maps API -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initializeMap"></script>
-
-{% endblock %}
-
+</body>
+</html>

@@ -1,35 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Communities - Fit Brain Lab</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
-    <style>
-        /* Custom scrollbar for communities container when map is visible */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        /* Ensure Font Awesome icons have a fixed width for alignment */
-        .fas {
-            width: 1.25em; /* Adjust as needed for your icon set */
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Fit Quest - Fit Brain Lab{% endblock %}
+{% block content %}
     <main class="container mx-auto px-4 py-8">
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-gray-900 mb-4">Find Your Community</h1>
@@ -83,7 +54,7 @@
         </div>
 
         <div class="flex flex-col lg:flex-row gap-6">
-            <div id="mapContainer" class="hidden lg:w-1/2 bg-white rounded-lg shadow-sm overflow-hidden" style="height: 600px;">
+            <div id="mapContainer" class="hidden lg:w-1/2 bg-white rounded-lg shadow-sm overflow-hidden custom-scrollbar" style="height: 600px;">
                 <div id="map" class="w-full h-full"></div>
             </div>
 
@@ -486,5 +457,4 @@
             };
         }
     </script>
-</body>
-</html>
+{% endblock %}

@@ -3,6 +3,34 @@
 @tailwind utilities;
 
 @layer base {
+    .custom-scrollbar::-webkit-scrollbar {
+        @apply w-2; /* 8px width converted to Tailwind */
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        @apply bg-gray-200;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        @apply bg-gray-700 rounded-lg;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        @apply bg-gray-900;
+    }
+
+    * {
+      @apply border-border;
+    }
+    body {
+      @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+    .fas {
+        @apply w-[1.25em] text-center;
+    }
+}
+
+@layer base {
     :root {
 
       --bg-first: #000000; /* greyish white  gray-50*/
@@ -77,11 +105,3 @@
     }
   }
   
-  @layer base {
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background text-foreground;
-    }
-  }

@@ -1,0 +1,182 @@
+[
+  {
+    "Name": "Amsterdam Gaelic Athletic Club (GAC)",
+    "Sport": "Football,HurlingCamogie ",
+    "email": "info@amsterdamgac.nl",
+    "website": "https://www.amsterdamgac.nl/",
+    "Location": "Bok de Korverweg 4,1067 HR Amsterdam",
+    "Cost": "NA",
+    "Student-based": "No",
+    "image_url": "http://amsterdamgac.nl/wp-content/uploads/2019/06/logo.png"
+  },
+  {
+    "Name": "Amsterdam Lowlanders Gay Rugby Club",
+    "Sport": "Rugby ",
+    "email": "info@amsterdamlowlanders.nl (email doesnt work)",
+    "website": "https://amsterdamlowlanders.nl/",
+    "Location": "Amstelveense Rugby Club Sportlaan 25a, 1185 TB Amstelveen",
+    "Cost": "Paid",
+    "Student-based": "No",
+    "image_url": "https://amsterdamlowlanders.nl/wp-content/themes/lowlanders/assets/logo-dark.png"
+  },
+  {
+    "Name": "Amsterdam Netball Club",
+    "Sport": "Netball ",
+    "email": "amsterdamnetball@gmail.com",
+    "website": "https://www.amsterdamnetball.com/",
+    "Location": "ROC van Amsterdam MBO college West",
+    "Cost": "Paid",
+    "Student-based": "Yes",
+    "image_url": "https://static.wixstatic.com/media/db57c8_6c326ab774914839aebc34d4152c09bd~mv2.png/v1/fill/w_195,h_82,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/ANC%20Logo.png"
+  },
+  {
+    "Name": "Wattworks Amsterdam",
+    "Sport": "Cycling classes, personal coaching ",
+    "email": "info@wattworks.nl",
+    "website": "https://www.wattworks.nl/",
+    "Location": "Van Hallstraat 9D 1051GW Amsterdam",
+    "Cost": "NA",
+    "Student-based": "No",
+    "image_url": ""
+  },
+  {
+    "Name": "Health Club Jordaan:",
+    "Sport": "Fitness classes ",
+    "email": "info@healthclubjordaan.nl",
+    "website": "https://www.healthclubjordaan.nl/",
+    "Location": "Eerste Rozendwarsstraat 10 1016PC, Amsterdam",
+    "Cost": "Paid",
+    "Student-based": "No",
+    "image_url": "https://healthclubjordaan.nl/wp-content/uploads/2020/08/logo-white.svg"
+  },
+  {
+    "Name": "WV Amsterdam",
+    "Sport": "Cycling club, personal training ",
+    "email": "info@wvamsterdam.nl",
+    "website": "https://www.wvamsterdam.nl/",
+    "Location": "Changes intermittently. During the road season there are 4 competitions per week in which you can participate at a discount",
+    "Cost": "Paid",
+    "Student-based": "No",
+    "image_url": "https://www.wvamsterdam.nl/wp-content/uploads/2024/11/concourse-sponsor-logo-e1732888217540.png"
+  },
+  {
+    "Name": "Sportcentrum Universum",
+    "Sport": "Offers a wide range of sports facilities and classes, including group fitness and martial arts.​",
+    "email": "info@uscsport.nl",
+    "website": "https://www.uscsport.nl/",
+    "Location": "USC Amstelcampus, USC ASC,USC Body & Mind,USC ClubWest, USC School of Boxing,USC Tennis & Padel,USC Universe (room rentals for sports unavailable)",
+    "Cost": "Paid",
+    "Student-based": "Yes",
+    "image_url": "https://www.uscsport.nl/wp-content/themes/usc/img/logo-usc.png"
+  },
+  {
+    "Name": "Squash City",
+    "Sport": "Squash ",
+    "email": "info@squashcity.com",
+    "website": "https://www.squashcity.com/",
+    "Location": "Ketelmakerstraat 6, 1013 DE Amsterdam",
+    "Cost": "NA",
+    "Student-based": "No",
+    "image_url": "https://www.squashcity.com/images/templates/images/logo-20210120160958.png"
+  },
+  {
+    "Name": "A.S.A.V. Aquila (Athletics)",
+    "Sport": "Track and field (and related sports)",
+    "email": "info@asavaquila.nl",
+    "website": "https://asavaquila.nl/",
+    "Location": "hall of the Olympic Stadium",
+    "Cost": "Paid",
+    "Student-based": "Yes",
+    "image_url": "https://asavaquila.nl/wordpress/wp-content/uploads/2017/10/cropped-Screen-Shot-2017-10-10-at-08.28.11-1.png"
+  },
+  {
+    "Name": "Amsterdan Floorball ",
+    "Sport": "Floorball ",
+    "email": "info@aacrugby.com",
+    "website": "https://www.amsterdamfloorball.com/adults-home",
+    "Location": "Oosterburghal, Bajeskwartier",
+    "Cost": "Paid",
+    "Student-based": "No",
+    "image_url": "https://static.wixstatic.com/media/4674c4_52545127b0634835abf2b3697c628fd3~mv2.jpg/v1/fill/w_160,h_50,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/Agents%20logo.jpg"
+  },
+  {
+    "Name": "Gay swim club",
+    "Sport": "Swimming",
+    "email": "info@gayswimamsterdam.nl",
+    "website": "https://www.gayswimamsterdam.nl/en/home-2/",
+    "Location": "Sportbedrijf Het Marnix Marnixplein 11015 ZN AmsterdamOptisport SloterparkbadPres. Allendelaan 31064 GW Amsterdam",
+    "Cost": "Paid",
+    "Student-based": "No",
+    "image_url": "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs="
+  },
+  {
+    "Name": "Amsterdam Rowing ",
+    "Sport": "Rowing ",
+    "email": "ofni @amstelroei.nl (doesnt work)",
+    "website": "https://www.amstelroei.nl/lid-worden",
+    "Location": "Hobbemakade 122 1071 XW Amsterdam",
+    "Cost": "Paid",
+    "Student-based": "No",
+    "image_url": "https://www.amstelroei.nl/images/jubileumlogo-compleet-thumb.png"
+  },
+  {
+    "Name": "Amsterdam Student Alpine Club (ASAC)",
+    "Sport": "Rock climbing, hiking ",
+    "email": "bestuur@asac.nl",
+    "website": "https://asac.nl/",
+    "Location": " registration evenings are walk-in based, locations change based on where they are going",
+    "Cost": "NA",
+    "Student-based": "Yes",
+    "image_url": "https://asac.nl/wp-content/themes/asacdev/images/logo.png"
+  },
+  {
+    "Name": "untitled.runclub",
+    "Sport": "Running",
+    "email": "https://www.instagram.com/untitled.runclub/",
+    "website": "https://www.instagram.com/untitled.runclub/",
+    "Location": "Changes",
+    "Cost": "NA",
+    "Student-based": "",
+    "image_url": ""
+  },
+  {
+    "Name": "We Are Queer",
+    "Sport": "Queer Gym, community",
+    "email": "https://www.instagram.com/wearequeergym/",
+    "website": "https://wearequeer.nl/",
+    "Location": "wagenaarstraat 336, Amsterdam, Netherlands 1093CZ",
+    "Cost": "Paid",
+    "Student-based": "No",
+    "image_url": ""
+  },
+  {
+    "Name": "Smashing pink ",
+    "Sport": "LGBTQ+ tennis ",
+    "email": " info@smashing.pink",
+    "website": "https://www.smashing.pink/",
+    "Location": "Koenenkade 8, 1081 KH Amsterdam",
+    "Cost": "Paid",
+    "Student-based": "No",
+    "image_url": "https://www.smashing.pink/images/logo@2x.png"
+  },
+  {
+    "Name": "InAmsterdamWeRunClub",
+    "Sport": "Running",
+    "email": "https://www.instagram.com/inamsterdamwerunclub/",
+    "website": "https://www.instagram.com/inamsterdamwerunclub/",
+    "Location": "Ferdinand bolstraat 151, Amsterdam, Netherlands",
+    "Cost": "free",
+    "Student-based": "No",
+    "image_url": ""
+  },
+  {
+    "Name": "ProudStrides",
+    "Sport": "running",
+    "email": "https://www.instagram.com/proudstrides.runclub/",
+    "website": "https://www.instagram.com/proudstrides.runclub/",
+    "Location": "Changes",
+    "Cost": "free",
+    "Student-based": "no",
+    "image_url": ""
+  }
+]

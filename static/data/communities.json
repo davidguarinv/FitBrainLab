@@ -1,15 +1,5 @@
 [
   {
-    "Name": "Amsterdam Gaelic Athletic Club (GAC)",
-    "Sport": "Football,HurlingCamogie ",
-    "email": "info@amsterdamgac.nl",
-    "website": "https://www.amsterdamgac.nl/",
-    "Location": "Bok de Korverweg 4,1067 HR Amsterdam",
-    "Cost": "NA",
-    "Student-based": "No",
-    "image_url": "http://amsterdamgac.nl/wp-content/uploads/2019/06/logo.png"
-  },
-  {
     "Name": "Amsterdam Lowlanders Gay Rugby Club",
     "Sport": "Rugby ",
     "email": "info@amsterdamlowlanders.nl (email doesnt work)",
@@ -35,7 +25,7 @@
     "email": "info@wattworks.nl",
     "website": "https://www.wattworks.nl/",
     "Location": "Van Hallstraat 9D 1051GW Amsterdam",
-    "Cost": "NA",
+    "Cost": "Paid",
     "Student-based": "No",
     "image_url": ""
   },
@@ -75,7 +65,7 @@
     "email": "info@squashcity.com",
     "website": "https://www.squashcity.com/",
     "Location": "Ketelmakerstraat 6, 1013 DE Amsterdam",
-    "Cost": "NA",
+    "Cost": "Paid",
     "Student-based": "No",
     "image_url": "https://www.squashcity.com/images/templates/images/logo-20210120160958.png"
   },
@@ -165,7 +155,7 @@
     "email": "https://www.instagram.com/inamsterdamwerunclub/",
     "website": "https://www.instagram.com/inamsterdamwerunclub/",
     "Location": "Ferdinand bolstraat 151, Amsterdam, Netherlands",
-    "Cost": "free",
+    "Cost": "Free",
     "Student-based": "No",
     "image_url": ""
   },
@@ -175,7 +165,7 @@
     "email": "https://www.instagram.com/proudstrides.runclub/",
     "website": "https://www.instagram.com/proudstrides.runclub/",
     "Location": "Changes",
-    "Cost": "free",
+    "Cost": "Free",
     "Student-based": "no",
     "image_url": ""
   }

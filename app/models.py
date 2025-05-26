@@ -607,6 +607,15 @@ class FriendChallengeLink(db.Model):
         return datetime.utcnow() > self.expires_at
 
 
+class FriendTokenUsage(db.Model):
+    __tablename__ = 'friend_token_usage'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    used_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    user = db.relationship('User', backref='friend_token_usages')
+
+
 # -------------------------
 # Challenge of the Week Model
 # -------------------------

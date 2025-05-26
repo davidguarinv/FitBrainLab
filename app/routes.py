@@ -710,99 +710,121 @@ def auth():
     # For failed form validation, show the game page with auth section
     return redirect(url_for('main.game', section='auth'))
 
-# Friend Challenge Completion Route
+# Friend Challenge Route
+
 @bp.route('/challenge/<int:challenge_id>/complete-with-friend', methods=['POST'])
 @login_required
 def complete_challenge_with_friend(challenge_id):
-    # Get the friend's personal code from the form
     friend_code = request.form.get('friend_code')
-    
+
     if not friend_code:
         flash('Friend code is required.', 'error')
         return redirect(url_for('main.game', section='challenges'))
-    
-    # Find the friend by personal code
-    friend = User.query.filter_by(personal_code=friend_code).first()
-    
-    if not friend:
-        flash('Invalid friend code. Please check and try again.', 'error')
+
+    if friend_code == current_user.personal_code:
+        flash("You can't complete a challenge with yourself.", 'error')
         return redirect(url_for('main.game', section='challenges'))
-    
-    if friend.id == current_user.id:
-        flash('You cannot complete a challenge with yourself.', 'error')
-        return redirect(url_for('main.game', section='challenges'))
-    
-    # Get the challenge
+
+    # Ensure user has this challenge in progress
     challenge = Challenge.query.get_or_404(challenge_id)
-    
-    # Check if the user has this challenge in progress
     user_challenge = UserChallenge.query.filter_by(
-        user_id=current_user.id,
-        challenge_id=challenge_id,
-        status='pending'
+        user_id=current_user.id, challenge_id=challenge_id, status='pending'
     ).first()
-    
+
     if not user_challenge:
-        flash('Challenge not found or not in progress.', 'error')
+        flash("You haven't started this challenge.", 'error')
         return redirect(url_for('main.game', section='challenges'))
-    
+
+    # Check weekly friend token usage (limit 3)
+    now = datetime.utcnow()
+    week_start = now - timedelta(days=now.weekday())
+    tokens_used = FriendTokenUsage.query.filter(
+        FriendTokenUsage.user_id == current_user.id,
+        FriendTokenUsage.used_at >= week_start
+    ).count()
+    if tokens_used >= 3:
+        flash("You've used all 3 friend tokens this week.", 'error')
+        return redirect(url_for('main.game', section='challenges'))
+
+    # Lookup friend
+    friend = User.query.filter_by(personal_code=friend_code).first()
+    if not friend:
+        flash("Invalid friend code.", 'error')
+        return redirect(url_for('main.game', section='challenges'))
+
+    if friend.id == current_user.id:
+        flash("You can't use your own code.", 'error')
+        return redirect(url_for('main.game', section='challenges'))
+
+    # Friend must also have challenge in progress
+    friend_challenge = UserChallenge.query.filter_by(
+        user_id=friend.id, challenge_id=challenge_id, status='pending'
+    ).first()
+    if not friend_challenge:
+        flash("Your friend hasn't started this challenge yet.", 'error')
+        return redirect(url_for('main.game', section='challenges'))
+
     try:
-        # Create or update the friend challenge link
-        existing_link = FriendChallengeLink.query.filter(
+        # Cleanup expired links
+        FriendChallengeLink.query.filter(FriendChallengeLink.expires_at < datetime.utcnow()).delete()
+        db.session.commit()
+
+        # Check if there's already a link
+        link = FriendChallengeLink.query.filter_by(challenge_id=challenge_id).filter(
             ((FriendChallengeLink.user1_id == current_user.id) & (FriendChallengeLink.user2_id == friend.id)) |
             ((FriendChallengeLink.user1_id == friend.id) & (FriendChallengeLink.user2_id == current_user.id))
-        ).filter_by(challenge_id=challenge_id).first()
-        
-        if existing_link:
-            # Update the existing link
-            if existing_link.user1_id == current_user.id:
-                existing_link.user1_confirmed = True
+        ).first()
+
+        if link:
+            if link.expires_at < datetime.utcnow():
+                db.session.delete(link)
+                db.session.commit()
+                flash("This friend request expired. Please try again.", "error")
+                return redirect(url_for('main.game', section='challenges'))
+
+            # Mark confirmation
+            if current_user.id == link.user1_id:
+                link.user1_confirmed = True
             else:
-                existing_link.user2_confirmed = True
-                
-            # If both users have confirmed, complete the challenge for both
-            if existing_link.is_complete():
-                # Complete the challenge for the current user
-                user_challenge.status = 'completed'
-                user_challenge.completed_at = datetime.utcnow()
-                user_challenge.points_earned = challenge.points * 1.5  # 50% bonus for friend completion
-                
-                # Find and complete the challenge for the friend if they have it in progress
-                friend_challenge = UserChallenge.query.filter_by(
-                    user_id=friend.id,
-                    challenge_id=challenge_id,
-                    status='pending'
-                ).first()
-                
-                if friend_challenge:
-                    friend_challenge.status = 'completed'
-                    friend_challenge.completed_at = datetime.utcnow()
-                    friend_challenge.points_earned = challenge.points * 1.5  # 50% bonus for friend completion
-                
-                flash('Challenge completed with your friend! You both earned bonus points!', 'success')
+                link.user2_confirmed = True
+
+            db.session.commit()
+
+            # If both confirmed, award 1.5x points to both
+            if link.user1_confirmed and link.user2_confirmed:
+                for user, uc in [(current_user, user_challenge), (friend, friend_challenge)]:
+                    uc.status = 'completed'
+                    uc.completed_at = datetime.utcnow()
+                    uc.points_earned = int(challenge.points * 1.5)
+                    db.session.add(FriendTokenUsage(user_id=user.id, used_at=datetime.utcnow()))
+
+                flash("Challenge completed with your friend! You both earned bonus points!", "success")
             else:
-                flash('Your completion has been recorded. Waiting for your friend to complete their part.', 'success')
+                flash("Friend request updated. Waiting for the other user to confirm.", "info")
         else:
-            # Create a new friend challenge link
+            # New link
             new_link = FriendChallengeLink(
                 challenge_id=challenge_id,
                 user1_id=current_user.id,
                 user2_id=friend.id,
                 user1_confirmed=True,
                 user2_confirmed=False,
-                expires_at=datetime.utcnow() + timedelta(days=3)  # Link expires in 3 days
+                created_at=datetime.utcnow(),
+                expires_at=datetime.utcnow() + timedelta(minutes=20)
             )
             db.session.add(new_link)
-            flash('Your completion has been recorded. Waiting for your friend to complete their part.', 'success')
-        
+            db.session.add(FriendTokenUsage(user_id=current_user.id, used_at=datetime.utcnow()))
+            flash("Challenge linked. Waiting for your friend to confirm within 20 minutes.", "info")
+
         db.session.commit()
-        
+
     except Exception as e:
         db.session.rollback()
-        current_app.logger.error(f"Error in friend challenge completion: {str(e)}")
-        flash('An error occurred. Please try again.', 'error')
-    
+        current_app.logger.error(f"[Friend Challenge Error] {str(e)}")
+        flash("Something went wrong while linking with your friend.", "error")
+
     return redirect(url_for('main.game', section='challenges'))
+
 
 # Logout Route
 @bp.route('/logout')

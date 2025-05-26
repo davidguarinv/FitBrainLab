@@ -1,460 +1,580 @@
 {% extends "base.html" %}
-{% block title %}Fit Quest - Fit Brain Lab{% endblock %}
+{% block title %}Communities - Fit Brain Lab{% endblock %}
 {% block content %}
-    <main class="container mx-auto px-4 py-8">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4">Find Your Community</h1>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Discover the perfect fitness community in Amsterdam that matches your interests, schedule, and budget
-            </p>
+<main class="flex-1">
+    <section class="relative w-full py-12 md:py-24 lg:py-32 overflow-hidden">
+        <!-- Animated Background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-orange-900 via-red-900 to-pink-900">
+            <!-- Floating Elements -->
+            <div class="absolute top-20 left-10 w-16 h-16 border-2 border-orange-300/30 rounded-lg rotate-12 animate-pulse"></div>
+            <div class="absolute top-40 right-20 w-12 h-12 border-2 border-red-300/30 rounded-full animate-bounce"></div>
+            <div class="absolute bottom-32 left-1/4 w-20 h-20 border-2 border-pink-300/30 rounded-lg -rotate-12 animate-pulse"></div>
+            <div class="absolute top-1/3 right-1/3 w-8 h-8 bg-orange-400/20 rounded-full animate-ping"></div>
+            <div class="absolute bottom-20 right-10 w-14 h-14 border-2 border-red-400/30 rounded-lg rotate-45 animate-pulse"></div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <div class="flex flex-wrap gap-4 items-center justify-between">
-                <div class="flex flex-wrap gap-3 items-center">
-                    <button id="mapToggle" class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-map"></i>
-                        <span>Show Map</span>
-                    </button>
+        <div class="relative container mx-auto px-4 md:px-6">
+            <div class="flex flex-col items-center text-center space-y-4 mb-8">
+            <div class="space-y-2">
+                <div class="inline-block rounded-lg bg-orange-100/90 backdrop-blur px-3 py-1 text-sm text-orange-700 font-medium mb-2">
+                Community Network
+                </div>
+                <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-white">
+                Find Your Fitness Community
+                </h1>
+                <p class="max-w-[800px] text-orange-100 md:text-xl">
+                Discover the perfect fitness community in Amsterdam that matches your interests, schedule, and goals.
+                Connect with like-minded individuals and build lasting exercise habits together.
+                </p>
+            </div>
+            </div>
+        </div>
+        </section>
 
-                    <div class="relative">
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            placeholder="Search communities..." 
-                            class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
-                        >
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    </div>
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div class="flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex flex-wrap gap-3 items-center">
+                <button id="mapToggle" class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-map"></i>
+                    <span>Show Map</span>
+                </button>
+
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search communities..." 
+                        class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+                    >
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 items-center">
+                <select id="costFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">All Costs</option>
+                    <option value="Free">Free</option>
+                    <option value="Paid">Paid</option>
+                    <option value="NA">Not Specified</option>
+                </select>
+
+                <select id="studentFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">All Groups</option>
+                    <option value="Yes">Student-Based</option>
+                    <option value="No">Open to All</option>
+                </select>
+
+                <select id="sportFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">All Sports</option>
+                </select>
+
+                <button id="clearFilters" class="text-gray-600 hover:text-gray-800 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+        <div id="mapContainer" class="hidden lg:w-1/2 bg-white rounded-lg shadow-sm overflow-hidden custom-scrollbar" style="height: 600px;">
+            <div id="map" class="w-full h-full"></div>
+        </div>
+
+        <div id="communitiesWrapper" class="w-full lg:w-1/2">
+            <div id="communitiesContainer" class="w-full">
+                <div id="communitiesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 hidden">
+                </div>
+                
+                <div id="loadingState" class="text-center py-12">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p class="text-gray-600">Loading communities...</p>
                 </div>
 
-                <div class="flex flex-wrap gap-3 items-center">
-                    <select id="costFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="">All Costs</option>
-                        <option value="Free">Free</option>
-                        <option value="Paid">Paid</option>
-                        <option value="NA">Not Specified</option>
-                    </select>
-
-                    <select id="studentFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="">All Groups</option>
-                        <option value="Yes">Student-Based</option>
-                        <option value="No">Open to All</option>
-                    </select>
-
-                    <select id="sportFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="">All Sports</option>
-                    </select>
-
-                    <button id="clearFilters" class="text-gray-600 hover:text-gray-800 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <i class="fas fa-times"></i> Clear
-                    </button>
+                <div id="noResults" class="text-center py-12 hidden">
+                    <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">No communities found</h3>
+                    <p class="text-gray-600">Try adjusting your filters or search terms</p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="flex flex-col lg:flex-row gap-6">
-            <div id="mapContainer" class="hidden lg:w-1/2 bg-white rounded-lg shadow-sm overflow-hidden custom-scrollbar" style="height: 600px;">
-                <div id="map" class="w-full h-full"></div>
-            </div>
-
-            <div id="communitiesWrapper" class="w-full lg:w-1/2">
-                <div id="communitiesContainer" class="w-full">
-                    <div id="communitiesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 hidden">
-                    </div>
-                    
-                    <div id="loadingState" class="text-center py-12">
-                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                        <p class="text-gray-600">Loading communities...</p>
-                    </div>
-
-                    <div id="noResults" class="text-center py-12 hidden">
-                        <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">No communities found</h3>
-                        <p class="text-gray-600">Try adjusting your filters or search terms</p>
-                    </div>
+    <section class="w-full py-16 bg-blue-50">
+        <div class="container mx-auto px-4 md:px-6 max-w-2xl">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-center">Add Your Community</h2>
+            <p class="text-gray-600 text-center mb-8">Help us grow our community directory by adding your sports group or club.</p>
+            
+            {% if suggestion_sent %}
+                <div class="bg-green-50 text-green-600 p-4 rounded-lg mb-6 text-center">
+                <p class="font-semibold">Thank you! Your suggestion was sent.</p>
                 </div>
+            {% endif %}
+    
+            <form method="POST" action="{{ url_for('main.submit_community') }}" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Community Name</label>
+                    <input type="text" name="Name" placeholder="e.g., Amsterdam Running Club" 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
+                    <input type="email" name="email" placeholder="contact@example.com" 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                </div>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <input type="text" name="Address" placeholder="e.g., Science Park 904, 1098 XH Amsterdam" 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Sport</label>
+                    <input type="text" name="Sport" placeholder="e.g., Running, Football" 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                </div>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
+                    <input type="url" name="website" placeholder="https://yourclub.com" 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Logo URL (Optional)</label>
+                    <input type="url" name="image_url" placeholder="https://yourclub.com/logo.png" 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                </div>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Cost</label>
+                    <input type="text" name="Cost" placeholder="e.g., Free, €10/month" 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">International/Dutch</label>
+                    <select name="Int/Dutch" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">Select...</option>
+                    <option value="International">International</option>
+                    <option value="Dutch">Dutch</option>
+                    <option value="Both">Both</option>
+                    </select>
+                </div>
+                </div>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Student-based?</label>
+                    <select name="Student-based" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">Select...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                    </select>
+                </div>
+                </div>
+    
+                <div class="grid grid-cols-1 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Additional Information</label>
+                    <textarea name="message" placeholder="Tell us about your community..." rows="4" 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                </div>
+                </div>
+    
+                <div class="text-center">
+                <button type="submit" class="bg-blue-600 text-white px-12 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors w-full">
+                    Submit Community
+                </button>
+                </div>
+            </form>
             </div>
         </div>
-    </main>
+    </section>
+</main>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-    <script>
-        // Load configuration
-        const config = {
-            OPENCAGE_API_KEY: '48bcf64904a14f418e6920d63a9945a8'
-        };
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+<script>
+// Load configuration
+const config = {
+    OPENCAGE_API_KEY: '48bcf64904a14f418e6920d63a9945a8'
+};
 
-        let communities = [];
-        let filteredCommunities = [];
-        let map = null;
-        let markerClusterGroup = null; // Renamed from markers for clarity with L.markerClusterGroup
-        let isMapVisible = false;
+let communities = [];
+let filteredCommunities = [];
+let map = null;
+let markerClusterGroup = null; // Renamed from markers for clarity with L.markerClusterGroup
+let isMapVisible = false;
 
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ensure Font Awesome is loaded if you're using it, or replace icons with SVGs/text
-            // For example, you might need to add a Font Awesome CDN link in your <head>
-            // Or, if using a local setup, ensure it's properly configured.
-            // This check is just a placeholder for demonstration.
-            if (typeof FontAwesome === 'undefined') { // Basic check, might need adjustment
-                console.warn("Font Awesome not detected. Icons (e.g. <i class='fas...'>) may not display.");
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure Font Awesome is loaded if you're using it, or replace icons with SVGs/text
+    // For example, you might need to add a Font Awesome CDN link in your <head>
+    // Or, if using a local setup, ensure it's properly configured.
+    // This check is just a placeholder for demonstration.
+    if (typeof FontAwesome === 'undefined') { // Basic check, might need adjustment
+        console.warn("Font Awesome not detected. Icons (e.g. <i class='fas...'>) may not display.");
+    }
+    loadCommunities();
+    setupEventListeners();
+    adjustLayoutForMap(); // Initial layout adjustment
+});
+
+// Load communities from JSON
+async function loadCommunities() {
+    showLoadingState();
+    try {
+        const response = await fetch('/static/data/communities.json'); // Make sure this path is correct
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        communities = await response.json();
+        filteredCommunities = [...communities];
+        
+        populateSportFilter();
+        renderCommunities();
+    } catch (error) {
+        console.error('Error loading communities:', error);
+        showNoResults(); // Show no results if loading fails
+    } finally {
+        hideLoadingState();
+    }
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    document.getElementById('mapToggle').addEventListener('click', toggleMap);
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
+    document.getElementById('costFilter').addEventListener('change', handleFilter);
+    document.getElementById('studentFilter').addEventListener('change', handleFilter);
+    document.getElementById('sportFilter').addEventListener('change', handleFilter);
+    document.getElementById('clearFilters').addEventListener('click', clearFilters);
+}
+
+// Populate sport filter with unique sports
+function populateSportFilter() {
+    const sports = new Set();
+    communities.forEach(community => {
+        if (community.Sport) {
+            community.Sport.split(',').forEach(sport => {
+                sports.add(sport.trim());
+            });
+        }
+    });
+
+    const sportFilterEl = document.getElementById('sportFilter');
+    // Clear existing options except the first one ("All Sports")
+    while (sportFilterEl.options.length > 1) {
+        sportFilterEl.remove(1);
+    }
+    sports.forEach(sport => {
+        const option = document.createElement('option');
+        option.value = sport;
+        option.textContent = sport;
+        sportFilterEl.appendChild(option);
+    });
+}
+
+function adjustLayoutForMap() {
+    const mapContainer = document.getElementById('mapContainer');
+    const communitiesWrapper = document.getElementById('communitiesWrapper');
+    const communitiesContainer = document.getElementById('communitiesContainer');
+    const communitiesGrid = document.getElementById('communitiesGrid');
+    const mapToggle = document.getElementById('mapToggle');
+
+    if (isMapVisible) {
+        mapContainer.classList.remove('hidden');
+        mapContainer.classList.add('lg:w-1/2'); // Make map take half width on large screens
+        communitiesWrapper.classList.remove('lg:w-full');
+        communitiesWrapper.classList.add('lg:w-1/2');
+        
+        communitiesContainer.style.height = '600px'; // Match map height
+        communitiesContainer.style.overflowY = 'auto';
+        communitiesContainer.classList.add('custom-scrollbar');
+
+        communitiesGrid.classList.remove('md:grid-cols-2', 'xl:grid-cols-3');
+        communitiesGrid.classList.add('md:grid-cols-1', 'xl:grid-cols-1'); // Single column when map is visible
+
+        mapToggle.innerHTML = '<i class="fas fa-list"></i><span>Hide Map</span>';
+        mapToggle.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        mapToggle.classList.add('bg-gray-600', 'hover:bg-gray-700');
+        
+        if (!map) {
+            initializeMap();
+        } else {
+            map.invalidateSize(); // Ensure map renders correctly after container resize
+            updateMapMarkers();
+        }
+    } else {
+        mapContainer.classList.add('hidden');
+        mapContainer.classList.remove('lg:w-1/2');
+        communitiesWrapper.classList.add('lg:w-full');
+        communitiesWrapper.classList.remove('lg:w-1/2');
+
+        communitiesContainer.style.height = 'auto';
+        communitiesContainer.style.overflowY = 'visible';
+        communitiesContainer.classList.remove('custom-scrollbar');
+
+        communitiesGrid.classList.remove('md:grid-cols-1', 'xl:grid-cols-1');
+        communitiesGrid.classList.add('md:grid-cols-2', 'xl:grid-cols-3');  // Revert to multi-column
+
+        mapToggle.innerHTML = '<i class="fas fa-map"></i><span>Show Map</span>';
+        mapToggle.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+        mapToggle.classList.add('bg-blue-600', 'hover:bg-blue-700');
+    }
+}
+
+
+// Toggle map visibility
+function toggleMap() {
+    isMapVisible = !isMapVisible;
+    adjustLayoutForMap();
+}
+
+// Initialize Leaflet Map
+function initializeMap() {
+    try {
+        map = L.map('map').setView([52.3676, 4.9041], 11); // Amsterdam center
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        markerClusterGroup = L.markerClusterGroup();
+        map.addLayer(markerClusterGroup);
+
+        updateMapMarkers();
+        map.invalidateSize(); // Adjust map size after initialization if container was hidden
+    } catch (error) {
+        console.error('Error initializing map:', error);
+        // Optionally, disable map functionality or show an error message to the user
+        const mapToggle = document.getElementById('mapToggle');
+        mapToggle.disabled = true;
+        mapToggle.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Map Error</span>';
+    }
+}
+
+// Update map markers based on filtered communities
+function updateMapMarkers() {
+    if (!map || !markerClusterGroup) return;
+
+    try {
+        markerClusterGroup.clearLayers();
+
+        filteredCommunities.forEach((community) => { // Removed index as it wasn't used
+            if (community.Location && community.Name) { // Ensure location and name exist
+                // Assuming geocoding is needed. If you have lat/lng in JSON, use those directly.
+                geocodeAddress(community.Location, community);
             }
-            loadCommunities();
-            setupEventListeners();
-            adjustLayoutForMap(); // Initial layout adjustment
         });
+    } catch (error) {
+        console.error('Error updating map markers:', error);
+    }
+}
 
-        // Load communities from JSON
-        async function loadCommunities() {
-            showLoadingState();
-            try {
-                const response = await fetch('/static/data/communities.json'); // Make sure this path is correct
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                communities = await response.json();
-                filteredCommunities = [...communities];
-                
-                populateSportFilter();
-                renderCommunities();
-            } catch (error) {
-                console.error('Error loading communities:', error);
-                showNoResults(); // Show no results if loading fails
-            } finally {
-                hideLoadingState();
-            }
-        }
+// Geocode address to coordinates
+async function geocodeAddress(address, community) {
+    // Get API key from configuration
+    const apiKey = config.OPENCAGE_API_KEY;
+    if (!apiKey || apiKey === 'YOUR_OPENCAGE_API_KEY') {
+        console.error("OpenCage API key is not properly configured. Please set it in config.js");
+        return;
+    }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            document.getElementById('mapToggle').addEventListener('click', toggleMap);
-            document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
-            document.getElementById('costFilter').addEventListener('change', handleFilter);
-            document.getElementById('studentFilter').addEventListener('change', handleFilter);
-            document.getElementById('sportFilter').addEventListener('change', handleFilter);
-            document.getElementById('clearFilters').addEventListener('click', clearFilters);
-        }
+    try {
+        const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}&pretty=1&limit=1&countrycode=NL&bounds=4.7271_52.2780_5.0791_52.4311`); // Added Amsterdam bounds
+        const data = await response.json();
 
-        // Populate sport filter with unique sports
-        function populateSportFilter() {
-            const sports = new Set();
-            communities.forEach(community => {
-                if (community.Sport) {
-                    community.Sport.split(',').forEach(sport => {
-                        sports.add(sport.trim());
-                    });
-                }
+        if (data.results && data.results.length > 0) {
+            const result = data.results[0];
+            const position = [result.geometry.lat, result.geometry.lng];
+
+            const marker = L.marker(position, {
+                title: community.Name,
+                icon: L.icon({
+                    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34]
+                })
             });
 
-            const sportFilterEl = document.getElementById('sportFilter');
-            // Clear existing options except the first one ("All Sports")
-            while (sportFilterEl.options.length > 1) {
-                sportFilterEl.remove(1);
-            }
-            sports.forEach(sport => {
-                const option = document.createElement('option');
-                option.value = sport;
-                option.textContent = sport;
-                sportFilterEl.appendChild(option);
-            });
+            marker.bindPopup(`
+                <div class="p-1 max-w-xs"> <h3 class="font-bold text-md mb-1">${community.Name}</h3>
+                    <p class="text-xs mb-0.5">Sport: ${community.Sport || 'N/A'}</p>
+                    <p class="text-xs mb-0.5">Cost: ${community.Cost || 'N/A'}</p>
+                    <p class="text-xs mb-0.5">Student: ${community['Student-based'] || 'N/A'}</p>
+                    <p class="text-xs mb-0.5">Location: ${community.Location || 'N/A'}</p>
+                    ${community.website ? `<p class="text-xs"><a href="${community.website}" target="_blank" class="text-blue-600 hover:text-blue-800">Visit Website</a></p>` : ''}
+                </div>
+            `);
+            markerClusterGroup.addLayer(marker);
+        } else {
+            console.warn(`Geocoding failed for address: ${address}. No results found. Response:`, data);
         }
+    } catch (error) {
+        console.error(`Error geocoding address '${address}':`, error);
+    }
+}
+
+// Handle search input
+function handleSearch() {
+    applyFilters();
+}
+
+// Handle filter changes
+function handleFilter() {
+    applyFilters();
+}
+
+// Apply all filters
+function applyFilters() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const costFilterValue = document.getElementById('costFilter').value;
+    const studentFilterValue = document.getElementById('studentFilter').value;
+    const sportFilterValue = document.getElementById('sportFilter').value;
+
+    filteredCommunities = communities.filter(community => {
+        const name = community.Name ? community.Name.toLowerCase() : '';
+        const sport = community.Sport ? community.Sport.toLowerCase() : '';
+        const location = community.Location ? community.Location.toLowerCase() : '';
         
-        function adjustLayoutForMap() {
-            const mapContainer = document.getElementById('mapContainer');
-            const communitiesWrapper = document.getElementById('communitiesWrapper');
-            const communitiesContainer = document.getElementById('communitiesContainer');
-            const communitiesGrid = document.getElementById('communitiesGrid');
-            const mapToggle = document.getElementById('mapToggle');
+        const matchesSearch = !searchTerm || 
+            name.includes(searchTerm) ||
+            sport.includes(searchTerm) ||
+            location.includes(searchTerm);
 
-            if (isMapVisible) {
-                mapContainer.classList.remove('hidden');
-                mapContainer.classList.add('lg:w-1/2'); // Make map take half width on large screens
-                communitiesWrapper.classList.remove('lg:w-full');
-                communitiesWrapper.classList.add('lg:w-1/2');
-                
-                communitiesContainer.style.height = '600px'; // Match map height
-                communitiesContainer.style.overflowY = 'auto';
-                communitiesContainer.classList.add('custom-scrollbar');
-
-                communitiesGrid.classList.remove('md:grid-cols-2', 'xl:grid-cols-3');
-                communitiesGrid.classList.add('md:grid-cols-1', 'xl:grid-cols-1'); // Single column when map is visible
-
-                mapToggle.innerHTML = '<i class="fas fa-list"></i><span>Hide Map</span>';
-                mapToggle.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                mapToggle.classList.add('bg-gray-600', 'hover:bg-gray-700');
-                
-                if (!map) {
-                    initializeMap();
-                } else {
-                    map.invalidateSize(); // Ensure map renders correctly after container resize
-                    updateMapMarkers();
-                }
-            } else {
-                mapContainer.classList.add('hidden');
-                mapContainer.classList.remove('lg:w-1/2');
-                communitiesWrapper.classList.add('lg:w-full');
-                communitiesWrapper.classList.remove('lg:w-1/2');
-
-                communitiesContainer.style.height = 'auto';
-                communitiesContainer.style.overflowY = 'visible';
-                communitiesContainer.classList.remove('custom-scrollbar');
-
-                communitiesGrid.classList.remove('md:grid-cols-1', 'xl:grid-cols-1');
-                communitiesGrid.classList.add('md:grid-cols-2', 'xl:grid-cols-3');  // Revert to multi-column
-
-                mapToggle.innerHTML = '<i class="fas fa-map"></i><span>Show Map</span>';
-                mapToggle.classList.remove('bg-gray-600', 'hover:bg-gray-700');
-                mapToggle.classList.add('bg-blue-600', 'hover:bg-blue-700');
-            }
-        }
+        const communityCost = community.Cost ? String(community.Cost) : 'NA';
+        const matchesCost = !costFilterValue ||
+            (costFilterValue === 'Free' && (communityCost === 'Free' || communityCost === '0')) ||
+            (costFilterValue === 'Paid' && communityCost !== 'Free' && communityCost !== '0' && communityCost !== 'NA') ||
+            (costFilterValue === 'NA' && communityCost === 'NA') ||
+            (costFilterValue === communityCost);
 
 
-        // Toggle map visibility
-        function toggleMap() {
-            isMapVisible = !isMapVisible;
-            adjustLayoutForMap();
-        }
-
-        // Initialize Leaflet Map
-        function initializeMap() {
-            try {
-                map = L.map('map').setView([52.3676, 4.9041], 11); // Amsterdam center
-                
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-                }).addTo(map);
-
-                markerClusterGroup = L.markerClusterGroup();
-                map.addLayer(markerClusterGroup);
-
-                updateMapMarkers();
-                map.invalidateSize(); // Adjust map size after initialization if container was hidden
-            } catch (error) {
-                console.error('Error initializing map:', error);
-                // Optionally, disable map functionality or show an error message to the user
-                const mapToggle = document.getElementById('mapToggle');
-                mapToggle.disabled = true;
-                mapToggle.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Map Error</span>';
-            }
-        }
-
-        // Update map markers based on filtered communities
-        function updateMapMarkers() {
-            if (!map || !markerClusterGroup) return;
-
-            try {
-                markerClusterGroup.clearLayers();
-
-                filteredCommunities.forEach((community) => { // Removed index as it wasn't used
-                    if (community.Location && community.Name) { // Ensure location and name exist
-                        // Assuming geocoding is needed. If you have lat/lng in JSON, use those directly.
-                        geocodeAddress(community.Location, community);
-                    }
-                });
-            } catch (error) {
-                console.error('Error updating map markers:', error);
-            }
-        }
-
-        // Geocode address to coordinates
-        async function geocodeAddress(address, community) {
-            // Get API key from configuration
-            const apiKey = config.OPENCAGE_API_KEY;
-            if (!apiKey || apiKey === 'YOUR_OPENCAGE_API_KEY') {
-                console.error("OpenCage API key is not properly configured. Please set it in config.js");
-                return;
-            }
-
-            try {
-                const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}&pretty=1&limit=1&countrycode=NL&bounds=4.7271_52.2780_5.0791_52.4311`); // Added Amsterdam bounds
-                const data = await response.json();
-
-                if (data.results && data.results.length > 0) {
-                    const result = data.results[0];
-                    const position = [result.geometry.lat, result.geometry.lng];
-
-                    const marker = L.marker(position, {
-                        title: community.Name,
-                        icon: L.icon({
-                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                            iconSize: [25, 41],
-                            iconAnchor: [12, 41],
-                            popupAnchor: [1, -34]
-                        })
-                    });
-
-                    marker.bindPopup(`
-                        <div class="p-1 max-w-xs"> <h3 class="font-bold text-md mb-1">${community.Name}</h3>
-                            <p class="text-xs mb-0.5">Sport: ${community.Sport || 'N/A'}</p>
-                            <p class="text-xs mb-0.5">Cost: ${community.Cost || 'N/A'}</p>
-                            <p class="text-xs mb-0.5">Student: ${community['Student-based'] || 'N/A'}</p>
-                            <p class="text-xs mb-0.5">Location: ${community.Location || 'N/A'}</p>
-                            ${community.website ? `<p class="text-xs"><a href="${community.website}" target="_blank" class="text-blue-600 hover:text-blue-800">Visit Website</a></p>` : ''}
-                        </div>
-                    `);
-                    markerClusterGroup.addLayer(marker);
-                } else {
-                    console.warn(`Geocoding failed for address: ${address}. No results found. Response:`, data);
-                }
-            } catch (error) {
-                console.error(`Error geocoding address '${address}':`, error);
-            }
-        }
+        const communityStudentBased = community['Student-based'] || '';
+        const matchesStudent = !studentFilterValue || communityStudentBased === studentFilterValue;
         
-        // Handle search input
-        function handleSearch() {
-            applyFilters();
-        }
+        const communitySport = community.Sport || '';
+        const matchesSport = !sportFilterValue || communitySport.toLowerCase().includes(sportFilterValue.toLowerCase());
 
-        // Handle filter changes
-        function handleFilter() {
-            applyFilters();
-        }
+        return matchesSearch && matchesCost && matchesStudent && matchesSport;
+    });
 
-        // Apply all filters
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const costFilterValue = document.getElementById('costFilter').value;
-            const studentFilterValue = document.getElementById('studentFilter').value;
-            const sportFilterValue = document.getElementById('sportFilter').value;
+    renderCommunities();
+    if (isMapVisible) {
+        updateMapMarkers();
+    }
+}
 
-            filteredCommunities = communities.filter(community => {
-                const name = community.Name ? community.Name.toLowerCase() : '';
-                const sport = community.Sport ? community.Sport.toLowerCase() : '';
-                const location = community.Location ? community.Location.toLowerCase() : '';
-                
-                const matchesSearch = !searchTerm || 
-                    name.includes(searchTerm) ||
-                    sport.includes(searchTerm) ||
-                    location.includes(searchTerm);
+// Clear all filters
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('costFilter').value = '';
+    document.getElementById('studentFilter').value = '';
+    document.getElementById('sportFilter').value = '';
+    
+    filteredCommunities = [...communities]; // Reset to all communities
+    renderCommunities();
+    if (isMapVisible) {
+        updateMapMarkers();
+    }
+}
 
-                const communityCost = community.Cost ? String(community.Cost) : 'NA';
-                const matchesCost = !costFilterValue ||
-                    (costFilterValue === 'Free' && (communityCost === 'Free' || communityCost === '0')) ||
-                    (costFilterValue === 'Paid' && communityCost !== 'Free' && communityCost !== '0' && communityCost !== 'NA') ||
-                    (costFilterValue === 'NA' && communityCost === 'NA') ||
-                    (costFilterValue === communityCost);
+// Render communities
+function renderCommunities() {
+    const grid = document.getElementById('communitiesGrid');
+    const noResultsEl = document.getElementById('noResults');
 
+    if (filteredCommunities.length === 0) {
+        grid.innerHTML = ''; // Clear existing cards
+        noResultsEl.classList.remove('hidden');
+        return;
+    }
 
-                const communityStudentBased = community['Student-based'] || '';
-                const matchesStudent = !studentFilterValue || communityStudentBased === studentFilterValue;
-                
-                const communitySport = community.Sport || '';
-                const matchesSport = !sportFilterValue || communitySport.toLowerCase().includes(sportFilterValue.toLowerCase());
-
-                return matchesSearch && matchesCost && matchesStudent && matchesSport;
-            });
-
-            renderCommunities();
-            if (isMapVisible) {
-                updateMapMarkers();
-            }
-        }
-
-        // Clear all filters
-        function clearFilters() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('costFilter').value = '';
-            document.getElementById('studentFilter').value = '';
-            document.getElementById('sportFilter').value = '';
-            
-            filteredCommunities = [...communities]; // Reset to all communities
-            renderCommunities();
-            if (isMapVisible) {
-                updateMapMarkers();
-            }
-        }
-
-        // Render communities
-        function renderCommunities() {
-            const grid = document.getElementById('communitiesGrid');
-            const noResultsEl = document.getElementById('noResults');
-
-            if (filteredCommunities.length === 0) {
-                grid.innerHTML = ''; // Clear existing cards
-                noResultsEl.classList.remove('hidden');
-                return;
-            }
-
-            noResultsEl.classList.add('hidden');
-            
-            grid.innerHTML = filteredCommunities.map(community => `
-                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col">
-                    <div class="aspect-w-16 aspect-h-9 bg-gray-200">
-                        <img 
-                            src="${community.image_url || '/static/images/default-community.jpg'}" 
-                            alt="${community.Name || 'Community Image'}"
-                            class="w-full h-48 object-cover"
-                            onerror="this.onerror=null; this.src='/static/images/default-community.jpg';"
-                        >
+    noResultsEl.classList.add('hidden');
+    
+    grid.innerHTML = filteredCommunities.map(community => `
+        <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-200 overflow-hidden flex flex-col border border-orange-100">
+            <div class="aspect-w-16 aspect-h-9 bg-gray-200">
+                <img 
+                    src="${community.image_url || '/static/images/default-community.jpg'}" 
+                    alt="${community.Name || 'Community Image'}"
+                    class="w-full h-48 object-cover brightness-90"
+                    onerror="this.onerror=null; this.src='/static/images/default-community.jpg';"
+                >
+            </div>
+            <div class="p-6 flex flex-col flex-grow">
+                <h3 class="text-xl font-semibold text-orange-600 mb-2">${community.Name || 'Unnamed Community'}</h3>
+                <div class="space-y-2 text-sm text-gray-600 mb-4 flex-grow">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-dumbbell text-orange-500 w-4"></i>
+                        <span>${community.Sport || 'N/A'}</span>
                     </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">${community.Name || 'Unnamed Community'}</h3>
-                        <div class="space-y-2 text-sm text-gray-600 mb-4 flex-grow">
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-dumbbell text-blue-600 w-4"></i>
-                                <span>${community.Sport || 'N/A'}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-map-marker-alt text-blue-600 w-4"></i>
-                                <span>${community.Location || 'N/A'}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-dollar-sign text-blue-600 w-4"></i>
-                                <span>${community.Cost === 'NA' ? 'Contact for pricing' : (community.Cost || 'N/A')}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-users text-blue-600 w-4"></i>
-                                <span>${community['Student-based'] === 'Yes' ? 'Student-focused' : (community['Student-based'] === 'No' ? 'Open to all' : 'N/A')}</span>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 mt-auto">
-                            ${community.website ? `
-                                <a href="${community.website}" target="_blank" class="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                                    Visit Website
-                                </a>
-                            ` : '<div class="flex-1"></div>' /* Placeholder to maintain layout if only one button */}
-                            ${community.email ? `
-                                <a href="mailto:${community.email}" class="flex-1 bg-gray-600 text-white text-center py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium">
-                                    Contact
-                                </a>
-                            ` : '<div class="flex-1"></div>' /* Placeholder */}
-                        </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-map-marker-alt text-orange-500 w-4"></i>
+                        <span>${community.Location || 'N/A'}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-dollar-sign text-orange-500 w-4"></i>
+                        <span>${community.Cost === 'NA' ? 'Contact for pricing' : (community.Cost || 'N/A')}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-users text-orange-500 w-4"></i>
+                        <span>${community['Student-based'] === 'Yes' ? 'Student-focused' : (community['Student-based'] === 'No' ? 'Open to all' : 'N/A')}</span>
                     </div>
                 </div>
-            `).join('');
-        }
+                <div class="flex gap-2 mt-auto">
+                    ${community.website ? `
+                        <a href="${community.website}" target="_blank" class="flex-1 bg-orange-500 text-white text-center py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium">
+                            Visit Website
+                        </a>
+                    ` : '<div class="flex-1"></div>' /* Placeholder to maintain layout if only one button */}
+                    ${community.email ? `
+                        <a href="mailto:${community.email}" class="flex-1 bg-orange-400 text-white text-center py-2 px-4 rounded-lg hover:bg-orange-500 transition-colors text-sm font-medium">
+                            Contact
+                        </a>
+                    ` : '<div class="flex-1"></div>' /* Placeholder */}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
 
-        // Show/Hide loading state
-        function showLoadingState() {
-            document.getElementById('loadingState').classList.remove('hidden');
-            document.getElementById('communitiesGrid').classList.add('hidden');
-            document.getElementById('noResults').classList.add('hidden');
-        }
-        function hideLoadingState() {
-            document.getElementById('loadingState').classList.add('hidden');
-            document.getElementById('communitiesGrid').classList.remove('hidden');
-        }
+// Show/Hide loading state
+function showLoadingState() {
+    document.getElementById('loadingState').classList.remove('hidden');
+    document.getElementById('communitiesGrid').classList.add('hidden');
+    document.getElementById('noResults').classList.add('hidden');
+}
+function hideLoadingState() {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('communitiesGrid').classList.remove('hidden');
+}
 
-        // Show no results message
-        function showNoResults() {
-            document.getElementById('noResults').classList.remove('hidden');
-            document.getElementById('communitiesGrid').innerHTML = ''; // Ensure grid is empty
-        }
+// Show no results message
+function showNoResults() {
+    document.getElementById('noResults').classList.remove('hidden');
+    document.getElementById('communitiesGrid').innerHTML = ''; // Ensure grid is empty
+}
 
-        // Debounce function for search
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-    </script>
+// Debounce function for search
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+</script>
 {% endblock %}

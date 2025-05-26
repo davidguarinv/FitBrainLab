@@ -1860,6 +1860,11 @@ body {
   border-color: rgb(252 165 165 / 0.5);
 }
 
+.border-orange-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(249 115 22 / var(--tw-border-opacity, 1));
+}
+
 .border-l-orange-400 {
   --tw-border-opacity: 1;
   border-left-color: rgb(251 146 60 / var(--tw-border-opacity, 1));
@@ -4227,6 +4232,11 @@ body {
   color: rgb(194 65 12 / var(--tw-text-opacity, 1));
 }
 
+.hover\:text-orange-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(249 115 22 / var(--tw-text-opacity, 1));
+}
+
 .hover\:underline:hover {
   text-decoration-line: underline;
 }
@@ -4290,6 +4300,11 @@ body {
 
 .focus\:ring-secondary:focus {
   --tw-ring-color: hsl(var(--secondary));
+}
+
+.focus\:ring-orange-500:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(249 115 22 / var(--tw-ring-opacity, 1));
 }
 
 .focus\:ring-offset-2:focus {

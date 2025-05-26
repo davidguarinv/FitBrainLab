@@ -21,7 +21,7 @@
         {% if user_progress.completed_challenges %}
             <div class="space-y-4">
                 {% for completed in user_progress.completed_challenges %}
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center justify-between p-4 bg-orange-50 rounded-xl">
                         <div>
                             <h4 class="font-medium text-gray-900">{{ completed.challenge.title }}</h4>
                             <p class="text-sm text-gray-600">Completed {{ completed.completed_at.strftime('%B %d, %Y') }}</p>
@@ -30,7 +30,7 @@
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if completed.challenge.difficulty == 'E' else 'bg-yellow-100 text-yellow-800' if completed.challenge.difficulty == 'M' else 'bg-red-100 text-red-800' }}">
                                 {{ completed.challenge.difficulty }}
                             </span>
-                            <span class="text-sm font-medium text-primary">+{{ completed.challenge.points }} points</span>
+                            <span class="text-sm font-medium text-orange-500">+{{ completed.challenge.points }} points</span>
                         </div>
                     </div>
                 {% endfor %}

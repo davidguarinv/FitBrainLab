@@ -9,7 +9,7 @@
                 <p class="text-gray-600">Member since {{ current_user.created_at.strftime('%B %Y') }}</p>
             </div>
             <button onclick="toggleProfileVisibility();"
-                    class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
+                    class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-orange-100 transition-colors">
                 {{ 'Make Progress Private' if current_user.is_public else 'Make Progress Public' }}
             </button>
         </div>

@@ -589,8 +589,14 @@ class FriendChallengeLink(db.Model):
     user2_id = db.Column(db.Integer, nullable=False)
     user1_confirmed = db.Column(db.Boolean, default=False)
     user2_confirmed = db.Column(db.Boolean, default=False)
+    user1_completed = db.Column(db.Boolean, default=False)
+    user2_completed = db.Column(db.Boolean, default=False)
+    user1_completed_at = db.Column(db.DateTime, nullable=True)
+    user2_completed_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     expires_at = db.Column(db.DateTime, nullable=True)
+    completion_expires_at = db.Column(db.DateTime, nullable=True)
+    expired = db.Column(db.Boolean, default=False)
     
     # Relationships
     challenge = db.relationship('Challenge', backref='friend_links')

@@ -37,6 +37,23 @@
         {% endfor %}
     {% endif %}
 
+    <!-- Friend Tokens Info -->
+    {% if current_user.is_authenticated and friend_tokens_left is not none %}
+    <div class="bg-white rounded-2xl shadow-sm p-4 mb-6 border-l-4 border-blue-500">
+        <div class="flex justify-between items-center">
+            <div>
+                <h3 class="text-lg font-bold">Friend Challenge Tokens</h3>
+                <p class="text-sm text-gray-600">Complete challenges with friends for bonus points</p>
+            </div>
+            <div class="flex items-center">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ 'bg-green-100 text-green-800' if friend_tokens_left > 0 else 'bg-red-100 text-red-800' }}">
+                    {{ friend_tokens_left }}/3 tokens left this week
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- In Progress Challenges -->
     {% if challenges['in_progress'] is defined %}
     <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 border-l-4 border-orange-500">
@@ -45,16 +62,46 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {% for challenge in challenges['in_progress'] %}
-                <div class="border rounded-xl p-4 hover:border-orange-400 transition-colors bg-orange-50">
+                <div class="border rounded-xl p-4 hover:border-orange-400 transition-colors {% if friend_linked_challenges and challenge.id in friend_linked_challenges %}bg-blue-50 border-blue-400 shadow-md{% else %}bg-orange-50{% endif %}">
                     <div class="flex justify-between items-start mb-2">
                         <h4 class="font-medium">{{ challenge.title }}</h4>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if challenge.difficulty == 'E' else 'bg-yellow-100 text-yellow-800' if challenge.difficulty == 'M' else 'bg-red-100 text-red-800' }}">
                             {{ challenge.difficulty }}
                         </span>
                     </div>
-                    <p class="text-sm text-gray-600 mb-4">{{ challenge.description }}</p>
-                    <!-- Friend Challenge Section - Only shown if personal codes are available -->
-                    {% if current_user.is_authenticated and current_user.personal_code %}
+                    <p class="text-sm text-gray-600 mb-2">{{ challenge.description }}</p>
+                    
+                    {% if friend_linked_challenges and challenge.id in friend_linked_challenges %}
+                    <div class="bg-blue-100 rounded-md p-2 mb-4 border border-blue-300">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 text-blue-600">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                                <span class="text-sm font-medium text-blue-800">Friend Challenge with {{ friend_linked_challenges[challenge.id].friend_username }}</span>
+                            </div>
+                            <div>
+                                {% if friend_linked_challenges[challenge.id].friend_completed %}
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Friend completed
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    Friend pending
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if friend_linked_challenges[challenge.id].completion_expires_at %}
+                        <p class="text-xs text-blue-600 mt-1">Complete within 24 hours of each other for 1.5x bonus points!</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    <!-- Friend Challenge Section - Only shown if personal codes are available and not already linked -->
+                    {% if current_user.is_authenticated and current_user.personal_code and not (friend_linked_challenges and challenge.id in friend_linked_challenges) %}
                     <div class="mt-3 mb-3 border-t border-gray-200 pt-3">
                         <div class="flex items-center">
                             <button type="button" onclick="toggleFriendChallenge('friend-challenge-{{ challenge.id }}')" class="text-sm text-primary hover:text-primary-dark flex items-center">
@@ -103,10 +150,22 @@
         <!-- Easy Challenges -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Easy Challenges</h3>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    E
-                </span>
+                <div>
+                    <h3 class="text-xl font-bold">Easy Challenges</h3>
+                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                        <p class="text-sm text-gray-600">{{ weekly_challenge_counts.E }}/{{ weekly_challenge_caps.E }} completed this week</p>
+                    {% endif %}
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        E
+                    </span>
+                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if weekly_challenge_counts.E < weekly_challenge_caps.E else 'bg-gray-100 text-gray-800' }}">
+                            {{ weekly_challenge_caps.E - weekly_challenge_counts.E }} left
+                        </span>
+                    {% endif %}
+                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges['E'] %}
@@ -155,10 +214,22 @@
         <!-- Medium Challenges -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Medium Challenges</h3>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                    M
-                </span>
+                <div>
+                    <h3 class="text-xl font-bold">Medium Challenges</h3>
+                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                        <p class="text-sm text-gray-600">{{ weekly_challenge_counts.M }}/{{ weekly_challenge_caps.M }} completed this week</p>
+                    {% endif %}
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        M
+                    </span>
+                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if weekly_challenge_counts.M < weekly_challenge_caps.M else 'bg-gray-100 text-gray-800' }}">
+                            {{ weekly_challenge_caps.M - weekly_challenge_counts.M }} left
+                        </span>
+                    {% endif %}
+                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges['M'] %}
@@ -204,10 +275,22 @@
         <!-- Hard Challenges -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Hard Challenges</h3>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    H
-                </span>
+                <div>
+                    <h3 class="text-xl font-bold">Hard Challenges</h3>
+                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                        <p class="text-sm text-gray-600">{{ weekly_challenge_counts.H }}/{{ weekly_challenge_caps.H }} completed this week</p>
+                    {% endif %}
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        H
+                    </span>
+                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if weekly_challenge_counts.H < weekly_challenge_caps.H else 'bg-gray-100 text-gray-800' }}">
+                            {{ weekly_challenge_caps.H - weekly_challenge_counts.H }} left
+                        </span>
+                    {% endif %}
+                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges['H'] %}

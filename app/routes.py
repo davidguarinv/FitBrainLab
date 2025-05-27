@@ -1048,6 +1048,20 @@ def game(section='challenges'):
     # Auth redirect
     if not current_user.is_authenticated and section not in ['leaderboard', None]:
         section = 'auth'
+        
+    # Recent global challenges for non-authenticated users
+    recent_global_challenges = None
+    if not current_user.is_authenticated:
+        from app.models import Challenge  # Import Challenge model here to ensure it's available
+        recent_global_challenges = (
+            CompletedChallenge.query
+            .join(Challenge, CompletedChallenge.challenge_id == Challenge.id)
+            .join(User, CompletedChallenge.user_id == User.id)
+            .filter(User.is_public == True)
+            .order_by(CompletedChallenge.completed_at.desc())
+            .limit(5)
+            .all()
+        )
 
     # Leaderboards: all-time and weekly
     one_week_ago = datetime.utcnow() - timedelta(days=7)
@@ -1161,10 +1175,21 @@ def game(section='challenges'):
         )
         higher_ranked = db.session.query(func.count()).select_from(higher_ranked_query.subquery()).scalar() or 0
         
+        # Get total number of completed challenges - force to integer to ensure proper display
+        try:
+            total_completed_count = db.session.query(func.count(CompletedChallenge.id)).filter(CompletedChallenge.user_id == current_user.id).scalar() or 0
+            # Ensure it's an integer for display
+            total_completed_count = int(total_completed_count)
+        except Exception as e:
+            current_app.logger.error(f'Error getting challenge count: {e}')
+            total_completed_count = 0
+        
         # User progress data
         user_progress = {
-            'completed_challenges': completed_challenges,
-            'total_points': total_points
+            'completed_challenges': recent_completed,
+            'challenges_completed': total_completed_count,
+            'total_points': user_pts,
+            'rank': higher_ranked + 1  # Add rank as current position (higher_ranked + 1)
         } if current_user.is_authenticated else None
         
         # Get user's earned achievements
@@ -1391,6 +1416,7 @@ def game(section='challenges'):
         current_user_points=current_user_points,
         current_user_weekly_rank=current_user_weekly_rank,
         current_user_weekly_points=current_user_weekly_points,
+        recent_global_challenges=recent_global_challenges,
         login_form=(LoginForm() if section == 'auth' else None),
         signup_form=(RegistrationForm() if section == 'auth' else None)
     )

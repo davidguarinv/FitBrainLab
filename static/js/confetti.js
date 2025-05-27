@@ -135,7 +135,7 @@ function launchConfetti() {
   }
   
   // Continue with even more random confetti bursts for 5 seconds
-  const duration = 5 * 1000;  // Longer duration
+  const duration = 3 * 1000;  // Longer duration
   const end = Date.now() + duration;
   
   // Fire confetti VERY rapidly from random positions

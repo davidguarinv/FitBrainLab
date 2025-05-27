@@ -1,13 +1,9 @@
 <!-- Leaderboard Tabs -->
 <div class="bg-white rounded-2xl shadow-sm p-6">
-    <div class="flex border-b mb-6">
-        <button id="all-time-tab" class="px-4 py-2 font-medium text-orange-500 border-b-2 border-orange-500">All-Time</button>
-        <button id="weekly-tab" class="px-4 py-2 font-medium text-gray-500 hover:text-orange-500">This Week</button>
-    </div>
+    <h2 class="text-2xl font-bold mb-6">Global Leaderboard</h2>
     
-    <!-- All-Time Leaderboard -->
+    <!-- Global Leaderboard -->
     <div id="all-time-leaderboard">
-        <h2 class="text-2xl font-bold mb-6">All-Time Leaderboard</h2>
     
     <!-- Top 3 Users -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -87,108 +83,4 @@
         {% endif %}
     </div>
     </div>
-    
-    <!-- Weekly Leaderboard (hidden by default) -->
-    <div id="weekly-leaderboard" class="hidden">
-        <h2 class="text-2xl font-bold mb-6">This Week's Leaderboard</h2>
-        
-        <!-- Top 3 Weekly Users -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {% for (user, points) in weekly_users[:3] %}
-                <div class="relative bg-gray-50 rounded-lg p-6 text-center">
-                    <!-- Position Badge -->
-                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold {{ 'bg-yellow-400' if loop.index == 1 else 'bg-gray-400' if loop.index == 2 else 'bg-amber-600' }}">
-                            {{ loop.index }}
-                        </div>
-                    </div>
-                    
-                    <!-- User Avatar -->
-                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                        {% if user.top_sport_category %}
-                            {% set category_slug = user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
-                            <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ user.top_sport_category }}" class="w-8 h-8">
-                        {% else %}
-                            <span class="text-blue-600 text-xl font-bold">{{ user.username[0]|upper }}</span>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- User Info -->
-                    <h3 class="font-bold text-lg mb-1">{{ user.username }}</h3>
-                    <p class="text-primary font-medium mb-2">{{ points|int }} points</p>
-                </div>
-            {% endfor %}
-        </div>
-        
-        <!-- Rest of Weekly Leaderboard -->
-        <div class="space-y-4">
-            {% for (user, points) in weekly_users[3:] %}
-                {% set is_current_user = current_user.is_authenticated and user.id == current_user.id %}
-                <div class="flex items-center justify-between p-4 {% if is_current_user %}bg-blue-100 border-2 border-blue-300 shadow-md{% else %}bg-gray-50{% endif %} rounded-lg">
-                    <div class="flex items-center space-x-4">
-                        <span class="font-medium {% if is_current_user %}text-blue-700{% else %}text-gray-500{% endif %} w-8">{{ loop.index + 3 }}</span>
-                        <div class="w-8 h-8 rounded-full {% if is_current_user %}bg-blue-200{% else %}bg-gray-200{% endif %} flex items-center justify-center mr-2">
-                            {% if user.top_sport_category %}
-                                {% set category_slug = user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
-                                <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ user.top_sport_category }}" class="w-5 h-5">
-                            {% else %}
-                                <span class="{% if is_current_user %}text-blue-700{% else %}text-blue-600{% endif %} text-sm font-bold">{{ user.username[0]|upper }}</span>
-                            {% endif %}
-                        </div>
-                        <div>
-                            <h4 class="font-medium {% if is_current_user %}text-blue-700{% endif %}">{{ user.username }}</h4>
-                        </div>
-                    </div>
-                    <div class="text-sm font-medium {% if is_current_user %}text-blue-700{% else %}text-primary{% endif %}">{{ points|int }} points</div>
-                </div>
-            {% else %}
-                <p class="text-center text-gray-600">No users on the weekly leaderboard yet.</p>
-            {% endfor %}
-            
-            <!-- Show current user if they're outside top 20 -->
-            {% if current_user.is_authenticated and current_user_weekly_rank and current_user_weekly_rank > 20 %}
-                <div class="mt-6 border-t-2 border-dashed border-gray-300 pt-4">
-                    <p class="text-center text-gray-600 mb-4">. . .</p>
-                    <div class="flex items-center justify-between p-4 bg-blue-100 border-2 border-blue-300 shadow-md rounded-lg">
-                        <div class="flex items-center space-x-4">
-                            <span class="font-medium text-blue-700 w-8">#{{ current_user_weekly_rank }}</span>
-                            <div class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center mr-2">
-                                {% if current_user.top_sport_category %}
-                                    {% set category_slug = current_user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
-                                    <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ current_user.top_sport_category }}" class="w-5 h-5">
-                                {% else %}
-                                    <span class="text-blue-700 text-sm font-bold">{{ current_user.username[0]|upper }}</span>
-                                {% endif %}
-                            </div>
-                            <div>
-                                <h4 class="font-medium text-blue-700">{{ current_user.username }} <span class="text-xs">(You)</span></h4>
-                            </div>
-                        </div>
-                        <div class="text-sm font-medium text-blue-700">{{ current_user_weekly_points|int }} points</div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-    
-    <!-- JavaScript for tab switching -->
-    <script>
-        document.getElementById('all-time-tab').addEventListener('click', function() {
-            document.getElementById('all-time-leaderboard').classList.remove('hidden');
-            document.getElementById('weekly-leaderboard').classList.add('hidden');
-            this.classList.add('text-primary', 'border-b-2', 'border-primary');
-            this.classList.remove('text-gray-500');
-            document.getElementById('weekly-tab').classList.remove('text-primary', 'border-b-2', 'border-primary');
-            document.getElementById('weekly-tab').classList.add('text-gray-500');
-        });
-        
-        document.getElementById('weekly-tab').addEventListener('click', function() {
-            document.getElementById('weekly-leaderboard').classList.remove('hidden');
-            document.getElementById('all-time-leaderboard').classList.add('hidden');
-            this.classList.add('text-primary', 'border-b-2', 'border-primary');
-            this.classList.remove('text-gray-500');
-            document.getElementById('all-time-tab').classList.remove('text-primary', 'border-b-2', 'border-primary');
-            document.getElementById('all-time-tab').classList.add('text-gray-500');
-        });
-    </script>
 </div>

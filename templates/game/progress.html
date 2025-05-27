@@ -118,7 +118,23 @@
                             </div>
                             <div>
                                 <h4 class="font-medium">{{ achievement.name }}</h4>
-                                <p class="text-sm text-gray-600">{{ achievement.message }}</p>
+                                <p class="text-sm text-gray-600">
+                                {% if 'total' in achievement.condition %}
+                                    Complete {{ target }} total challenges
+                                {% elif 'easy' in achievement.condition %}
+                                    Complete {{ target }} easy challenges
+                                {% elif 'medium' in achievement.condition %}
+                                    Complete {{ target }} medium challenges
+                                {% elif 'hard' in achievement.condition %}
+                                    Complete {{ target }} hard challenges
+                                {% elif 'streak' in achievement.condition %}
+                                    Maintain a {{ target }}-day completion streak
+                                {% elif 'points' in achievement.condition %}
+                                    Earn {{ target }} total points
+                                {% else %}
+                                    {{ achievement.condition }}
+                                {% endif %}
+                                </p>
                             </div>
                         </div>
                         <div class="text-right">

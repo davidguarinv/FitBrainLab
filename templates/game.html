@@ -213,65 +213,54 @@
                 </div>
                 {% endif %}
                 
-                <!-- Upcoming Events Card -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h3 class="text-lg font-semibold mb-4">Weekly Leaderboard</h3>
-                    {% if leaderboard %}
-                        <div class="space-y-3">
-                            {% for user in leaderboard[:5] %}
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <div class="w-6 h-6 bg-{{ ['blue', 'green', 'yellow', 'indigo', 'purple']|random }}-100 rounded-full flex items-center justify-center mr-2">
-                                            <span class="text-{{ ['blue', 'green', 'yellow', 'indigo', 'purple']|random }}-600 text-xs font-medium">{{ loop.index }}</span>
-                                        </div>
-                                        <span class="text-sm {{ 'font-bold text-primary' if user.username == current_user.username else '' }}">{{ user.username }}</span>
-                                    </div>
-                                    <span class="text-sm font-medium">{{ user.points }} pts</span>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <div class="mt-4 text-center">
-                            <button @click="loadContent('leaderboard')" class="text-primary text-sm hover:underline">View Full Leaderboard</button>
-                        </div>
-                    {% else %}
-                        <p class="text-gray-500 text-sm">No data available yet.</p>
-                    {% endif %}
-                </div>
+
             {% else %}
-                <!-- Call to Action for Non-Authenticated Users -->
-                <div class="bg-blue-50 rounded-lg shadow-sm p-6 mb-6 border border-blue-100">
-                    <h3 class="text-lg font-semibold mb-2">Join Fit Quest Today!</h3>
-                    <p class="text-sm text-gray-600 mb-4">Create an account to track your progress, earn points, and compete with others.</p>
-                    <button @click="loadContent('auth')" class="w-full px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-primary-dark transition-colors">
-                        Sign Up Now
-                    </button>
-                </div>
+                <!-- Recently Completed Challenges section is now shown below -->
                 
                 <!-- Featured Stats -->
                 <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h3 class="text-lg font-semibold mb-4">Community Stats</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Active Users</span>
-                            <span class="font-medium">324</span>
+                    <h3 class="text-lg font-semibold mb-4">Recently Completed Challenges</h3>
+                    {% if recent_global_challenges %}
+                        <div class="space-y-4">
+                            {% for completion in recent_global_challenges %}
+                                <div class="border-l-4 border-orange-400 pl-3 py-2">
+                                    <div class="flex justify-between">
+                                        <span class="font-medium text-sm">{{ completion.challenge.title }}</span>
+                                        <span class="text-orange-500 text-xs font-semibold">+{{ completion.points_earned }} pts</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1">
+                                        <span>{{ completion.user.username }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Challenges Completed</span>
-                            <span class="font-medium">1856</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Top Score</span>
-                            <span class="font-medium">1250 pts</span>
-                        </div>
-                    </div>
+                    {% else %}
+                        <p class="text-gray-500 text-sm">No recently completed challenges. Be the first to complete one!</p>
+                    {% endif %}
                 </div>
             {% endif %}
             
-            <!-- Help Card -->
+            <!-- FitQuest Guide -->
             <div class="bg-white rounded-lg shadow-sm p-6">
-                <h3 class="text-lg font-semibold mb-2">Need Help?</h3>
-                <p class="text-sm text-gray-600 mb-4">Find out how to complete challenges and earn points.</p>
-                <a href="/help" class="text-primary text-sm hover:underline">View Help Guide</a>
+                <h3 class="text-lg font-semibold mb-4">FitQuest Guide</h3>
+                <div class="space-y-3">
+                    <div>
+                        <h4 class="font-medium text-orange-600 text-sm">How It Works</h4>
+                        <p class="text-xs text-gray-600">Choose from a variety of challenges across different difficulty levels. Complete them in real life, then mark them as done to earn points, climb the leaderboard, and learn more about the benefits of staying active.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-orange-600 text-sm">Challenge Limits</h4>
+                        <p class="text-xs text-gray-600">You can have up to 2 active challenges at once. Weekly limits apply to each difficulty level to ensure balanced activity.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-orange-600 text-sm">Friend Challenges</h4>
+                        <p class="text-xs text-gray-600">Share your personal code to attempt challenges with friends. When you both complete the same challenge within the time limit, you'll each earn bonus points!</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-orange-600 text-sm">Achievement Unlocks</h4>
+                        <p class="text-xs text-gray-600">Earn special achievements by completing specific challenge patterns. Achievements are displayed in your profile to showcase your accomplishments.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -6,14 +6,42 @@ Welcome to the Fit Brain Lab website! This is a web application that showcases r
 
 ### Running the Website
 
-1. **Start the Website:**
+
+## 🚀 Getting Started
+
+```bash
+# Clone repository
+git clone https://github.com/davidguarinv/FitBrainLab.git
+
+# Run development server
+python run.py
+
+3. **Project Details Sidebar:**
+   - Contains status, timeline, model, and focus information
+   - Also lists project partners
+   - Each item is in a colored box with a different color scheme
+
+## 🛠️ Technical Details
+
+### Dependencies
+
+The project uses several Python packages listed in `requirements.txt`. These include:
+- Flask for the web framework
+- SQLAlchemy for database management
+- Other web development tools
+
+### Environment Setup
+
+1. Create a virtual environment:
    ```bash
-   python run.py
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
-   
-   This will start the website server. You can then access it by opening your web browser and going to `http://localhost:5000`.
 
-
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 ## 📋 How to Update the Website
 
 ### 🏡 Adding New Content
@@ -54,13 +82,14 @@ Welcome to the Fit Brain Lab website! This is a web application that showcases r
 ### 🎨 Styling and Design
 
 - **Color Scheme**
-  - Primary: Orange and Red gradients
-  - Secondary: Yellow accents
+  - Primary Lab Information: Blue, Purple, Teal gradients
+  - Primary Communities and Game: Orange and Red gradients
   - Text: Slate colors
 
 - **CSS Files**
-  - Main styles in `static/css/output.css`
-  - Use Tailwind CSS classes
+  - Mostly inline Tailwind CSS classes
+  - Other standardized styles in `static/css/input.css` and `static/css/config/tailwind.config.js`
+
 
 ### 📁 Project Structure
 
@@ -100,58 +129,6 @@ FitBrainLab/
    - Keep consistent formatting
    - Test all changes
 
-## 🚀 Getting Started
-
-```bash
-# Clone repository
-git clone https://github.com/davidguarinv/FitBrainLab.git
-
-# Run development server
-python run.py
-
-3. **Project Details Sidebar:**
-   - Contains status, timeline, model, and focus information
-   - Also lists project partners
-   - Each item is in a colored box with a different color scheme
-
-## 🛠️ Technical Details
-
-### Dependencies
-
-The project uses several Python packages listed in `requirements.txt`. These include:
-- Flask for the web framework
-- SQLAlchemy for database management
-- Other web development tools
-
-### Environment Setup
-
-1. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## 📝 Best Practices for Content Updates
-
-1. **Text Updates:**
-   - Keep descriptions concise and focused
-   - Use consistent formatting across projects
-   - Maintain proper grammar and spelling
-
-2. **Image Updates:**
-   - Use appropriate image sizes (typically 1200x630px for featured images)
-   - Ensure images are optimized for web
-   - Use descriptive filenames
-
-3. **Consistency:**
-   - Maintain consistent color schemes
-   - Follow existing template structures
-   - Keep similar formatting across all pages
 
 ## 🤝 Contributing
 

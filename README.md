@@ -6,38 +6,45 @@ Welcome to the Fit Brain Lab website! This is a web application that showcases r
 
 ### Running the Website
 
-bash
-# Clone repository
+To start the development server:
+
+```bash
+# Clone the repository
 git clone https://github.com/davidguarinv/FitBrainLab.git
+cd FitBrainLab
 
-# Run development server
+# Run the development server
 python run.py
+```
 
-3. **Project Details Sidebar:**
-   - Contains status, timeline, model, and focus information
-   - Also lists project partners
-   - Each item is in a colored box with a different color scheme
+Then open your browser and go to `http://localhost:5000`.
+
+---
 
 ## 🛠️ Technical Details
 
 ### Dependencies
 
-The project uses several Python packages listed in `requirements.txt`. These include:
-- Flask for the web framework
-- SQLAlchemy for database management
-- Other web development tools
+The project uses several Python packages listed in `requirements.txt`, including:
+
+* **Flask** – for the web framework
+* **SQLAlchemy** – for database management
+* Other supporting web development tools
 
 ### Environment Setup
 
-1. Create a virtual environment:
+1. **Create a virtual environment:**
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-2. Install dependencies:
+2. **Install dependencies:**
+
    ```bash
    pip install -r requirements.txt
+   ```
 ## 📋 How to Update the Website
 
 ### 🏡 Adding New Content

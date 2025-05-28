@@ -80,7 +80,7 @@ const challenges = [
     {"title":"Ink Walk","description":"walk while doodling on paper (5 min)","difficulty":"E","points":50},
     {"title":"Furry Friends","description":"find and pet an animal(5 min)","difficulty":"E","points":50},
 
-    # --- MEDIUM (60 × regen_hours=6) ---
+    // --- MEDIUM (60 × regen_hours=6) ---
     {"title":"Café Crawl","description":"walk to 3 cafés—15 min","difficulty":"M","points":140},
     {"title":"Chalk Artist","description":"draw & admire sidewalk art—20 min","difficulty":"M","points":155},
     {"title":"Tree Hug Relay","description":"hug 5 trees, walk between them—20 min","difficulty":"M","points":130},
@@ -131,7 +131,7 @@ const challenges = [
     {"title":"Lab Explore","description":"Find and explore a lab near you—20 min","difficulty":"M","points":190},
     {"title":"Group Walk & Talk","description":"with 2 friends—20 min","difficulty":"M","points":160},
 
-    # --- HARD (30 × regen_hours=8) ---
+    // --- HARD (30 × regen_hours=8) ---
     {"title":"Sunrise Yoga Series","description":"50 min outdoors","difficulty":"H","points":330},
     {"title":"Urban Photo Marathon","description":"10 photo spots—60 min","difficulty":"H","points":350},
     {"title":"1‑Mile Fun Run","description":"≈10 min run + warm-up","difficulty":"H","points":400},

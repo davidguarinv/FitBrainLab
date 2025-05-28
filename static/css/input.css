@@ -33,18 +33,6 @@
 @layer base {
     :root {
 
-      --bg-first: #000000; /* greyish white  gray-50*/
-      --bg-second: #F3F4F6;    /* grey         gray-100*/
-      --bg-third: #3B82F6;      /* blue */
-      --bg-footer: #1E293B;      /* dark gray */
-
-      --ctext: #FFFFFF; /* Already by default if you do not change text color.  Black */
-      --ctext-second: #6B7280; /* used for secondary text  gray-400 */
-      
-      --accent: #2563EB;
-      --accent-bg: #DBEAFE;
-      --accent-300: #93C5FD;
-
       --background: 0 0% 100%;
       --foreground: 222.2 84% 4.9%;
       --card: 0 0% 100%;
@@ -68,19 +56,6 @@
     }
   
     .dark {
-
-
-
-      --bg-first: #0F172A;       /* Very dark gray-blue (like slate-900) */
-      --bg-second: #1E293B;      /* Darker gray-blue (slate-800) */
-      --bg-third: #3B82F6;       /* Same blue, keep for accent contrast */
-      --bg-footer: #0F172A;      /* Match first bg for footer consistency */
-
-      --ctext: #F9FAFB;          /* Almost white for primary text (gray-50) */
-      --ctext-second: #9CA3AF;   /* Lighter gray for secondary text (gray-400) */
-      --accent: #3B82F6;         /* Same as light mode or tweak if needed */
-      --accent-bg: #1E40AF;      /* Darker background for accent elements */
-      --accent-300: #60A5FA;     /* A lighter blue for hover states, etc */
 
 
       --background: 222.2 84% 4.9%;

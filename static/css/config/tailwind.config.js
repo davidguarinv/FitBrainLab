@@ -16,15 +16,6 @@ module.exports = {
     },
     extend: {
       colors: {
-        bg_first: "rgb(var(--bg-first))",
-        bg_second: "rgb(var(--bg-second))",
-        bg_third: "rgb(var(--bg-third))",
-        bg_footer: "rgb(var(--bg-footer))",
-        ctext: "rgb(var(--ctext))",
-        ctext_second: "rgb(var(--ctext-second))",
-        accent: "rgb(var(--accent))",
-        accent_bg: "rgb(var(--accent-bg))",
-        accent_300: "rgb(var(--accent-300))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

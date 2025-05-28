@@ -376,7 +376,7 @@ def communities():
     """Display communities page with filtering and pagination"""
     try:
         # Load communities data
-        json_file = os.path.join(current_app.static_folder, 'data', 'communities_with_logos.json')
+        json_file = os.path.join(current_app.static_folder, 'data', 'communities.json')
         
         if not os.path.exists(json_file):
             # Create empty file if it doesn't exist

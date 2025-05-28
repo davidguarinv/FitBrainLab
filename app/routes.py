@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import json
 import math
-from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
+from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, abort, current_app, session
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
@@ -1194,25 +1194,22 @@ def game(section='challenges'):
         
         # Get user's earned achievements
         from app.models import UserAchievement, Achievement, Challenge
-        earned_achievements = (
-            UserAchievement.query
-            .filter_by(user_id=current_user.id)
-            .join(Achievement, UserAchievement.achievement_id == Achievement.id)
-            .order_by(UserAchievement.achieved_at.desc())
-            .all()
-        )
+        # Get earned achievements directly from UserAchievement without joining
+        earned_user_achievements = UserAchievement.query.filter_by(user_id=current_user.id).order_by(UserAchievement.achieved_at.desc()).all()
         
-        for ua in earned_achievements:
+        # Now we'll fetch the achievement data from our in-memory Achievement model
+        earned_achievement_ids = []
+        for ua in earned_user_achievements:
+            earned_achievement_ids.append(ua.achievement_id)
             user_achievements.append({
-                'name': ua.achievement.name,
-                'message': ua.achievement.message,
-                'icon': ua.achievement.icon_type,
+                'name': ua.name,  # Using the property from UserAchievement model
+                'message': ua.message,  # Using the property from UserAchievement model
+                'icon': ua.icon_type,  # Using the property from UserAchievement model
                 'achieved_at': ua.achieved_at
             })
         
-        # Get achievements the user hasn't earned yet
-        earned_achievement_ids = [ua.achievement_id for ua in earned_achievements]
-        unearned_achievements = Achievement.query.filter(~Achievement.id.in_(earned_achievement_ids)).all()
+        # Get achievements the user hasn't earned yet using our in-memory Achievement model
+        unearned_achievements = [a for a in Achievement.get_all() if a.id not in earned_achievement_ids]
         
         # Calculate progress toward each unearned achievement
         achievement_progress = []
@@ -1357,10 +1354,16 @@ def game(section='challenges'):
                     challenges_pool[wc.difficulty].append(challenge)
     
             for diff, slots in display_slots.items():
-                selected = random.sample(challenges_pool[diff], min(slots, len(challenges_pool[diff])))
-                for ch in selected:
-                    challenges_by_difficulty[diff].append({'challenge': ch, 'all_done': False})
-    
+                # Check if we have any challenges for this difficulty
+                if challenges_pool[diff]:
+                    # Sample from available challenges
+                    sample_size = min(slots, len(challenges_pool[diff]))
+                    selected = random.sample(challenges_pool[diff], sample_size)
+                    
+                    for ch in selected:
+                        challenges_by_difficulty[diff].append({'challenge': ch, 'all_done': False})
+                
+                # Fill in empty slots
                 while len(challenges_by_difficulty[diff]) < slots:
                     challenges_by_difficulty[diff].append({'challenge': None, 'all_done': False})
         except Exception as e:

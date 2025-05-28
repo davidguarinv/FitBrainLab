@@ -1,3 +1,5 @@
 from app import create_app
+from config import Config
 
-app = create_app()
+# Create application with production configuration
+app = create_app(Config)

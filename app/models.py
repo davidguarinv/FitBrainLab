@@ -376,74 +376,123 @@ class WeeklyHabitChallenge(db.Model):
 # -------------------------
 # Achievement Model
 # -------------------------
-class Achievement(db.Model):
-    __tablename__ = 'achievement'
+class Achievement:
+    """A class to manage achievements without requiring a database table."""
     
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    condition = db.Column(db.String(50), nullable=False)  # e.g. '5_easy', '3_weekly_streak'
-    message = db.Column(db.String(200), nullable=False)
-    icon_type = db.Column(db.String(50), nullable=True)  # e.g. 'first_challenge', 'weekly_streak'
+    # Class-level cache for achievements
+    _achievements_cache = None
     
-    # Relationship with UserAchievement
-    user_achievements = db.relationship('UserAchievement', backref='achievement', lazy='dynamic')
-    
+    # Define default achievements
     ACHIEVEMENTS = [
         {
-            'name': 'First Challenge!',
-            'condition': '1_total',
-            'message': 'Complete your first challenge.',
-            'icon_type': 'first_challenge'
+            'id': 1,
+            'name': 'Centurion',
+            'condition': '100_total',
+            'message': "You're on fire! Great job for staying on track and working on being more active one day at a time. Let's celebrate by attempting another challenge!",
+            'icon_type': 'centurion'
         },
         {
-            'name': 'Getting Started',
-            'condition': '10_total',
-            'message': 'Complete 10 challenges of any difficulty.',
-            'icon_type': 'getting_started'
+            'id': 2,
+            'name': 'Challenge Master',
+            'condition': '200_total',
+            'message': 'You have probably seen every challenge we have to offer. What a menace! Keep it up!',
+            'icon_type': 'challenge_master'
         },
         {
-            'name': 'Challenge Enthusiast',
-            'condition': '50_total',
-            'message': 'Complete 50 challenges of any difficulty.',
-            'icon_type': 'challenge_enthusiast'
-        },
-
-        {
-            'name': 'Easy Beginner',
-            'condition': '10_easy',
-            'message': 'Complete 10 easy challenges.',
-            'icon_type': 'easy_beginner'
+            'id': 3,
+            'name': 'Easy Expert',
+            'condition': '50_easy',
+            'message': 'You are starting to master bite sized activity boosts. Look at you thrive!',
+            'icon_type': 'easy_expert'
         },
         {
-            'name': 'Medium Beginner',
-            'condition': '10_medium',
-            'message': 'Complete 10 medium challenges.',
-            'icon_type': 'medium_beginner'
+            'id': 4,
+            'name': 'Medium Maven',
+            'condition': '25_medium',
+            'message': "You are on your way to becoming a superstar! We can't wait to see your life transform for the more active!",
+            'icon_type': 'medium_maven'
         },
         {
-            'name': 'Hard Beginner',
+            'id': 5,
+            'name': 'Hard Conqueror',
             'condition': '10_hard',
-            'message': 'Complete 10 hard challenges.',
-            'icon_type': 'hard_beginner'
+            'message': 'Boss moves! What a tough cookie you are…',
+            'icon_type': 'hard_conqueror'
+        },
+        {
+            'id': 6,
+            'name': 'Point Prodigy',
+            'condition': 'points_50000',
+            'message': 'Wowza! We notice your potential and drive. Incredible performance out there!',
+            'icon_type': 'point_prodigy'
+        },
+        {
+            'id': 7,
+            'name': 'Ultimate Champion',
+            'condition': 'points_100000',
+            'message': "We didn't think anyone would make it this far. You are officially insane and we hope you're enjoying the game.",
+            'icon_type': 'ultimate_champion'
         }
     ]
     
-    @staticmethod
-    def seed_achievements():
-        """Seed the default achievements into the database."""
-        for achievement_data in Achievement.ACHIEVEMENTS:
-            existing = Achievement.query.filter_by(name=achievement_data['name']).first()
-            if not existing:
-                achievement = Achievement(
-                    name=achievement_data['name'],
-                    condition=achievement_data['condition'],
-                    message=achievement_data['message'],
-                    icon_type=achievement_data['icon_type']
-                )
-                db.session.add(achievement)
+    def __init__(self, id=None, name=None, condition=None, message=None, icon_type=None):
+        self.id = id
+        self.name = name
+        self.condition = condition
+        self.message = message
+        self.icon_type = icon_type
+    
+    @classmethod
+    def get_all(cls):
+        """Get all achievements."""
+        if cls._achievements_cache is None:
+            cls._achievements_cache = [cls(**achievement) for achievement in cls.ACHIEVEMENTS]
+        return cls._achievements_cache
+    
+    @classmethod
+    def get_by_id(cls, achievement_id):
+        """Get an achievement by ID."""
+        achievements = cls.get_all()
+        for achievement in achievements:
+            if achievement.id == achievement_id:
+                return achievement
+        return None
+    
+    @classmethod
+    def get_by_condition(cls, condition):
+        """Get an achievement by its condition."""
+        achievements = cls.get_all()
+        for achievement in achievements:
+            if achievement.condition == condition:
+                return achievement
+        return None
         
-        db.session.commit()
-        return len(Achievement.ACHIEVEMENTS)
+    @staticmethod
+    def query(cls=None):
+        """Create a compatibility layer for database-style queries."""
+        class AchievementQuery:
+            def __init__(self, achievements):
+                self.achievements = achievements
+                
+            def filter_by(self, **kwargs):
+                filtered = self.achievements
+                for key, value in kwargs.items():
+                    filtered = [a for a in filtered if getattr(a, key) == value]
+                return self
+                
+            def first(self):
+                return self.achievements[0] if self.achievements else None
+                
+            def all(self):
+                return self.achievements
+                
+        return AchievementQuery(Achievement.get_all())
+        
+    @classmethod
+    def seed_achievements(cls):
+        """Seed achievements - with this new approach, just refresh the cache."""
+        cls._achievements_cache = None
+        return len(cls.ACHIEVEMENTS)
 
 
 # -------------------------
@@ -454,7 +503,7 @@ class UserAchievement(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    achievement_id = db.Column(db.Integer, db.ForeignKey('achievement.id'), nullable=False)
+    achievement_id = db.Column(db.Integer, nullable=False)  # No longer a foreign key to a DB table
     achieved_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationship with User
@@ -462,6 +511,26 @@ class UserAchievement(db.Model):
     
     # Ensure a user can only earn an achievement once
     __table_args__ = (db.UniqueConstraint('user_id', 'achievement_id', name='_user_achievement_uc'),)
+    
+    # Properties to access achievement data
+    @property
+    def achievement(self):
+        return Achievement.get_by_id(self.achievement_id)
+    
+    @property
+    def name(self):
+        achievement = self.achievement
+        return achievement.name if achievement else None
+        
+    @property
+    def message(self):
+        achievement = self.achievement
+        return achievement.message if achievement else None
+        
+    @property
+    def icon_type(self):
+        achievement = self.achievement
+        return achievement.icon_type if achievement else None
 
     @staticmethod
     def check_achievements(user_id):
@@ -477,7 +546,7 @@ class UserAchievement(db.Model):
         earned_achievement_ids = [ua.achievement_id for ua in UserAchievement.query.filter_by(user_id=user_id).all()]
         
         # Get all possible achievements
-        all_achievements = Achievement.query.all()
+        all_achievements = Achievement.get_all()
         
         newly_earned = []
         
@@ -685,22 +754,38 @@ class Notification(db.Model):
 # -------------------------
 # Fun Fact Model
 # -------------------------
-class FunFact(db.Model):
-    __tablename__ = 'fun_fact'
-    id = db.Column(db.Integer, primary_key=True)
-    fact = db.Column(db.String(500), nullable=False)
-    source = db.Column(db.String(500), nullable=True)
-    times_shown = db.Column(db.Integer, default=0)
-    last_shown = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+class FunFact:
+    """A class to manage fun facts from a JSON file instead of a database table."""
     
-    @staticmethod
-    def import_from_json(app):
-        """Import fun facts from JSON file."""
-        json_file = os.path.join(app.static_folder, 'data', 'fun_facts.json')
-        if not os.path.exists(json_file):
-            app.logger.error(f"Fun facts JSON file not found at {json_file}")
-            return False
+    # Class-level cache for facts to avoid repeated file reads
+    _facts_cache = None
+    _facts_last_loaded = None
+    _usage_tracking = {}  # Track fact usage by id
+    
+    def __init__(self, id=None, fact=None, source=None, times_shown=0, last_shown=None):
+        self.id = id
+        self.fact = fact
+        self.source = source
+        self.times_shown = times_shown
+        self.last_shown = last_shown
+        self.created_at = datetime.utcnow()
+    
+    @classmethod
+    def _load_facts(cls, force_reload=False):
+        """Load facts from JSON file with caching."""
+        # Use cached data if available and not forcing reload
+        current_time = datetime.utcnow()
+        cache_age = (current_time - cls._facts_last_loaded).total_seconds() if cls._facts_last_loaded else None
+        
+        if cls._facts_cache is not None and not force_reload and cache_age and cache_age < 3600:  # Cache for 1 hour
+            return cls._facts_cache
+            
+        from flask import current_app
+        json_file = current_app.config.get('FUN_FACTS_FILE')
+        
+        if not json_file or not os.path.exists(json_file):
+            current_app.logger.error(f"Fun facts JSON file not found at {json_file}")
+            return []
             
         try:
             with open(json_file, 'r', encoding='utf-8') as f:
@@ -708,44 +793,83 @@ class FunFact(db.Model):
                 
             # Check if we have exercise facts
             if 'exercise_facts' not in data:
-                app.logger.error("No exercise_facts found in JSON file")
-                return False
-                
-            # Get existing fact IDs to avoid duplicates
-            existing_facts = {fact.id: fact for fact in FunFact.query.all()}
+                current_app.logger.error("No exercise_facts found in JSON file")
+                return []
             
-            # Import facts
-            count = 0
+            # Convert JSON data to FunFact objects
+            facts = []
             for fact_data in data['exercise_facts']:
-                # Skip if already exists
-                if fact_data['id'] in existing_facts:
-                    continue
-                    
-                new_fact = FunFact(
+                # Get usage data from tracking or initialize
+                usage = cls._usage_tracking.get(fact_data['id'], {
+                    'times_shown': 0,
+                    'last_shown': None
+                })
+                
+                fact = cls(
                     id=fact_data['id'],
                     fact=fact_data['fact'],
-                    source=fact_data.get('source', '')
+                    source=fact_data.get('source', ''),
+                    times_shown=usage['times_shown'],
+                    last_shown=usage['last_shown']
                 )
-                db.session.add(new_fact)
-                count += 1
+                facts.append(fact)
                 
-            if count > 0:
-                db.session.commit()
-                app.logger.info(f"Imported {count} new fun facts")
-            return True
+            # Update cache
+            cls._facts_cache = facts
+            cls._facts_last_loaded = current_time
+            return facts
             
         except Exception as e:
-            app.logger.error(f"Error importing fun facts: {str(e)}")
-            db.session.rollback()
-            return False
-            
-    @staticmethod
-    def get_random_fact():
+            from flask import current_app
+            current_app.logger.error(f"Error loading fun facts: {str(e)}")
+            return []
+    
+    @classmethod
+    def get_all(cls):
+        """Get all fun facts."""
+        return cls._load_facts()
+    
+    @classmethod
+    def get_by_id(cls, fact_id):
+        """Get a fun fact by ID."""
+        facts = cls._load_facts()
+        for fact in facts:
+            if fact.id == fact_id:
+                return fact
+        return None
+    
+    @classmethod
+    def get_random_fact(cls):
         """Get a random fun fact, prioritizing ones that haven't been shown recently."""
-        # First try to get facts that have never been shown
-        never_shown = FunFact.query.filter(FunFact.times_shown == 0).all()
-        if never_shown:
-            return random.choice(never_shown)
+        facts = cls._load_facts()
+        if not facts:
+            return None
             
-        # Then try to get facts that have been shown less often
-        return FunFact.query.order_by(FunFact.times_shown, FunFact.last_shown).first()
+        # First try facts that have never been shown
+        never_shown = [f for f in facts if f.times_shown == 0]
+        if never_shown:
+            selected = random.choice(never_shown)
+        else:
+            # Sort by times shown (ascending) and last shown time (oldest first)
+            sorted_facts = sorted(facts, 
+                key=lambda f: (f.times_shown, f.last_shown or datetime.min))
+            selected = sorted_facts[0] if sorted_facts else None
+        
+        # Update usage tracking
+        if selected:
+            selected.times_shown += 1
+            selected.last_shown = datetime.utcnow()
+            
+            # Update tracking dictionary
+            cls._usage_tracking[selected.id] = {
+                'times_shown': selected.times_shown,
+                'last_shown': selected.last_shown
+            }
+        
+        return selected
+    
+    @classmethod
+    def import_from_json(cls, app):
+        """Legacy compatibility method - now just reloads the cache."""
+        cls._load_facts(force_reload=True)
+        return True

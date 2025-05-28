@@ -38,11 +38,27 @@ def create_app(config_class=Config):
     from .routes import bp as main_bp
     app.register_blueprint(main_bp, url_prefix='')
 
-    # Create tables
-    with app.app_context():
-        db.create_all()
-        
-        # Import fun facts from JSON file
-        FunFact.import_from_json(app)
+    # Check if database is disabled
+    disable_db = app.config.get('SQLALCHEMY_DATABASE_URI') is None or \
+                 os.environ.get('DISABLE_DB', 'false').lower() == 'true'
+                 
+    if not disable_db:
+        # Create tables if database is enabled
+        with app.app_context():
+            try:
+                db.create_all()
+                
+                # Import fun facts from JSON file
+                FunFact.import_from_json(app)
+            except Exception as e:
+                app.logger.error(f"Error during database initialization: {e}")
+    else:
+        # Apply patches for database-disabled mode
+        try:
+            from utils.app_patches import patch_app_for_db_disabled
+            with app.app_context():
+                patch_app_for_db_disabled(app)
+        except Exception as e:
+            app.logger.error(f"Error applying DB-disabled patches: {e}")
 
     return app

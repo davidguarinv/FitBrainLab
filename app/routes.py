@@ -30,7 +30,7 @@ def save_to_main_json(submission_id, submission_data):
         current_app.logger.info(f"Attempting to save community: {community_name}")
         
         # Read existing communities
-        json_file = os.path.join(current_app.static_folder, 'data', 'communities_with_logos.json')
+        json_file = os.path.join(current_app.static_folder, 'data', 'communities.json')
         
         # Verify directory exists and is writable
         data_dir = os.path.dirname(json_file)

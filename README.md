@@ -13,42 +13,101 @@ Welcome to the Fit Brain Lab website! This is a web application that showcases r
    
    This will start the website server. You can then access it by opening your web browser and going to `http://localhost:5000`.
 
-### Project Structure Overview
 
-The website is organized into several key directories:
+## 📋 How to Update the Website
 
-- `templates/`: Contains all HTML files that make up the website pages
-- `static/`: Contains images, CSS, and JavaScript files
-- `app/`: Contains the Python backend code
+### 🏡 Adding New Content
 
-## 📋 Updating Website Content
+1. **Research Projects**
+   - Copy template from `templates/research/`
+   - Update content sections:
+     - Main description
+     - Methodology
+     - Project details
+   - Add images to `static/images/`
 
-### Updating Research Project Pages
+2. **Communities**
+   - Edit `static/data/communities.json`
+   - Add entries with:
+     - Name, Sport, Contact info
+     - Location, Cost, Student-based
+     - Logo URL
 
-1. **Find the Project Template:**
-   Each research project has its own template file in the `templates/research/` directory (e.g., `brain_adaptations.html`, `leopard_predict.html`).
+3. **Publications**
+   - Edit `static/data/publications.json`
+   - Add entries with:
+     - Title, Authors, Journal
+     - Year, DOI, Description
+     - PDF path
 
-2. **Update Text Content:**
-   - Project descriptions are in the main content section
-   - Methodology lists are in the "Research Methodology" section
-   - Project details are in the sidebar
+### 🎮 Game Structure
 
-3. **Updating Images:**
-   - Place new images in the `static/images/` folder
-   - Reference them in templates using this format: `{{ url_for('static', filename='images/your_image.png') }}`
-   - Make sure images are properly sized and named appropriately
+- **Game Pages** (`templates/game.html`)
+  - Main interface
+  - Score tracking
+  - Challenge system
 
-### Common Template Sections
+- **Game Assets** (`static/`)
+  - Media files
+  - Challenge data
 
-1. **Project Overview:**
-   - Located in the main content section
-   - Contains the main description of the project
-   - Should be concise but informative
+### 🎨 Styling and Design
 
-2. **Research Methodology:**
-   - Contains bullet points with icons
-   - Each point should describe a specific research technique
-   - Icons are SVGs that can be replaced if needed
+- **Color Scheme**
+  - Primary: Orange and Red gradients
+  - Secondary: Yellow accents
+  - Text: Slate colors
+
+- **CSS Files**
+  - Main styles in `static/css/output.css`
+  - Use Tailwind CSS classes
+
+### 📁 Project Structure
+
+```
+FitBrainLab/
+├── app/                 # Python backend
+├── static/              # Static files
+│   ├── css/            # Stylesheets
+│   ├── images/         # Project images
+│   └── js/             # JavaScript
+└── templates/          # HTML templates
+    ├── research/       # Research pages
+    ├── game/           # Game interface
+    └── pages/          # Main pages
+```
+
+## 🛠️ Technical Details
+
+- **Backend**: Flask framework
+- **Frontend**: HTML, Tailwind CSS, JavaScript
+- **Database**: JSON files for content
+
+## 📝 Best Practices
+
+1. **Naming**
+   - Use lowercase with hyphens
+   - Descriptive filenames
+   - Consistent patterns
+
+2. **Images**
+   - Optimize before upload
+   - Descriptive filenames
+   - Consistent sizes
+
+3. **Content**
+   - Use existing styling
+   - Keep consistent formatting
+   - Test all changes
+
+## 🚀 Getting Started
+
+```bash
+# Clone repository
+git clone https://github.com/davidguarinv/FitBrainLab.git
+
+# Run development server
+python run.py
 
 3. **Project Details Sidebar:**
    - Contains status, timeline, model, and focus information

@@ -6,10 +6,7 @@ Welcome to the Fit Brain Lab website! This is a web application that showcases r
 
 ### Running the Website
 
-
-## 🚀 Getting Started
-
-```bash
+bash
 # Clone repository
 git clone https://github.com/davidguarinv/FitBrainLab.git
 
@@ -41,7 +38,6 @@ The project uses several Python packages listed in `requirements.txt`. These inc
 2. Install dependencies:
    ```bash
    pip install -r requirements.txt
-   ```
 ## 📋 How to Update the Website
 
 ### 🏡 Adding New Content

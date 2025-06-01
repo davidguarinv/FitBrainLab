@@ -102,55 +102,48 @@ def create_user_weekly_order(user_id):
     
     This function is called when a user first visits in a given week.
     """
-    # Get current week info
-    current_week = get_current_week_info()
-    week_number = current_week['week_number']
-    year = current_week['year']
+    # TODO: Re-enable this feature once implemented
+    logger.info(f"Weekly challenge ordering is temporarily disabled for user {user_id}")
+    return
     
-    # Check if user already has an order for this week
-    existing_count = UserWeeklyOrder.query.filter_by(
-        user_id=user_id,
-        week_number=week_number,
-        year=year
-    ).count()
-    
-    if existing_count > 0:
-        logger.info(f"User {user_id} already has a weekly order for week {week_number}, year {year}")
-        return
-    
+    # TODO: Re-enable this feature once implemented
     # Get weekly challenge set
-    weekly_challenges = db.session.query(WeeklyChallengeSet, Challenge).join(
-        Challenge, Challenge.id == WeeklyChallengeSet.challenge_id
-    ).filter(
-        WeeklyChallengeSet.week_number == week_number,
-        WeeklyChallengeSet.year == year
-    ).all()
-    
-    # Group by difficulty
-    challenges_by_diff = {'E': [], 'M': [], 'H': []}
-    for weekly_challenge, challenge in weekly_challenges:
-        challenges_by_diff[weekly_challenge.difficulty].append((weekly_challenge, challenge))
-    
-    # Shuffle each difficulty group
-    for difficulty in challenges_by_diff:
-        random.shuffle(challenges_by_diff[difficulty])
-    
-    # Create user weekly order
-    for difficulty, challenges in challenges_by_diff.items():
-        for i, (weekly_challenge, challenge) in enumerate(challenges):
-            user_order = UserWeeklyOrder(
-                user_id=user_id,
-                week_number=week_number,
-                year=year,
-                challenge_id=challenge.id,
-                difficulty=difficulty,
-                order_position=i
-            )
-            db.session.add(user_order)
-    
-    # Commit changes
-    db.session.commit()
-    logger.info(f"Created weekly challenge order for user {user_id}, week {week_number}, year {year}")
+    # weekly_challenges = db.session.query(WeeklyChallengeSet, Challenge).join(
+    #     Challenge, WeeklyChallengeSet.challenge_id == Challenge.id
+    # ).filter(
+    #     WeeklyChallengeSet.week_number == week_number,
+    #     WeeklyChallengeSet.year == year
+    # ).all()
+    # 
+    # # Group challenges by difficulty
+    # challenges_by_difficulty = {
+    #     'E': [],
+    #     'M': [],
+    #     'H': []
+    # }
+    # 
+    # for wc, challenge in weekly_challenges:
+    #     challenges_by_difficulty[wc.difficulty].append(challenge)
+    # 
+    # # Shuffle each difficulty group
+    # for difficulty, challenges in challenges_by_difficulty.items():
+    #     random.shuffle(challenges)
+    #     
+    #     # Create order entries
+    #     for i, challenge in enumerate(challenges):
+    #         user_order = UserWeeklyOrder(
+    #             user_id=user_id,
+    #             week_number=week_number,
+    #             year=year,
+    #             challenge_id=challenge.id,
+    #             difficulty=difficulty,
+    #             order_position=i
+    #         )
+    #         db.session.add(user_order)
+    # 
+    # # Commit changes
+    # db.session.commit()
+    # logger.info(f"Created weekly challenge order for user {user_id}, week {week_number}, year {year}")
 
 # Initialize scheduler functions
 def init_app(app):
@@ -165,12 +158,16 @@ def init_app(app):
     scheduler = APScheduler()
     scheduler.init_app(app)
     
-    # Schedule weekly challenge set population
-    # Run every Monday at 00:00 UTC
-    @scheduler.task('cron', id='populate_weekly_challenges', week='*', day_of_week='mon', hour=0, minute=0)
+    # TODO: Re-enable this feature once implemented
+    # Schedule weekly challenge set population - TEMPORARILY DISABLED
+    # @scheduler.task('cron', id='populate_weekly_challenges', week='*', day_of_week='mon', hour=0, minute=0)
+    # def scheduled_weekly_challenge_population():
+    #     with app.app_context():
+    #         populate_weekly_challenge_set()
+    
+    # Create a dummy function to avoid errors
     def scheduled_weekly_challenge_population():
-        with app.app_context():
-            populate_weekly_challenge_set()
+        pass
     
     # Start the scheduler
     scheduler.start()

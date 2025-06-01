@@ -181,11 +181,12 @@
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         E
                     </span>
-                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                    <!-- TODO: Re-enable this feature once implemented -->
+                    <!-- {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if weekly_challenge_counts.E < weekly_challenge_caps.E else 'bg-gray-100 text-gray-800' }}">
                             {{ weekly_challenge_caps.E - weekly_challenge_counts.E }} left
                         </span>
-                    {% endif %}
+                    {% endif %} -->
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -216,18 +217,13 @@
                                 </form>
                             </div>
                         </div>
-                    {% else %}
-                        <!-- Regenerating -->
-                        <div class="border rounded-lg p-4 bg-gray-50">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h4 class="font-medium text-gray-600">Challenge Available Soon</h4>
-                                    <p class="text-xs text-gray-500 mt-1">New challenge regenerates in:</p>
-                                </div>
-                                <span class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.regenerate_time }}</span>
-                            </div>
-                        </div>
-                    {% endif %}
+                    <!--{% else %} -->
+                        <!--{% if slot.regenerate_at %}-->
+                        <!--Regenerating with timer -->
+                        <!--{% else %} -->
+                        <!-- Empty slot with no timer -->
+                        <!-- {% endif %} -->
+                    <!--{% endif %} -->
                 {% endfor %}
             </div>
         </div>
@@ -237,9 +233,10 @@
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h3 class="text-xl font-bold">Medium Challenges</h3>
-                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                    <!-- TODO: Re-enable this feature once implemented -->
+                    <!-- {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
                         <p class="text-sm text-gray-600">{{ weekly_challenge_counts.M }}/{{ weekly_challenge_caps.M }} completed this week</p>
-                    {% endif %}
+                    {% endif %} -->
                 </div>
                 <div class="flex items-center space-x-2">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
@@ -298,9 +295,10 @@
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h3 class="text-xl font-bold">Hard Challenges</h3>
-                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                    <!-- TODO: Re-enable this feature once implemented -->
+                    <!-- {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
                         <p class="text-sm text-gray-600">{{ weekly_challenge_counts.H }}/{{ weekly_challenge_caps.H }} completed this week</p>
-                    {% endif %}
+                    {% endif %} -->
                 </div>
                 <div class="flex items-center space-x-2">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">

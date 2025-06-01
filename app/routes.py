@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import json
 import math
+import sys
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, abort, current_app, session
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -14,7 +15,7 @@ from .email_handler import send_email
 import logging
 import os
 import json as _json
-from sqlalchemy import func
+from sqlalchemy import func, text
 import uuid
 import re
 from app.utils.game_helpers import get_in_progress_challenges
@@ -769,39 +770,110 @@ def auth():
             
             # Create new user
             try:
-                # Create a new user object
-                new_user = User(username=username)
-                new_user.set_password(password)
+                current_app.logger.info(f"Attempting to create user with direct SQL: {username}")
                 
-                # Generate unique backup and personal codes if the columns exist
+                # Create user with direct SQL for maximum Supabase compatibility
                 try:
-                    new_user.generate_backup_code()
-                    new_user.generate_personal_code()
-                    current_app.logger.info(f"Generated backup and personal codes for user {username}")
-                except Exception as e:
-                    current_app.logger.warning(f"Could not generate backup and personal codes: {str(e)}")
-                    # Continue with user creation even if the codes can't be generated
-                
-                # Add the user to the database
-                db.session.add(new_user)
-                db.session.commit()
-                current_app.logger.info(f"User created successfully: {username}")
-                
-                # Login the new user
-                login_user(new_user)
-                flash('Account created successfully!', 'success')
-                # Redirect to the challenges section of the game page
-                return redirect(url_for('main.game', section='challenges'))
-                
+                    # Hash the password
+                    from werkzeug.security import generate_password_hash
+                    password_hash = generate_password_hash(password)
+                    
+                    # Current time and week info
+                    now = datetime.utcnow()
+                    iso_calendar = now.isocalendar()
+                    week_number = iso_calendar[1]  # ISO week number
+                    year = iso_calendar[0]  # Year
+                    
+                    # First check if a user with this username already exists
+                    # Use public schema explicitly for PostgreSQL
+                    check_sql = "SELECT id FROM public.\"user\" WHERE username = :username"
+                    result = db.session.execute(db.text(check_sql), {"username": username}).fetchone()
+                    
+                    if result:
+                        flash('Username already taken.', 'error')
+                        return redirect(url_for('main.game', section='auth'))
+                    
+                    # Insert user with minimal required fields
+                    # Use public schema explicitly for PostgreSQL
+                    sql = """
+                    INSERT INTO public."user" (username, password_hash, created_at, is_public) 
+                    VALUES (:username, :password_hash, :created_at, :is_public)
+                    RETURNING id
+                    """
+                    
+                    params = {
+                        "username": username,
+                        "password_hash": password_hash,
+                        "created_at": now,
+                        "is_public": True
+                    }
+                    
+                    current_app.logger.info("Executing SQL insert")
+                    result = db.session.execute(db.text(sql), params)
+                    user_id = result.fetchone()[0]
+                    db.session.commit()
+                    
+                    current_app.logger.info(f"User created with ID: {user_id}")
+                    
+                    # Now load the user and log them in
+                    new_user = User.query.get(user_id)
+                    if new_user:
+                        login_user(new_user)
+                        flash('Account created successfully!', 'success')
+                        return redirect(url_for('main.game', section='challenges'))
+                    else:
+                        flash('User was created but could not be loaded. Please try logging in.', 'warning')
+                        return redirect(url_for('main.game', section='auth'))
+                        
+                except Exception as sql_err:
+                    db.session.rollback()
+                    current_app.logger.error(f"SQL error creating user: {str(sql_err)}")
+                    import traceback
+                    error_details = traceback.format_exc()
+                    current_app.logger.error(error_details)
+                    
+                    # Check for PostgreSQL-specific errors
+                    error_str = str(sql_err).lower()
+                    if "duplicate key" in error_str or "already exists" in error_str:
+                        flash('Username already taken.', 'error')
+                    elif "permission denied" in error_str or "access denied" in error_str:
+                        flash('Database permission error. Please contact administrator.', 'error')
+                        current_app.logger.critical(f"SUPABASE PERMISSIONS ERROR: {error_str}")
+                    elif "relation" in error_str and "does not exist" in error_str:
+                        flash('Database schema error. Tables may not exist.', 'error')
+                        current_app.logger.critical(f"SUPABASE SCHEMA ERROR: {error_str}")
+                    else:
+                        flash('Database error during registration. Please try again.', 'error')
+                    
+                    return redirect(url_for('main.game', section='auth'))
+                    
             except Exception as e:
                 db.session.rollback()
                 current_app.logger.error(f"Error during signup: {str(e)}")
+                import traceback
+                error_details = traceback.format_exc()
+                current_app.logger.error(error_details)
+                
+                # Log detailed Supabase-specific information
+                current_app.logger.critical(f"SUPABASE CONNECTION DETAILS (check these):\n" 
+                                          f"Host: {os.environ.get('SUPABASE_DB_HOST')}\n"
+                                          f"Port: {os.environ.get('SUPABASE_DB_PORT')}\n"
+                                          f"DB Name: {os.environ.get('SUPABASE_DB_NAME')}\n"
+                                          f"User: {os.environ.get('SUPABASE_DB_USER')}\n"
+                                          f"Error: {str(e)}")
                 
                 # Provide more specific error messages based on the exception
-                if 'database is locked' in str(e):
-                    flash('The system is currently busy. Please wait a moment and try again.', 'error')
-                elif 'UNIQUE constraint failed' in str(e):
+                error_str = str(e).lower()
+                if 'already exists' in error_str or 'unique constraint' in error_str or 'duplicate key' in error_str:
                     flash('This username is already taken. Please try a different one.', 'error')
+                elif 'syntax error' in error_str:
+                    flash('Database syntax error. Contact support.', 'error')
+                elif 'schema' in error_str or 'relation' in error_str:
+                    flash('Database schema error. Contact support.', 'error')
+                elif 'permission' in error_str or 'access' in error_str:
+                    flash('Database permission error. Contact support.', 'error')
+                elif 'connection' in error_str or 'connect' in error_str:
+                    flash('Database connection error. Contact support.', 'error')
                 else:
                     flash('An error occurred during signup. Please try again.', 'error')
     
@@ -1276,8 +1348,14 @@ def game(section='challenges'):
             'rank': higher_ranked + 1
         }
 
-    # Weekly challenge setup
+    # Get current week info
+    if 'utils' not in sys.modules:
+        # Add parent directory to path if needed
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+    
+    from utils.scheduler import get_current_week_info, populate_weekly_challenge_set
     current_week = get_current_week_info()
+    current_app.logger.info(f"Current week info: week={current_week['week_number']}, year={current_week['year']}")
     current_app.logger.info("Weekly challenge setup")
     
     try:
@@ -1337,22 +1415,96 @@ def game(section='challenges'):
     
     if current_user.is_authenticated:
         try:
-            current_app.logger.info("Using weekly challenges")
-            import random
-            from app.models import WeeklyChallengeSet, Challenge
-    
+            # TODO: Re-enable challenge regeneration feature once implemented
+            now = datetime.utcnow()
+            
+            # TEMPORARILY DISABLED: Challenge regeneration timers
+            # user_regen_timers = ChallengeRegeneration.query.filter_by(user_id=current_user.id).all()
+            # current_app.logger.info(f"Found {len(user_regen_timers)} regeneration timers for user {current_user.id}")
+            
+            # Simulate empty regeneration timers to maintain functionality
+            user_regen_timers = []
+            current_app.logger.info("Challenge regeneration feature temporarily disabled")
+            
+            # Organize regeneration timers by difficulty and slot
+            regen_timers = {}
+            # TEMPORARILY DISABLED: Processing regeneration timers
+            # for timer in user_regen_timers:
+            #     regen_key = f"{timer.difficulty}_{timer.slot_number}"
+            #     
+            #     # Only consider if the regeneration time is in the future
+            #     if timer.regenerate_at and timer.regenerate_at > now:
+            #         time_diff_seconds = (timer.regenerate_at - datetime.utcnow()).total_seconds() if timer.regenerate_at else 0
+            #         formatted_time = format_time_remaining(time_diff_seconds) if time_diff_seconds > 0 else None
+            #         
+            #         regen_timers[regen_key] = {
+            #             'regenerate_at': timer.regenerate_at,
+            #             'regenerate_time': formatted_time
+            #         }
+            #         current_app.logger.debug(f"Regen timer {regen_key}: {formatted_time}")
+            
+            # Get current week info for weekly challenges
+            current_week = get_current_week_info()
+            
+            # Query weekly challenge sets for current week/year
             weekly_challenges = WeeklyChallengeSet.query.filter_by(
                 week_number=current_week['week_number'],
                 year=current_week['year']
             ).all()
-    
+            
+            current_app.logger.info(f"Found {len(weekly_challenges)} weekly challenge sets")
+            
+            # Debug: List all weekly challenges by ID
+            wc_ids = [f"{wc.challenge_id} (diff={wc.difficulty})" for wc in weekly_challenges]
+            current_app.logger.info(f"Weekly challenge IDs: {wc_ids}")
+            
+            # Make sure we can access the Challenge table directly first
+            all_challenges = Challenge.query.limit(5).all()
+            challenge_sample = [f"{c.id}: {c.title}" for c in all_challenges]
+            current_app.logger.info(f"Sample of challenges in DB: {challenge_sample}")
+            
+            # Build pools by difficulty
             challenges_pool = {'E': [], 'M': [], 'H': []}
+            missing_ids = []
     
+            # Try a more direct approach to load challenges
+            challenge_ids = [wc.challenge_id for wc in weekly_challenges]
+                
+            # Load all challenges at once to avoid n+1 query problem
+            challenges_by_id = {}
+            if challenge_ids:
+                challenges = Challenge.query.filter(Challenge.id.in_(challenge_ids)).all()
+                challenges_by_id = {c.id: c for c in challenges}
+                current_app.logger.info(f"Loaded {len(challenges)} challenges by ID lookup")
+                
+            missing_ids = []
             for wc in weekly_challenges:
-                challenge = Challenge.query.get(wc.challenge_id)
+                challenge = challenges_by_id.get(wc.challenge_id)
+                if not challenge:
+                    # Try a direct get as fallback
+                    challenge = Challenge.query.get(wc.challenge_id)
+                
                 if challenge:
                     challenges_pool[wc.difficulty].append(challenge)
+                    current_app.logger.info(f"Added challenge {challenge.id}: {challenge.title[:20]} to {wc.difficulty} pool")
+                else:
+                    missing_ids.append(wc.challenge_id)
+                    current_app.logger.warning(f"Challenge ID {wc.challenge_id} not found in database")
+            
+            if missing_ids:
+                current_app.logger.error(f"Missing challenge IDs: {missing_ids}")
     
+            
+            # TODO: Re-enable this feature once implemented
+            # For now, just create empty challenge pools
+            challenges_pool = {'E': [], 'M': [], 'H': []}
+            current_app.logger.info("Weekly challenges are temporarily disabled")
+    
+            # Log pool sizes
+            for diff in ['E', 'M', 'H']:
+                current_app.logger.info(f"Pool size for {diff}: {len(challenges_pool[diff])}")
+    
+            # Sample challenges for each difficulty and create slots
             for diff, slots in display_slots.items():
                 # Check if we have any challenges for this difficulty
                 if challenges_pool[diff]:
@@ -1360,18 +1512,50 @@ def game(section='challenges'):
                     sample_size = min(slots, len(challenges_pool[diff]))
                     selected = random.sample(challenges_pool[diff], sample_size)
                     
-                    for ch in selected:
-                        challenges_by_difficulty[diff].append({'challenge': ch, 'all_done': False})
+                    for i, ch in enumerate(selected):
+                        # Create slot with challenge and NO regeneration timer
+                        challenges_by_difficulty[diff].append({
+                            'challenge': ch,
+                            'all_done': False,
+                            'regenerate_at': None,  # No regeneration timer needed for active challenges
+                            'regenerate_time': None
+                        })
                 
-                # Fill in empty slots
+                # Fill in empty slots with regeneration timers if available
                 while len(challenges_by_difficulty[diff]) < slots:
-                    challenges_by_difficulty[diff].append({'challenge': None, 'all_done': False})
+                    slot_num = len(challenges_by_difficulty[diff])
+                    regen_key = f"{diff}_{slot_num}"
+                    
+                    if regen_key in regen_timers:
+                        # Use existing regeneration timer
+                        challenges_by_difficulty[diff].append({
+                            'challenge': None,
+                            'all_done': False,
+                            'regenerate_at': regen_timers[regen_key]['regenerate_at'],
+                            'regenerate_time': regen_timers[regen_key]['regenerate_time']
+                        })
+                    else:
+                        # No regeneration timer, just an empty slot
+                        challenges_by_difficulty[diff].append({
+                            'challenge': None,
+                            'all_done': False,
+                            'regenerate_at': None,
+                            'regenerate_time': None
+                        })
         except Exception as e:
-            current_app.logger.warning(f"Error building weekly challenges: {str(e)}")
+            current_app.logger.error(f"Error building weekly challenges: {str(e)}", exc_info=True)
+            import traceback
+            current_app.logger.error(traceback.format_exc())
             db.session.rollback()
+            # Create empty slots for all difficulties
             for diff, slots in display_slots.items():
                 for _ in range(slots):
-                    challenges_by_difficulty[diff].append({'challenge': None, 'all_done': False})
+                    challenges_by_difficulty[diff].append({
+                        'challenge': None,
+                        'all_done': False,
+                        'regenerate_at': None,
+                        'regenerate_time': None
+                    })
     
     # Final context for template
     challenges = {
@@ -1381,8 +1565,38 @@ def game(section='challenges'):
         'H': challenges_by_difficulty['H'],
     }
     
-    print("DEBUG: challenges keys →", challenges.keys())
-    print("DEBUG: in_progress contents →", challenges.get('in_progress'))
+    # Detailed logging of what's in the challenges variable
+    current_app.logger.info(f"Challenge keys: {challenges.keys()}")
+    current_app.logger.info(f"In-progress count: {len(challenges.get('in_progress', []))}")
+    
+    # Log what's actually in each difficulty slot
+    for diff in ['E', 'M', 'H']:
+        slot_data = []
+        for i, slot in enumerate(challenges.get(diff, [])):
+            if slot.get('challenge'):
+                slot_data.append(f"Slot {i}: {slot['challenge'].title[:20]}")
+            elif slot.get('regenerate_at'):
+                slot_data.append(f"Slot {i}: Regenerating ({slot['regenerate_time']})")
+            else:
+                slot_data.append(f"Slot {i}: Empty")
+        current_app.logger.info(f"{diff} challenges: {slot_data}")
+    
+    if not any(slot.get('challenge') for diff in ['E', 'M', 'H'] for slot in challenges.get(diff, [])):
+        current_app.logger.warning("WARNING: No challenge objects found in any slots!")
+        
+        # Check if weekly challenge population might be needed
+        try:
+            # Try populating weekly challenges if needed
+            from utils.scheduler import populate_weekly_challenge_set
+            current_app.logger.info("Attempting to populate weekly challenge set...")
+            # Call the function with no arguments as it gets the current week internally
+            populated = populate_weekly_challenge_set()
+            current_app.logger.info(f"Weekly challenge population result: True if populated else False")
+            
+            if populated:
+                flash("Weekly challenges have been refreshed. Please reload the page.", "info")
+        except Exception as pop_err:
+            current_app.logger.error(f"Error attempting to populate challenges: {str(pop_err)}")
     
     # Get friend tokens left and weekly challenge counts
     friend_tokens_left = None

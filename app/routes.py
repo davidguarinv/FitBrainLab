@@ -1115,7 +1115,7 @@ def logout():
 # Main Game Route
 @bp.route('/game')
 @bp.route('/game/<section>')
-def game(section='challenges'):
+def game(section='leaderboard'):
     # Auth redirect
     if not current_user.is_authenticated and section not in ['leaderboard', None]:
         section = 'auth'

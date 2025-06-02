@@ -140,31 +140,75 @@ class User(UserMixin, db.Model):
     
     def get_weekly_challenge_counts(self):
         """Get the count of completed challenges for the current week by difficulty."""
-        # TODO: Re-enable this feature once the database schema is updated
-        # For now, return dummy data to avoid database errors
+        from sqlalchemy import func
+        from app import db
         import logging
         logger = logging.getLogger(__name__)
-        logger.info(f"Weekly challenge counts are temporarily disabled for user {self.id}")
         
-        # Return dummy counts (all zeros)
-        return {
-            'E': 0,
-            'M': 0,
-            'H': 0
-        }
+        week_info = self.get_current_week_info()
+        logger.info(f"Getting weekly challenge counts for user {self.id}, week {week_info['week_number']}, year {week_info['year']}")
+        
+        # Query for completed challenges this week
+        counts = {}
+        for difficulty in ['E', 'M', 'H']:
+            count = db.session.query(func.count(UserChallenge.id)).filter(
+                UserChallenge.user_id == self.id,
+                UserChallenge.week_number == week_info['week_number'],
+                UserChallenge.year == week_info['year'],
+                UserChallenge.status == 'completed',
+                UserChallenge.challenge.has(Challenge.difficulty == difficulty)
+            ).scalar() or 0
+            counts[difficulty] = count
+            logger.debug(f"Found {count} completed {difficulty} challenges for user {self.id}")
+        
+        return counts
     
     def can_take_weekly_challenge(self, difficulty):
         """
         Check if user can take a challenge of given difficulty based on weekly caps.
         This takes into account both completed challenges and in-progress challenges.
         """
-        # TODO: Re-enable this feature once the database schema is updated
-        # For now, always return True to allow taking any challenge
+        from utils.scheduler import get_current_week_info
         import logging
         logger = logging.getLogger(__name__)
-        logger.info(f"Weekly challenge caps are temporarily disabled for user {self.id}")
         
-        return True  # Allow taking any challenge regardless of difficulty
+        # Define weekly caps by difficulty
+        weekly_caps = {'E': 4, 'M': 3, 'H': 2}
+        
+        # Get current week info
+        current_week = get_current_week_info()
+        
+        # Get counts of completed challenges for this week
+        completed_counts = self.get_weekly_challenge_counts()
+        
+        # Count in-progress challenges by difficulty
+        in_progress_counts = {'E': 0, 'M': 0, 'H': 0}
+        
+        # Get all in-progress challenges for this user in the current week
+        in_progress = UserChallenge.query.filter_by(
+            user_id=self.id,
+            week_number=current_week['week_number'],
+            year=current_week['year'],
+            status='pending'
+        ).all()
+        
+        # Count them by difficulty
+        for challenge in in_progress:
+            ch = Challenge.query.get(challenge.challenge_id)
+            if ch:
+                in_progress_counts[ch.difficulty] += 1
+        
+        # Calculate total count (completed + in-progress)
+        total_counts = {
+            'E': completed_counts['E'] + in_progress_counts['E'],
+            'M': completed_counts['M'] + in_progress_counts['M'],
+            'H': completed_counts['H'] + in_progress_counts['H']
+        }
+        
+        logger.info(f"User {self.id} has {total_counts[difficulty]}/{weekly_caps[difficulty]} {difficulty} challenges")
+        
+        # Check if user has reached the cap for this difficulty
+        return total_counts[difficulty] < weekly_caps[difficulty]
     
     def get_weekly_habit_challenge(self):
         """Get the user's weekly habit challenge for the current week."""

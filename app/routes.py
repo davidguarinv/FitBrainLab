@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import json
 import math
 import sys
+import random
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, abort, current_app, session
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -1495,10 +1496,8 @@ def game(section='challenges'):
                 current_app.logger.error(f"Missing challenge IDs: {missing_ids}")
     
             
-            # TODO: Re-enable this feature once implemented
-            # For now, just create empty challenge pools
-            challenges_pool = {'E': [], 'M': [], 'H': []}
-            current_app.logger.info("Weekly challenges are temporarily disabled")
+            # Weekly challenges are now enabled, using the pools we built above
+            current_app.logger.info("Weekly challenges are now enabled")
     
             # Log pool sizes
             for diff in ['E', 'M', 'H']:

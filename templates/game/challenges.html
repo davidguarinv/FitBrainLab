@@ -217,13 +217,17 @@
                                 </form>
                             </div>
                         </div>
-                    <!--{% else %} -->
-                        <!--{% if slot.regenerate_at %}-->
-                        <!--Regenerating with timer -->
-                        <!--{% else %} -->
-                        <!-- Empty slot with no timer -->
-                        <!-- {% endif %} -->
-                    <!--{% endif %} -->
+                    {% else %}
+                        <!-- Empty slot -->
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-medium text-gray-700">No Challenge Available</h4>
+                                    <p class="text-xs text-gray-500 mt-1">Check back later for new challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
@@ -276,16 +280,16 @@
                             </div>
                         </div>
                     {% else %}
+                        <!-- Empty slot -->
                         <div class="border rounded-lg p-4 bg-gray-50">
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <h4 class="font-medium text-gray-600">Challenge Available Soon</h4>
-                                    <p class="text-xs text-gray-500 mt-1">New challenge regenerates in:</p>
+                                    <h4 class="font-medium text-gray-700">No Challenge Available</h4>
+                                    <p class="text-xs text-gray-500 mt-1">Check back later for new challenges</p>
                                 </div>
-                                <span class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.regenerate_time }}</span>
                             </div>
                         </div>
-                    {% endif %}
+                    {% endif %}    
                 {% endfor %}
             </div>
         </div>
@@ -338,13 +342,13 @@
                             </div>
                         </div>
                     {% else %}
+                        <!-- Empty slot -->
                         <div class="border rounded-lg p-4 bg-gray-50">
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <h4 class="font-medium text-gray-600">Challenge Available Soon</h4>
-                                    <p class="text-xs text-gray-500 mt-1">New challenge regenerates in:</p>
+                                    <h4 class="font-medium text-gray-700">No Challenge Available</h4>
+                                    <p class="text-xs text-gray-500 mt-1">Check back later for new challenges</p>
                                 </div>
-                                <span class="text-lg font-bold text-primary" data-regenerate-at="{{ slot.regenerate_at }}">{{ slot.regenerate_time }}</span>
                             </div>
                         </div>
                     {% endif %}

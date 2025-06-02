@@ -13,11 +13,27 @@ def get_in_progress_challenges(user_id, week_number, year):
     Returns:
         tuple: (list of Challenge objects, count of active challenges)
     """
-    # TODO: Re-enable this feature once the database schema is updated
-    # For now, return empty results to avoid database errors
     import logging
     logger = logging.getLogger(__name__)
-    logger.info(f"In-progress challenges are temporarily disabled for user {user_id}")
     
-    # Return empty list and count
-    return [], 0
+    try:
+        # Query for in-progress challenges for this user in the specified week
+        user_challenges = UserChallenge.query.filter_by(
+            user_id=user_id,
+            week_number=week_number,
+            year=year,
+            status='pending'
+        ).all()
+        
+        # Get the actual challenge objects
+        challenge_ids = [uc.challenge_id for uc in user_challenges]
+        challenges = Challenge.query.filter(Challenge.id.in_(challenge_ids)).all()
+        
+        logger.info(f"Found {len(challenges)} in-progress challenges for user {user_id}")
+        return challenges, len(challenges)
+    except Exception as e:
+        logger.error(f"Error getting in-progress challenges: {str(e)}")
+        db.session.rollback()
+        return [], 0
+    
+

@@ -817,6 +817,11 @@ def auth():
                     # Now load the user and log them in
                     new_user = User.query.get(user_id)
                     if new_user:
+                        # Generate personal and backup codes for the new user
+                        new_user.generate_personal_code()
+                        new_user.generate_backup_code()
+                        db.session.commit()
+                        
                         login_user(new_user)
                         flash('Account created successfully!', 'success')
                         return redirect(url_for('main.game', section='challenges'))

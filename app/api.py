@@ -69,13 +69,19 @@ def start_challenge(challenge_id):
         ).first()
         
         if existing:
-            # Challenge already exists, make sure it's in pending state
-            if existing.status != 'pending':
+            # Challenge already exists, check its status
+            if existing.status == 'completed':
+                # Don't restart completed challenges
+                flash('You have already completed this challenge this week.', 'error')
+                return redirect(url_for('main.game', section='challenges'))
+            elif existing.status == 'abandoned' or existing.status != 'pending':
+                # Allow restarting abandoned challenges or any non-pending/non-completed status
                 existing.status = 'pending'
                 existing.started_at = datetime.utcnow()
                 existing.completed_at = None
                 existing.points_earned = None
                 db.session.commit()
+                flash('Challenge restarted!', 'success')
         else:
             # Create a new UserChallenge record
             user_challenge = UserChallenge(

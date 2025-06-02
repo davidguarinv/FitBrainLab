@@ -107,13 +107,8 @@ class User(UserMixin, db.Model):
             CompletedChallenge.user_id == self.id
         ).scalar()
         
-        # TODO: Re-enable this feature once implemented
-        # Add bonus points from weekly habit challenges
-        # habit_points = db.session.query(func.sum(WeeklyHabitChallenge.bonus_points_earned)).filter(
-        #     WeeklyHabitChallenge.user_id == self.id
-        # ).scalar()
-        
-        return (total or 0)  # + (habit_points or 0)
+        # Note: Weekly habit challenge bonus points feature is disabled
+        return (total or 0)
     
     def get_current_week_info(self):
         """Get the current ISO week number and year."""
@@ -212,11 +207,8 @@ class User(UserMixin, db.Model):
     
     def get_weekly_habit_challenge(self):
         """Get the user's weekly habit challenge for the current week."""
-        # TODO: Re-enable this feature once implemented
-        import logging
-        logger = logging.getLogger(__name__)
-        logger.info(f"Weekly habit challenges are temporarily disabled for user {self.id}")
-        return None  # No weekly habit challenge available
+        # Weekly habit challenge feature is disabled
+        return None
     
     def get_previous_week_completed_challenges(self):
         """Get the challenges completed in the previous week."""

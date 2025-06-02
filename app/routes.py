@@ -88,8 +88,6 @@ def save_to_main_json(submission_id, submission_data):
         current_app.logger.error(f"Error saving to main JSON: {e}")
         return False
 
-print(">>> THIS routes.py LOADED <<<")
-
 # Helper function to format time remaining for regeneration timers
 def format_time_remaining(seconds):
     """Format seconds into a human-readable string (e.g., '2h 30m' or '45m')"""
@@ -1423,33 +1421,8 @@ def game(section='challenges'):
     
     if current_user.is_authenticated:
         try:
-            # TODO: Re-enable challenge regeneration feature once implemented
-            now = datetime.utcnow()
-            
-            # TEMPORARILY DISABLED: Challenge regeneration timers
-            # user_regen_timers = ChallengeRegeneration.query.filter_by(user_id=current_user.id).all()
-            # current_app.logger.info(f"Found {len(user_regen_timers)} regeneration timers for user {current_user.id}")
-            
-            # Simulate empty regeneration timers to maintain functionality
-            user_regen_timers = []
-            current_app.logger.info("Challenge regeneration feature temporarily disabled")
-            
-            # Organize regeneration timers by difficulty and slot
+            # Challenge regeneration feature is disabled, using empty regeneration timers
             regen_timers = {}
-            # TEMPORARILY DISABLED: Processing regeneration timers
-            # for timer in user_regen_timers:
-            #     regen_key = f"{timer.difficulty}_{timer.slot_number}"
-            #     
-            #     # Only consider if the regeneration time is in the future
-            #     if timer.regenerate_at and timer.regenerate_at > now:
-            #         time_diff_seconds = (timer.regenerate_at - datetime.utcnow()).total_seconds() if timer.regenerate_at else 0
-            #         formatted_time = format_time_remaining(time_diff_seconds) if time_diff_seconds > 0 else None
-            #         
-            #         regen_timers[regen_key] = {
-            #             'regenerate_at': timer.regenerate_at,
-            #             'regenerate_time': formatted_time
-            #         }
-            #         current_app.logger.debug(f"Regen timer {regen_key}: {formatted_time}")
             
             # Get current week info for weekly challenges
             current_week = get_current_week_info()
@@ -1563,17 +1536,18 @@ def game(section='challenges'):
                         'regenerate_time': None
                     })
     
-    # Only show weekly challenges not completed by the user this week, in user-specific order
-    user_challenge_ids_completed = set()
+    # Only show weekly challenges not completed or in progress by the user this week, in user-specific order
+    user_challenge_ids_to_exclude = set()
     if current_user.is_authenticated:
         from app.models import UserChallenge
-        completed = UserChallenge.query.filter_by(
-            user_id=current_user.id,
-            week_number=current_week['week_number'],
-            year=current_week['year'],
-            status='completed'
+        # Get both completed and in-progress challenges to exclude from available challenges
+        excluded_statuses = UserChallenge.query.filter(
+            UserChallenge.user_id == current_user.id,
+            UserChallenge.week_number == current_week['week_number'],
+            UserChallenge.year == current_week['year'],
+            UserChallenge.status.in_(['completed', 'pending'])
         ).all()
-        user_challenge_ids_completed = {uc.challenge_id for uc in completed}
+        user_challenge_ids_to_exclude = {uc.challenge_id for uc in excluded_statuses}
 
     # Get user-specific order for the week
     user_order = {'E': [], 'M': [], 'H': []}
@@ -1585,7 +1559,7 @@ def game(section='challenges'):
             year=current_week['year']
         ).order_by(UserWeeklyOrder.difficulty, UserWeeklyOrder.order_position).all()
         for uo in user_orders:
-            if uo.challenge_id not in user_challenge_ids_completed:
+            if uo.challenge_id not in user_challenge_ids_to_exclude:
                 user_order[uo.difficulty].append(uo.challenge)
 
     # Build display slots for each difficulty

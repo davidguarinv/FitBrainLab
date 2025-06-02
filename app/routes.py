@@ -915,13 +915,8 @@ def complete_challenge_with_friend(challenge_id):
         return redirect(url_for('main.game', section='challenges'))
 
     # Check weekly friend token usage (limit 3)
-    now = datetime.utcnow()
-    week_start = now - timedelta(days=now.weekday())
-    tokens_used = FriendTokenUsage.query.filter(
-        FriendTokenUsage.user_id == current_user.id,
-        FriendTokenUsage.used_at >= week_start
-    ).count()
-    if tokens_used >= 3:
+    tokens_left = get_friend_tokens_left(current_user)
+    if tokens_left <= 0:
         flash("You've used all 3 friend tokens this week.", 'error')
         return redirect(url_for('main.game', section='challenges'))
 
@@ -973,9 +968,11 @@ def complete_challenge_with_friend(challenge_id):
             if link.user1_confirmed and link.user2_confirmed:
                 # Only add token usage for the second user (first user already used token when creating the link)
                 if current_user.id == link.user2_id:
-                    # Check if this user still has tokens left
-                    tokens_left = get_friend_tokens_left(current_user)
-                    if tokens_left <= 0:
+                    # The second user needs to use a token too
+                    # We already checked tokens at the beginning, but we need to check again
+                    # in case another process used a token while this request was processing
+                    current_tokens_left = get_friend_tokens_left(current_user)
+                    if current_tokens_left <= 0:
                         flash("You've used all your friend tokens this week.", "error")
                         return redirect(url_for('main.game', section='challenges'))
                     
@@ -994,9 +991,14 @@ def complete_challenge_with_friend(challenge_id):
                 FriendChallengeLink.user1_id == current_user.id,
                 FriendChallengeLink.user2_confirmed == False,
                 FriendChallengeLink.expires_at > datetime.utcnow()
-            ).count()
+            ).all()
             
-            if tokens_left == 1 and pending_requests > 0:
+            pending_request_count = len(pending_requests)
+            
+            # Log token usage and pending requests for debugging
+            current_app.logger.info(f"User {current_user.id} has {tokens_left} tokens left and {pending_request_count} pending requests")
+            
+            if tokens_left == 1 and pending_request_count > 0:
                 flash("You cannot send a new friend request when you have only 1 token left and another request is pending.", "error")
                 return redirect(url_for('main.game', section='challenges'))
             
@@ -1221,6 +1223,7 @@ def game(section='leaderboard'):
             current_user_weekly_points = user_weekly_rank_query[1]
 
     # Active challenge ID
+    from flask import request  # Ensure request is imported locally
     active_challenge_id = request.args.get('active', type=int)
 
     # User progress and achievements
@@ -1382,6 +1385,7 @@ def game(section='leaderboard'):
     # In-Progress Challenges
     in_progress, active_count = ([], 0)
     friend_linked_challenges = {}
+    pending_friend_requests = {}
     
     if current_user.is_authenticated:
         try:
@@ -1415,6 +1419,27 @@ def game(section='leaderboard'):
                         'user_completed': user_completed,
                         'friend_completed': friend_completed,
                         'completion_expires_at': link.completion_expires_at
+                    }
+            
+            # Get pending friend requests (where user is either initiator or receiver)
+            pending_requests = FriendChallengeLink.query.filter(
+                (((FriendChallengeLink.user1_id == current_user.id) & (FriendChallengeLink.user1_confirmed == True) & (FriendChallengeLink.user2_confirmed == False)) |
+                ((FriendChallengeLink.user2_id == current_user.id) & (FriendChallengeLink.user2_confirmed == False))) &
+                (FriendChallengeLink.expired == False) &
+                (FriendChallengeLink.expires_at > datetime.utcnow())
+            ).all()
+            
+            for request in pending_requests:
+                # Determine if user is initiator or receiver
+                is_initiator = request.user1_id == current_user.id
+                other_user_id = request.user2_id if is_initiator else request.user1_id
+                other_user = User.query.get(other_user_id)
+                
+                if other_user:
+                    pending_friend_requests[request.challenge_id] = {
+                        'friend_username': other_user.username,
+                        'is_initiator': is_initiator,
+                        'expires_at': request.expires_at
                     }
         except Exception as e:
             current_app.logger.warning(f"Error getting in-progress challenges: {str(e)}")
@@ -1652,6 +1677,7 @@ def game(section='leaderboard'):
         weekly_challenge_counts=weekly_challenge_counts,
         weekly_challenge_caps=weekly_challenge_caps,
         friend_linked_challenges=friend_linked_challenges,
+        pending_friend_requests=pending_friend_requests,
         current_user_rank=current_user_rank,
         current_user_points=current_user_points,
         current_user_weekly_rank=current_user_weekly_rank,

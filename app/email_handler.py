@@ -17,16 +17,6 @@ def format_email_content(form_data, email_type):
         # Get the base URL for confirmation links
         base_url = current_app.config.get('BASE_URL', 'http://localhost:5000')
         
-        # Get submission ID from form data - it should be there since we added it in routes.py
-        submission_id = form_data.get('submission_id')
-        if not submission_id:
-            current_app.logger.error("No submission_id found in form data")
-            return None
-        
-        # Generate confirmation URLs manually since we can't use request object here
-        accept_url = f"{base_url}/confirm-community/{submission_id}/accept"
-        reject_url = f"{base_url}/confirm-community/{submission_id}/reject"
-        
         html_content = f"""
         <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
@@ -63,7 +53,7 @@ def format_email_content(form_data, email_type):
                             Location:
                         </td>
                         <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
-                            {form_data.get('Location', '')}
+                            {form_data.get('Address', '')}
                         </td>
                     </tr>
                     <tr>
@@ -103,7 +93,7 @@ def format_email_content(form_data, email_type):
                             International/Dutch:
                         </td>
                         <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
-                            {form_data.get('Int/Dutch', 'Both')}
+                            {form_data.get('Int/Dutch', '')}
                         </td>
                     </tr>
                     <tr>
@@ -111,7 +101,7 @@ def format_email_content(form_data, email_type):
                             Student-based:
                         </td>
                         <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
-                            {form_data.get('Student-based', 'No')}
+                            {form_data.get('Student-based', '')}
                         </td>
                     </tr>
                 </table>
@@ -123,35 +113,9 @@ def format_email_content(form_data, email_type):
                     </div>
                 </div>
                 
-                <div style="margin: 30px 0; text-align: center; background-color: #fef3c7; padding: 20px; border-radius: 8px;">
-                    <h3 style="color: #92400e; margin-bottom: 15px;">Action Required:</h3>
-                    <p style="margin-bottom: 20px; color: #92400e;">Please review the community submission and click one of the buttons below:</p>
-                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                        <button onclick="javascript:confirmCommunity('" + accept_url + "', '" + submission_id + "', 'accept')"
-                               style="background-color: #059669; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
-                            ✅ Accept Community
-                        </button>
-                        <button onclick="javascript:confirmCommunity('" + reject_url + "', '" + submission_id + "', 'reject')"
-                               style="background-color: #dc2626; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
-                            ❌ Reject Community
-                        </button>
-                    </div>
-                </div>
-                
                 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 12px;">
                     <p>This email was automatically generated from the community submission form.</p>
-                    <p><strong>Submission ID:</strong> {submission_id}</p>
                 </div>
-                
-                <script>
-                    function confirmCommunity(url, submissionId, action) {{
-                        var encodedUrl = encodeURIComponent(url);
-                        var iframe = document.createElement('iframe');
-                        iframe.style.display = 'none';
-                        iframe.src = encodedUrl;
-                        document.body.appendChild(iframe);
-                    }}
-                </script>
             </div>
         </body>
         </html>
@@ -242,6 +206,13 @@ def send_email(form_data, email_type='application'):
         smtp_port = current_app.config['SMTP_PORT']
         email_password = current_app.config['EMAIL_PASSWORD']
         
+        # Log configuration for debugging (without password)
+        current_app.logger.info(f"Email configuration:"
+            f"\nUser: {email_user}"
+            f"\nRecipient: {recipient_email}"
+            f"\nSMTP Server: {smtp_server}"
+            f"\nSMTP Port: {smtp_port}")
+        
         # Validate email configuration
         if not email_user or not email_password:
             raise ValueError("Email user or password not configured")
@@ -261,17 +232,32 @@ def send_email(form_data, email_type='application'):
         html_part = MIMEText(html_content, 'html')
         msg.attach(html_part)
         
-        # Send email
+        # Send email using SMTP with TLS
         try:
+            current_app.logger.info(f"Attempting to connect to SMTP server: {smtp_server}:{smtp_port}")
             with smtplib.SMTP(smtp_server, smtp_port) as server:
-                server.starttls()
+                current_app.logger.info("Connected to SMTP server")
+                server.starttls()  # Enable TLS encryption
+                current_app.logger.info("Started TLS")
+                
+                # Debug SMTP commands
+                server.set_debuglevel(1)
+                
                 server.login(email_user, email_password)
+                current_app.logger.info("Successfully logged in to SMTP server")
                 server.send_message(msg)
                 current_app.logger.info(f"Email sent successfully for {email_type}")
                 return True
         except smtplib.SMTPAuthenticationError as e:
             current_app.logger.error(f"Authentication error: {e}")
-            raise ValueError("Invalid email credentials. Please check your email and password.")
+            error_msg = (
+                "Invalid email credentials. Please ensure:\n"
+                "1. You've generated an App Password from your Gmail account\n"
+                "2. The App Password is correctly set in your .env file\n"
+                "3. Less secure app access is enabled if not using App Password\n"
+                "For more details, see: https://support.google.com/mail/?p=BadCredentials"
+            )
+            raise ValueError(error_msg)
         except smtplib.SMTPException as e:
             current_app.logger.error(f"SMTP error occurred: {e}")
             return False

@@ -1365,9 +1365,16 @@ def game(section='challenges'):
         current_app.logger.warning(f"Error populating weekly challenge set: {str(e)}")
         db.session.rollback()
     
-    if current_user.is_authenticated and current_user.is_first_visit_of_week():
-        create_user_weekly_order(current_user.id)
-        current_user.update_last_visit_week()
+    # Ensure user has a weekly order for this week
+    if current_user.is_authenticated:
+        from app.models import UserWeeklyOrder
+        current_week = get_current_week_info()
+        week_number = current_week['week_number']
+        year = current_week['year']
+        has_order = UserWeeklyOrder.query.filter_by(user_id=current_user.id, week_number=week_number, year=year).first()
+        if not has_order:
+            create_user_weekly_order(current_user.id)
+            current_user.update_last_visit_week()
     
     # In-Progress Challenges
     in_progress, active_count = ([], 0)
@@ -1556,6 +1563,44 @@ def game(section='challenges'):
                         'regenerate_time': None
                     })
     
+    # Only show weekly challenges not completed by the user this week, in user-specific order
+    user_challenge_ids_completed = set()
+    if current_user.is_authenticated:
+        from app.models import UserChallenge
+        completed = UserChallenge.query.filter_by(
+            user_id=current_user.id,
+            week_number=current_week['week_number'],
+            year=current_week['year'],
+            status='completed'
+        ).all()
+        user_challenge_ids_completed = {uc.challenge_id for uc in completed}
+
+    # Get user-specific order for the week
+    user_order = {'E': [], 'M': [], 'H': []}
+    if current_user.is_authenticated:
+        from app.models import UserWeeklyOrder
+        user_orders = UserWeeklyOrder.query.filter_by(
+            user_id=current_user.id,
+            week_number=current_week['week_number'],
+            year=current_week['year']
+        ).order_by(UserWeeklyOrder.difficulty, UserWeeklyOrder.order_position).all()
+        for uo in user_orders:
+            if uo.challenge_id not in user_challenge_ids_completed:
+                user_order[uo.difficulty].append(uo.challenge)
+
+    # Build display slots for each difficulty
+    display_slots = {'E': 4, 'M': 3, 'H': 2}
+    challenges_by_difficulty = {'E': [], 'M': [], 'H': []}
+    for diff, slots in display_slots.items():
+        added = 0
+        for ch in user_order[diff]:
+            if added < slots:
+                challenges_by_difficulty[diff].append({'challenge': ch, 'all_done': False, 'regenerate_at': None, 'regenerate_time': None})
+                added += 1
+        # Fill empty slots if needed
+        while len(challenges_by_difficulty[diff]) < slots:
+            challenges_by_difficulty[diff].append({'challenge': None, 'all_done': False, 'regenerate_at': None, 'regenerate_time': None})
+
     # Final context for template
     challenges = {
         'in_progress': in_progress,

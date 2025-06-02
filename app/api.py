@@ -23,7 +23,19 @@ def start_challenge(challenge_id):
         flash(f'You have reached your weekly limit for {challenge.difficulty} challenges', 'error')
         return redirect(url_for('main.game', section='challenges'))
     
-    # Check if challenge is already in progress
+    # Check if user already completed this challenge this week
+    completed_challenge = UserChallenge.query.filter_by(
+        user_id=current_user.id,
+        challenge_id=challenge_id,
+        week_number=current_week['week_number'],
+        year=current_week['year'],
+        status='completed'
+    ).first()
+    if completed_challenge:
+        flash('You have already completed this challenge this week.', 'error')
+        return redirect(url_for('main.game', section='challenges'))
+
+    # Check if challenge is already in progress (pending)
     existing_challenge = UserChallenge.query.filter_by(
         user_id=current_user.id,
         challenge_id=challenge_id,
@@ -31,7 +43,6 @@ def start_challenge(challenge_id):
         year=current_week['year'],
         status='pending'
     ).first()
-    
     if existing_challenge:
         flash('Challenge already in progress', 'info')
         return redirect(url_for('main.game', section='challenges'))
@@ -244,33 +255,26 @@ def abandon_challenge(challenge_id):
     # Mark as abandoned in the weekly system
     user_challenge.status = 'abandoned'
     
-    # SIMPLIFIED APPROACH: Delete and recreate the order entry to avoid unique constraints
-    # Get the current order entry
+    # Move the abandoned challenge to the end of the user's order for this difficulty
     order_entry = UserWeeklyOrder.query.filter_by(
         user_id=current_user.id,
         challenge_id=challenge_id,
         week_number=current_week['week_number'],
         year=current_week['year']
     ).first()
-    
     if order_entry:
-        # Get all order entries for this difficulty
+        # Get all entries for this user/week/difficulty, ordered
         all_entries = UserWeeklyOrder.query.filter_by(
             user_id=current_user.id,
             week_number=current_week['week_number'],
             year=current_week['year'],
-            difficulty=difficulty
+            difficulty=order_entry.difficulty
         ).order_by(UserWeeklyOrder.order_position).all()
-        
-        # Get the highest position number
-        highest_position = 0
-        for entry in all_entries:
-            if entry.order_position > highest_position:
-                highest_position = entry.order_position
-        
-        # Simply update the position to be at the end
-        order_entry.order_position = highest_position + 1
-        print(f'Moved abandoned challenge {challenge_id} to position {highest_position + 1} in {difficulty} rotation')
+        if all_entries:
+            max_position = max(e.order_position for e in all_entries)
+            order_entry.order_position = max_position + 1
+            db.session.commit()
+            # Optionally, re-normalize order_positions in the future if needed (not strictly necessary)
     
     # Commit changes
     try:

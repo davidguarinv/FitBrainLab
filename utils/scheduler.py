@@ -98,52 +98,57 @@ def populate_weekly_challenge_set():
     logger.info(f"Populated weekly challenge set for week {week_number}, year {year}")
 
 def create_user_weekly_order(user_id):
-    """Create a shuffled order of weekly challenges for a specific user.
-    
-    This function is called when a user first visits in a given week.
     """
-    # TODO: Re-enable this feature once implemented
-    logger.info(f"Weekly challenge ordering is temporarily disabled for user {user_id}")
-    return
-    
-    # TODO: Re-enable this feature once implemented
-    # Get weekly challenge set
-    # weekly_challenges = db.session.query(WeeklyChallengeSet, Challenge).join(
-    #     Challenge, WeeklyChallengeSet.challenge_id == Challenge.id
-    # ).filter(
-    #     WeeklyChallengeSet.week_number == week_number,
-    #     WeeklyChallengeSet.year == year
-    # ).all()
-    # 
-    # # Group challenges by difficulty
-    # challenges_by_difficulty = {
-    #     'E': [],
-    #     'M': [],
-    #     'H': []
-    # }
-    # 
-    # for wc, challenge in weekly_challenges:
-    #     challenges_by_difficulty[wc.difficulty].append(challenge)
-    # 
-    # # Shuffle each difficulty group
-    # for difficulty, challenges in challenges_by_difficulty.items():
-    #     random.shuffle(challenges)
-    #     
-    #     # Create order entries
-    #     for i, challenge in enumerate(challenges):
-    #         user_order = UserWeeklyOrder(
-    #             user_id=user_id,
-    #             week_number=week_number,
-    #             year=year,
-    #             challenge_id=challenge.id,
-    #             difficulty=difficulty,
-    #             order_position=i
-    #         )
-    #         db.session.add(user_order)
-    # 
-    # # Commit changes
-    # db.session.commit()
-    # logger.info(f"Created weekly challenge order for user {user_id}, week {week_number}, year {year}")
+    Create a shuffled order of weekly challenges for a specific user for the current week.
+    This is idempotent and will not create duplicates if called multiple times for the same user/week.
+    """
+    from app.models import WeeklyChallengeSet, UserWeeklyOrder, Challenge
+    from app import db
+    import random
+    logger = logging.getLogger(__name__)
+
+    current_week = get_current_week_info()
+    week_number = current_week['week_number']
+    year = current_week['year']
+
+    # Check if order already exists for this user/week
+    existing = UserWeeklyOrder.query.filter_by(
+        user_id=user_id,
+        week_number=week_number,
+        year=year
+    ).first()
+    if existing:
+        logger.info(f"UserWeeklyOrder already exists for user {user_id}, week {week_number}, year {year}")
+        return
+
+    # Get the weekly challenge set for this week
+    weekly_challenges = db.session.query(WeeklyChallengeSet, Challenge).join(
+        Challenge, WeeklyChallengeSet.challenge_id == Challenge.id
+    ).filter(
+        WeeklyChallengeSet.week_number == week_number,
+        WeeklyChallengeSet.year == year
+    ).all()
+
+    # Group challenges by difficulty
+    challenges_by_difficulty = {'E': [], 'M': [], 'H': []}
+    for wc, challenge in weekly_challenges:
+        challenges_by_difficulty[wc.difficulty].append(challenge)
+
+    # Shuffle and create order entries for each difficulty
+    for difficulty, challenges in challenges_by_difficulty.items():
+        random.shuffle(challenges)
+        for i, challenge in enumerate(challenges):
+            user_order = UserWeeklyOrder(
+                user_id=user_id,
+                week_number=week_number,
+                year=year,
+                challenge_id=challenge.id,
+                difficulty=difficulty,
+                order_position=i
+            )
+            db.session.add(user_order)
+    db.session.commit()
+    logger.info(f"Created weekly challenge order for user {user_id}, week {week_number}, year {year}")
 
 # Initialize scheduler functions
 def init_app(app):

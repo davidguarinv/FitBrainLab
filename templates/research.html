@@ -271,7 +271,7 @@
                 <img
                   src="{{ url_for('static', filename='images/social_gym.png') }}"
                   alt="The Social Gym Project"
-                  class="object-cover"
+                  class="object-cover w-full h-full"
                 />
               </div>
               <p class="text-sm text-gray-600 line-clamp-4">
@@ -280,6 +280,53 @@
             </div>
             <div class="flex items-center p-6 mt-auto">
               <a href="/research/social_gym" class="w-full">
+                <button class="inline-flex items-center justify-center rounded-lg text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-cyan-400 hover:to-blue-400 h-10 px-4 py-2 w-full group">
+                  View Project
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                  >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </button>
+              </a>
+            </div>
+          </div>
+
+          <!-- Synergistic Project Card -->
+          <div class="rounded-xl border border-cyan-400/30 bg-white/80 backdrop-blur-sm text-card-foreground shadow-lg hover:shadow-xl hover:border-cyan-300/50 transition-all duration-300 group flex flex-col h-full">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                <h3 class="text-xl font-semibold group-hover:text-cyan-600 transition-colors">
+                  Synergistic effects of voluntary wheel running and immunotherapy on tumor growth and brain function
+                </h3>
+              </div>
+              <p class="text-sm text-gray-500">How movement and medicine shape tumor suppression and brain health</p>
+            </div>
+            <div class="p-6 flex-1">
+              <div class="relative h-40 w-full mb-4 rounded-lg overflow-hidden">
+                <img
+                  src="{{ url_for('static', filename='images/synergistic.png') }}"
+                  alt="Synergistic Effects Project"
+                  class="object-cover w-full h-full"
+                />
+              </div>
+              <p class="text-sm text-gray-600 line-clamp-4">
+                Investigating the combined effects of voluntary wheel running and immunotherapy on tumor growth and brain function.
+              </p>
+            </div>
+            <div class="flex items-center p-6 mt-auto">
+              <a href="/research/synergistic" class="w-full">
                 <button class="inline-flex items-center justify-center rounded-lg text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-cyan-400 hover:to-blue-400 h-10 px-4 py-2 w-full group">
                   View Project
                   <svg

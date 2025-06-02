@@ -172,110 +172,51 @@ def submit_application():
 def submit_community():
     """Handle community form submission"""
     try:
-        # Get all form data
-        form_data = request.form.to_dict()
-        logger.debug(f"Processed form data: {form_data}")
-        
-# All fields are optional, use get() with default empty string
-        form_data = request.form.to_dict()
-        logger.debug(f"Processed form data: {form_data}")
-        
-        # Store submission temporarily
-        temp_submissions_file = os.path.join(current_app.static_folder, 'temp_submissions.json')
-        
-        # Load existing submissions
-        temp_submissions = {}
-        if os.path.exists(temp_submissions_file):
-            try:
-                with open(temp_submissions_file, 'r') as f:
-                    temp_submissions = json.load(f)
-            except json.JSONDecodeError:
-                current_app.logger.warning(f"Could not parse JSON from {temp_submissions_file}")
-                temp_submissions = {}
-        else:
-            # Create empty file if it doesn't exist
-            try:
-                os.makedirs(os.path.dirname(temp_submissions_file), exist_ok=True)
-                with open(temp_submissions_file, 'w') as f:
-                    json.dump({}, f)
-                current_app.logger.info(f"Created empty temp_submissions.json file")
-            except Exception as e:
-                current_app.logger.error(f"Failed to create temp_submissions.json: {e}")
-                return jsonify({
-                    'success': False,
-                    'message': 'Failed to create temporary submissions file. Please try again.'
-                }), 500
-        
-        # Generate unique submission ID
-        submission_id = str(uuid.uuid4())
-        logger.debug(f"Generated submission ID: {submission_id}")
-        
-        # Store submission temporarily
-        temp_submissions_file = os.path.join(current_app.static_folder, 'temp_submissions.json')
-        
-        # Load existing submissions
-        temp_submissions = {}
-        if os.path.exists(temp_submissions_file):
-            try:
-                with open(temp_submissions_file, 'r') as f:
-                    temp_submissions = json.load(f)
-            except json.JSONDecodeError:
-                current_app.logger.warning(f"Could not parse JSON from {temp_submissions_file}")
-                temp_submissions = {}
-
-        # Add new submission
-        temp_submissions[submission_id] = {
-            'data': form_data,
-            'timestamp': datetime.now().isoformat(),
-            'status': 'pending'
-        }
-
-        # Add submission_id to form_data before saving
-        form_data['submission_id'] = submission_id
-
-        # Save updated submissions
-        try:
-            with open(temp_submissions_file, 'w') as f:
-                json.dump(temp_submissions, f, indent=2)
-        except Exception as e:
-            current_app.logger.error(f"Error saving submissions: {e}")
+        # Validate email configuration
+        if not current_app.config.get('EMAIL_USER'):
             return jsonify({
                 'success': False,
-                'message': 'Failed to save submission. Please try again.'
+                'message': 'Email configuration is not set up. Please contact the administrator.'
             }), 500
-
-        # Send confirmation email if email configuration is available
-        try:
-            if current_app.config.get('SMTP_SERVER') and current_app.config.get('EMAIL_USER'):
-                # Get base URL from config or use current request host
-                base_url = current_app.config.get('BASE_URL', request.host_url.rstrip('/'))
-                
-                # Generate confirmation URLs manually
-                confirm_url = f"{base_url}/confirm-community/{submission_id}/accept"
-                reject_url = f"{base_url}/confirm-community/{submission_id}/reject"
-                
-                # Add confirmation URLs to form data
-                form_data['confirm_url'] = confirm_url
-                form_data['reject_url'] = reject_url
-                
-                # Send email with confirmation links
-                if not send_email(form_data, email_type='community_submission'):
-                    current_app.logger.error("Failed to send confirmation email")
-                    flash('An error occurred sending the confirmation email. Please try again.', 'error')
-                    return redirect(url_for('main.communities'))
-                flash('Thank you! Please check your email for confirmation.', 'success')
-            else:
-                flash('Thank you! Your submission has been received.', 'success')
-        except Exception as e:
-            current_app.logger.error(f"Error sending confirmation email: {e}")
-            flash('Thank you! Your submission has been received.', 'success')
-
-        return redirect(url_for('main.communities'))
+            
+        # Get form data
+        form_data = {
+            'Name': request.form.get('Name'),
+            'email': request.form.get('email'),
+            'Address': request.form.get('Address'),
+            'Sport': request.form.get('Sport'),
+            'website': request.form.get('website'),
+            'image_url': request.form.get('image_url'),
+            'Cost': request.form.get('Cost'),
+            'Int/Dutch': request.form.get('Int/Dutch'),
+            'Student-based': request.form.get('Student-based')
+        }
+        
+        # Validate required fields
+        required_fields = ['Name', 'email', 'Sport']
+        for field in required_fields:
+            if not form_data.get(field):
+                return jsonify({
+                    'success': False, 
+                    'message': f'{field.replace("_", " ").title()} is required'
+                }), 400
+        
+        # Send email
+        if send_email(form_data, 'community_submission'):
+            return jsonify({
+                'success': True, 
+                'message': 'Community submission received successfully!'
+            })
+        else:
+            return jsonify({
+                'success': False, 
+                'message': 'Failed to send submission. Please try again.'
+            }), 500
             
     except Exception as e:
         current_app.logger.error(f"Error processing community submission: {e}")
         return jsonify({
-            'success': False,
+            'success': False, 
             'message': 'An error occurred. Please try again.'
         }), 500
 

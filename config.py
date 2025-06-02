@@ -12,6 +12,13 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-change-in-production'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
+    # Email configuration
+    EMAIL_USER = os.environ.get('EMAIL_USER')
+    EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+    RECIPIENT_EMAIL = os.environ.get('RECIPIENT_EMAIL')
+    SMTP_SERVER = os.environ.get('SMTP_SERVER')
+    SMTP_PORT = int(os.environ.get('SMTP_PORT', 587))
+    
     # Dynamic database configuration based on environment
     ENV = os.environ.get('FLASK_ENV', 'development')
     

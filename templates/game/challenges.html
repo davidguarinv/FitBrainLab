@@ -6,7 +6,7 @@
         {% for difficulty in ['E', 'M', 'H'] %}
             {% for slot in challenges[difficulty] %}
                 {% if slot.challenge and slot.challenge.id == active_id %}
-                    <div class="bg-white rounded-2xl shadow-sm p-6 border-l-4 border-orange-500">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-orange-500 hover:shadow-xl transition-shadow">
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <h2 class="text-2xl font-bold">{{ slot.challenge.title }}</h2>
@@ -20,11 +20,11 @@
                             <span class="text-primary font-medium">{{ slot.challenge.points }} points</span>
                             <div class="space-x-4">
                                 <form id="complete-challenge-form-{{ slot.challenge.id }}" action="{{ url_for('main.complete_challenge', challenge_id=slot.challenge.id) }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-md hover:bg-orange-600 transition-colors">
+                                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-medium rounded-md hover:from-orange-600 hover:to-red-600 transition-all shadow-md hover:shadow-lg">
                                         Complete Challenge
                                     </button>
                                 </form>
-                                <button type="button" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-orange-100 transition-colors abandon-btn" data-challenge-id="{{ slot.challenge.id }}">
+                                <button type="button" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-orange-100 hover:text-orange-700 transition-all shadow-sm hover:shadow abandon-btn" data-challenge-id="{{ slot.challenge.id }}">
                                     Abandon
                                 </button>
                             </div>
@@ -37,14 +37,14 @@
 
     <!-- Friend Tokens Info -->
     {% if current_user.is_authenticated and friend_tokens_left is not none %}
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-md p-5 mb-6 border-l-4 border-blue-500 relative overflow-hidden">
+    <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl shadow-md p-5 mb-6 border-l-4 border-orange-500 relative overflow-hidden">
         <!-- Decorative elements -->
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-200 rounded-full opacity-20"></div>
-        <div class="absolute -left-6 -bottom-6 w-20 h-20 bg-indigo-200 rounded-full opacity-20"></div>
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-orange-200 rounded-full opacity-20"></div>
+        <div class="absolute -left-6 -bottom-6 w-20 h-20 bg-amber-200 rounded-full opacity-20"></div>
         
         <div class="flex justify-between items-center relative z-10">
             <div>
-                <h3 class="text-lg font-bold text-blue-800">Friend Tokens</h3>
+                <h3 class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600">Friend Tokens</h3>
                 <p class="text-sm text-gray-600">Complete challenges with friends for 1.5x bonus points</p>
             </div>
             <div class="flex items-center space-x-2">
@@ -72,9 +72,9 @@
 
     <!-- In Progress Challenges -->
     {% if challenges['in_progress'] is defined %}
-    <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 border-l-4 border-orange-500">
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6 border-l-4 border-orange-500">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold">In Progress Challenges ({{ challenges['in_progress']|length }}/2)</h3>
+            <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">In Progress Challenges ({{ challenges['in_progress']|length }}/2)</h3>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {% for challenge in challenges['in_progress'] %}
@@ -88,10 +88,10 @@
                     <p class="text-sm text-gray-600 mb-2">{{ challenge.description }}</p>
                     
                     {% if friend_linked_challenges and challenge.id in friend_linked_challenges %}
-                    <div class="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-md p-3 mb-4 border border-blue-300 shadow-inner relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-orange-100 to-amber-100 rounded-md p-3 mb-4 border border-orange-300 shadow-inner relative overflow-hidden">
                         <!-- Decorative elements -->
-                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-200 rounded-full opacity-30"></div>
-                        <div class="absolute -left-4 -bottom-4 w-12 h-12 bg-indigo-200 rounded-full opacity-30"></div>
+                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-orange-200 rounded-full opacity-30"></div>
+                        <div class="absolute -left-4 -bottom-4 w-12 h-12 bg-amber-200 rounded-full opacity-30"></div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 text-blue-600">

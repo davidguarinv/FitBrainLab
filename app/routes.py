@@ -10,7 +10,7 @@ from . import db
 from .models import User, Challenge, CompletedChallenge, UserChallenge, \
     ChallengeRegeneration, WeeklyChallengeSet, FriendChallengeLink, \
     FriendTokenUsage, FunFact, Notification, WeeklyHabitChallenge, \
-    UserWeeklyOrder, ChallengeOfTheWeek
+    UserWeeklyOrder, ChallengeOfTheWeek, UserAchievement, WeeklyLeaderboardReward
 from .forms import LoginForm, RegistrationForm
 from .email_handler import send_email
 import logging
@@ -785,6 +785,79 @@ def update_profile_form():
         db.session.commit()
         flash('Profile updated successfully!', 'success')
     return redirect(url_for('main.game', section='profile'))
+
+# Delete Account Route
+@bp.route('/delete_account', methods=['POST'])
+@login_required
+def delete_account():
+    """Delete the current user's account."""
+    # Ensure this is a direct POST to this endpoint, not a form submission to another endpoint
+    if request.endpoint != 'main.delete_account':
+        flash('Invalid request to delete account', 'error')
+        return redirect(url_for('main.game', section='profile'))
+        
+    try:
+        # Print debug info
+        print(f"Deleting account for user ID: {current_user.id}, username: {current_user.username}")
+        
+        # Get the user to delete
+        user = User.query.get(current_user.id)
+        if not user:
+            flash('User not found', 'error')
+            return redirect(url_for('main.game', section='profile'))
+        
+        # Delete related records first (to avoid foreign key constraints)
+        # We need to delete in the correct order to avoid constraint violations
+        
+        # Delete notifications
+        Notification.query.filter_by(user_id=user.id).delete()
+        
+        # Delete weekly leaderboard rewards
+        WeeklyLeaderboardReward.query.filter_by(user_id=user.id).delete()
+        
+        # Delete challenge of the week entries
+        ChallengeOfTheWeek.query.filter_by(user_id=user.id).delete()
+        
+        # Delete friend token usage
+        FriendTokenUsage.query.filter_by(user_id=user.id).delete()
+        
+        # Delete user achievements
+        UserAchievement.query.filter_by(user_id=user.id).delete()
+        
+        # Delete weekly habit challenges
+        WeeklyHabitChallenge.query.filter_by(user_id=user.id).delete()
+        
+        # Delete user challenges
+        UserChallenge.query.filter_by(user_id=user.id).delete()
+        
+        # Delete user weekly order entries
+        UserWeeklyOrder.query.filter_by(user_id=user.id).delete()
+        
+        # Delete challenge regeneration entries
+        ChallengeRegeneration.query.filter_by(user_id=user.id).delete()
+        
+        # Delete completed challenges
+        CompletedChallenge.query.filter_by(user_id=user.id).delete()
+        
+        # Handle friend challenge links (both as user1 and user2)
+        FriendChallengeLink.query.filter((FriendChallengeLink.user1_id == user.id) | 
+                                       (FriendChallengeLink.user2_id == user.id)).delete()
+        
+        # Finally delete the user
+        db.session.delete(user)
+        db.session.commit()
+        
+        # Log the user out
+        logout_user()
+        flash('Your account has been deleted successfully.', 'success')
+        return redirect(url_for('main.index'))
+    except Exception as e:
+        db.session.rollback()
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Error deleting account: {str(e)}\n{error_details}")
+        flash(f'Error deleting account: {str(e)}', 'error')
+        return redirect(url_for('main.game', section='profile'))
 
 # Auth Route for Login and Signup
 @bp.route('/auth', methods=['GET', 'POST'])

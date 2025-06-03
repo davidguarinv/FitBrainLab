@@ -1,4 +1,25 @@
-/* Progress bar styling */
+/* Progress bar styling with orange theme */
 .progress-bar {
   width: var(--progress-width, 0%);
+  background: linear-gradient(to right, #f97316, #ef4444);
+  transition: width 0.5s ease-in-out;
+  box-shadow: 0 1px 2px rgba(249, 115, 22, 0.3);
+}
+
+/* Add animation for progress bars */
+@keyframes progress-pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+/* Apply animation to progress bars that are in progress */
+.progress-bar[data-width^="1"], .progress-bar[data-width^="2"], .progress-bar[data-width^="3"], .progress-bar[data-width^="4"], .progress-bar[data-width^="5"], .progress-bar[data-width^="6"], .progress-bar[data-width^="7"], .progress-bar[data-width^="8"], .progress-bar[data-width^="9"] {
+  animation: progress-pulse 2s infinite;
+}
+
+/* Completed progress bar (100%) */
+.progress-bar[data-width="100"] {
+  background: linear-gradient(to right, #f97316, #ef4444);
+  box-shadow: 0 1px 3px rgba(249, 115, 22, 0.5);
 }

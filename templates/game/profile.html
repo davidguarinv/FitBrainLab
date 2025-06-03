@@ -2,10 +2,10 @@
 {% if current_user.is_authenticated %}
 <div class="space-y-8">
     <!-- Profile Overview -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
+    <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
         <div class="flex items-start justify-between mb-6">
             <div class="flex items-center space-x-4">
-                <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-2xl font-bold text-blue-600 shadow-md">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-orange-100 to-amber-200 flex items-center justify-center text-2xl font-bold text-orange-600 shadow-md border border-orange-200">
                     {% if current_user.top_sport_category %}
                         {% set category_slug = current_user.top_sport_category|replace(' & ', '-')|replace(' ', '-')|lower %}
                         <img src="{{ url_for('static', filename='icons/sports/' + category_slug + '.svg') }}" alt="{{ current_user.top_sport_category }}" class="w-10 h-10">
@@ -14,38 +14,38 @@
                     {% endif %}
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold">{{ current_user.username }}</h2>
+                    <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">{{ current_user.username }}</h2>
                     <p class="text-gray-600">Member since {{ current_user.created_at.strftime('%B %Y') }}</p>
                 </div>
             </div>
             <button onclick="toggleProfileVisibility();"
-                    class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-orange-100 transition-colors">
+                    class="px-4 py-2 bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 text-sm font-medium rounded-md hover:bg-gradient-to-r hover:from-orange-200 hover:to-amber-200 transition-colors shadow-sm">
                 {{ 'Make Progress Private' if current_user.is_public else 'Make Progress Public' }}
             </button>
         </div>
 
         <!-- Stats Overview -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="bg-gradient-to-b from-white to-orange-50 rounded-lg p-4 text-center shadow-md border border-orange-100">
                 <h3 class="text-sm font-medium text-gray-600">Total Points</h3>
-                <p class="text-2xl font-bold text-primary">{{ user_progress.total_points }}</p>
+                <p class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">{{ user_progress.total_points }}</p>
             </div>
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="bg-gradient-to-b from-white to-orange-50 rounded-lg p-4 text-center shadow-md border border-orange-100">
                 <h3 class="text-sm font-medium text-gray-600">Rank</h3>
-                <p class="text-2xl font-bold text-primary">#{{ user_progress.rank }}</p>
+                <p class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">#{{ user_progress.rank }}</p>
             </div>
         </div>
 
         <!-- User Codes Section - Only shown if codes are available -->
         {% if current_user.backup_code or current_user.personal_code %}
-        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h3 class="text-lg font-semibold mb-3">Your Unique Codes</h3>
+        <div class="mb-6 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg shadow-sm border border-orange-100">
+            <h3 class="text-lg font-semibold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">Your Unique Codes</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Personal Code -->
-                <div class="border border-gray-200 rounded-md p-3">
+                <div class="border border-orange-200 rounded-md p-3 bg-white shadow-sm">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700">Personal Code</span>
-                        <button onclick="copyToClipboard('personal-code')" class="text-primary text-sm hover:text-primary-dark">
+                        <span class="text-sm font-medium text-orange-700">Personal Code</span>
+                        <button onclick="copyToClipboard('personal-code')" class="text-orange-500 text-sm hover:text-orange-700">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                             Copy
                         </button>
@@ -57,10 +57,10 @@
                 </div>
                 
                 <!-- Backup Code -->
-                <div class="border border-gray-200 rounded-md p-3">
+                <div class="border border-orange-200 rounded-md p-3 bg-white shadow-sm">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700">Backup Code</span>
-                        <button onclick="copyToClipboard('backup-code')" class="text-primary text-sm hover:text-primary-dark">
+                        <span class="text-sm font-medium text-orange-700">Backup Code</span>
+                        <button onclick="copyToClipboard('backup-code')" class="text-orange-500 text-sm hover:text-orange-700">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                             Copy
                         </button>
@@ -82,12 +82,12 @@
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
                 <input type="text" id="username" name="username" readonly="readonly" value="{{ current_user.username }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
             </div>
             <div>
                 <label for="top_sport_category" class="block text-sm font-medium text-gray-700">Sport Category</label>
                 <select id="top_sport_category" name="top_sport_category"
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
                     <option value="" {% if not current_user.top_sport_category %}selected{% endif %}>Select a category</option>
                     <option value="Endurance" {% if current_user.top_sport_category == 'Endurance' %}selected{% endif %}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
@@ -141,19 +141,26 @@
             </div>
             <div class="pt-4 flex flex-wrap gap-3">
                 <button type="submit"
-                        class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition-colors">
+                        class="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-medium rounded-md hover:from-orange-600 hover:to-red-600 transition-colors shadow-md">
                     Save Changes
                 </button>
                 <a href="{{ url_for('main.logout') }}"
-                   class="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-300 transition-colors">
+                   class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-orange-100 transition-colors shadow-sm">
                     Logout
                 </a>
-                <button type="button" onclick="confirmDeleteAccount()"
-                        class="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 transition-colors">
-                    Delete Account
-                </button>
             </div>
         </form>
+        
+        <!-- Separate Delete Account Form -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
+            <h3 class="text-lg font-medium text-red-600 mb-3">Danger Zone</h3>
+            <form method="POST" action="{{ url_for('main.delete_account') }}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.')">
+                <button type="submit"
+                    class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-medium rounded-md hover:from-red-600 hover:to-red-700 transition-colors shadow-md">
+                    Delete Account
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 {% endif %}
@@ -211,22 +218,5 @@ function toggleProfileVisibility() {
     });
 }
 
-function confirmDeleteAccount() {
-    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-        fetch('/api/profile/delete-account', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = '/';
-            } else {
-                alert(data.message);
-            }
-        });
-    }
-}
+
 </script>

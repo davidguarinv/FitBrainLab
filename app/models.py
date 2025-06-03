@@ -11,6 +11,9 @@ from . import db
 # -------------------------
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
+    
+    # Define weekly challenge caps as a class variable for consistent access
+    WEEKLY_CHALLENGE_CAPS = {'E': 9, 'M': 6, 'H': 3}
 
     id = db.Column(db.Integer, primary_key=True)  # Primary key
     username = db.Column(db.String(64), unique=True, nullable=False)  # Unique username
@@ -167,8 +170,8 @@ class User(UserMixin, db.Model):
         import logging
         logger = logging.getLogger(__name__)
         
-        # Define weekly caps by difficulty
-        weekly_caps = {'E': 4, 'M': 3, 'H': 2}
+        # Use the class variable for weekly caps
+        weekly_caps = self.WEEKLY_CHALLENGE_CAPS
         
         # Get current week info
         current_week = get_current_week_info()

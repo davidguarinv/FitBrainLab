@@ -691,18 +691,52 @@ def abandon_challenge(challenge_id):
 @bp.route('/api/challenges/<int:challenge_id>/start', methods=['POST'])
 @login_required
 def start_challenge(challenge_id):
-    """Mark a challenge as in-progress (pending), enforcing the 2-slot limit."""
+    """Mark a challenge as in-progress (pending), enforcing limits on challenges per week and per difficulty."""
     try:
+        # Get the challenge to check its difficulty
+        challenge = Challenge.query.get(challenge_id)
+        if not challenge:
+            flash('Challenge not found. Please try a different challenge.', 'error')
+            return redirect(url_for('main.game', section='challenges'))
+            
+        difficulty = challenge.difficulty
+        
+        # Check if user has reached their weekly limit for this difficulty
+        weekly_challenge_counts = current_user.get_weekly_challenge_counts()
+        weekly_challenge_caps = User.WEEKLY_CHALLENGE_CAPS  # Use the class variable
+        
+        if weekly_challenge_counts[difficulty] >= weekly_challenge_caps[difficulty]:
+            flash(f'You have reached your weekly limit for {difficulty} challenges!', 'warning')
+            return redirect(url_for('main.game', section='challenges'))
+        
+        # Get current week info
         week = get_current_week_info()
+        
+        # Get in-progress challenges
         in_prog, count = get_in_progress_challenges(
             current_user.id,
             week['week_number'],
             week['year']
         )
+        
+        # Check if user already has 2 challenges in progress
         if count >= 2:
             flash('You already have 2 challenges in progress!', 'warning')
             return redirect(url_for('main.game', section='challenges'))
+        
+        # Check if user already has a challenge of this difficulty in progress
+        # when they only have 1 challenge left for the week
+        in_progress_of_same_difficulty = 0
+        for challenge_in_prog in in_prog:
+            if Challenge.query.get(challenge_in_prog.challenge_id).difficulty == difficulty:
+                in_progress_of_same_difficulty += 1
+        
+        remaining_challenges = weekly_challenge_caps[difficulty] - weekly_challenge_counts[difficulty]
+        if in_progress_of_same_difficulty > 0 and remaining_challenges <= 1:
+            flash(f'You can\'t have two {difficulty} challenges in progress when you only have {remaining_challenges} left for the week!', 'warning')
+            return redirect(url_for('main.game', section='challenges'))
 
+        # Check if challenge is already in progress
         uc = UserChallenge.query.filter_by(
             user_id=current_user.id,
             challenge_id=challenge_id,
@@ -1690,11 +1724,8 @@ def game(section='leaderboard'):
         db.session.expire_all()
         friend_tokens_left = get_friend_tokens_left(current_user)
         weekly_challenge_counts = current_user.get_weekly_challenge_counts()
-        weekly_challenge_caps = {
-            'E': current_user.weekly_e_cap,
-            'M': current_user.weekly_m_cap,
-            'H': current_user.weekly_h_cap
-        }
+        # Use the centralized weekly challenge caps
+        weekly_challenge_caps = User.WEEKLY_CHALLENGE_CAPS
     
     # Check for new achievements in the session
     new_achievements = session.pop('new_achievements', None)

@@ -204,25 +204,34 @@
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h3 class="text-xl font-bold">Easy Challenges</h3>
-                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                    <!-- TODO: Re-enable this feature once implemented -->
+                    <!-- {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
                         <p class="text-sm text-gray-600">{{ weekly_challenge_counts.E }}/{{ weekly_challenge_caps.E }} completed this week</p>
-                    {% endif %}
+                    {% endif %} -->
                 </div>
                 <div class="flex items-center space-x-2">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         E
                     </span>
-                    <!-- TODO: Re-enable this feature once implemented -->
-                    <!-- {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
+                    {% if current_user.is_authenticated and weekly_challenge_counts is not none and weekly_challenge_caps is not none %}
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800' if weekly_challenge_counts.E < weekly_challenge_caps.E else 'bg-gray-100 text-gray-800' }}">
                             {{ weekly_challenge_caps.E - weekly_challenge_counts.E }} left
                         </span>
-                    {% endif %} -->
+                    {% endif %}
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges['E'] %}
-                    {% if slot.all_done %}
+                    {% if weekly_challenge_counts is not none and weekly_challenge_caps is not none and weekly_challenge_counts.E >= weekly_challenge_caps.E %}
+                        <div class="border rounded-lg p-4 bg-green-50 border-green-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-medium text-green-700">Weekly Limit Reached</h4>
+                                    <p class="text-xs text-gray-500 mt-1">You've completed your weekly Easy challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif slot.all_done %}
                         <!-- All done for the week -->
                         <div class="border rounded-lg p-4 bg-green-50 border-green-200">
                             <div class="flex justify-between items-center">
@@ -286,7 +295,16 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges['M'] %}
-                    {% if slot.all_done %}
+                    {% if weekly_challenge_counts is not none and weekly_challenge_caps is not none and weekly_challenge_counts.M >= weekly_challenge_caps.M %}
+                        <div class="border rounded-lg p-4 bg-green-50 border-green-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-medium text-green-700">Weekly Limit Reached</h4>
+                                    <p class="text-xs text-gray-500 mt-1">You've completed your weekly Medium challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif slot.all_done %}
                         <div class="border rounded-lg p-4 bg-green-50 border-green-200">
                             <div class="flex justify-between items-center">
                                 <div>
@@ -348,7 +366,16 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for slot in challenges['H'] %}
-                    {% if slot.all_done %}
+                    {% if weekly_challenge_counts is not none and weekly_challenge_caps is not none and weekly_challenge_counts.H >= weekly_challenge_caps.H %}
+                        <div class="border rounded-lg p-4 bg-green-50 border-green-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-medium text-green-700">Weekly Limit Reached</h4>
+                                    <p class="text-xs text-gray-500 mt-1">You've completed your weekly Hard challenges</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif slot.all_done %}
                         <div class="border rounded-lg p-4 bg-green-50 border-green-200">
                             <div class="flex justify-between items-center">
                                 <div>

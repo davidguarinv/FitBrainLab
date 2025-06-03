@@ -37,6 +37,10 @@ def create_app(config_class=Config):
     # Register blueprints
     from .routes import bp as main_bp
     app.register_blueprint(main_bp, url_prefix='')
+    
+    # Register API blueprint
+    from .api import bp as api_bp
+    app.register_blueprint(api_bp)
 
     # Check if database is disabled
     disable_db = app.config.get('SQLALCHEMY_DATABASE_URI') is None or \

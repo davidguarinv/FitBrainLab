@@ -24,11 +24,9 @@
                                         Complete Challenge
                                     </button>
                                 </form>
-                                <form action="{{ url_for('main.abandon_challenge', challenge_id=slot.challenge.id) }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-orange-100 transition-colors">
-                                        Abandon
-                                    </button>
-                                </form>
+                                <button type="button" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-orange-100 transition-colors abandon-btn" data-challenge-id="{{ slot.challenge.id }}">
+                                    Abandon
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -418,4 +416,54 @@ function completeChallenge(challengeId) {
     document.body.appendChild(form);
     form.submit();
 }
+
+// Function to abandon a challenge via AJAX
+function abandonChallenge(challengeId) {
+    // Create a fetch request instead of form submission
+    fetch('/api/challenges/' + challengeId + '/abandon', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Show success message
+        if (typeof showToast === 'function') {
+            showToast('Challenge abandoned successfully', 'success');
+        } else {
+            alert('Challenge abandoned successfully');
+        }
+        // Reload the page to show updated challenges
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        if (typeof showToast === 'function') {
+            showToast('Error abandoning challenge', 'error');
+        } else {
+            alert('Error abandoning challenge');
+        }
+    });
+}
+
+// Add event listeners for abandon buttons when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Attach click handlers to all abandon buttons
+    document.querySelectorAll('.abandon-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const challengeId = this.getAttribute('data-challenge-id');
+            if (challengeId) {
+                abandonChallenge(challengeId);
+            }
+        });
+    });
+});
 </script>

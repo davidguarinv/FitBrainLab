@@ -582,11 +582,36 @@ def complete_challenge(challenge_id):
         flash('Error completing challenge.', 'error')
         return redirect(url_for('main.game', section='challenges'))
 
-@bp.route('/api/challenges/<int:challenge_id>/abandon', methods=['POST'])
+@bp.route('/challenges/<int:challenge_id>/abandon', methods=['POST'])
 @login_required
 def abandon_challenge(challenge_id):
+    from flask import request, jsonify
+    
+    success = False
+    message = ''
+    
     try:
-        uc = UserChallenge.query.filter_by(user_id=current_user.id, challenge_id=challenge_id, status='pending').first_or_404()
+        # Get current week info
+        from utils.scheduler import get_current_week_info
+        current_week = get_current_week_info()
+        
+        # Find the user challenge
+        uc = UserChallenge.query.filter_by(
+            user_id=current_user.id, 
+            challenge_id=challenge_id, 
+            status='pending',
+            week_number=current_week['week_number'],
+            year=current_week['year']
+        ).first()
+        
+        if not uc:
+            message = 'Challenge not found or not in progress'
+            flash(message, 'error')
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': message})
+            return redirect(url_for('main.game', section='challenges'))
+            
+        # Mark as abandoned
         uc.status = 'abandoned'
         
         # Check if this is a friend-linked challenge
@@ -597,6 +622,33 @@ def abandon_challenge(challenge_id):
             (FriendChallengeLink.expired == False)
         ).first()
         
+        # Get the challenge details
+        challenge = Challenge.query.get_or_404(challenge_id)
+        
+        # Find the order entry for this challenge
+        order_entry = UserWeeklyOrder.query.filter_by(
+            user_id=current_user.id,
+            challenge_id=challenge_id,
+            week_number=current_week['week_number'],
+            year=current_week['year']
+        ).first()
+        
+        if order_entry:
+            # Get all entries for this user/week/difficulty, ordered
+            all_entries = UserWeeklyOrder.query.filter_by(
+                user_id=current_user.id,
+                week_number=current_week['week_number'],
+                year=current_week['year'],
+                difficulty=order_entry.difficulty
+            ).order_by(UserWeeklyOrder.order_position).all()
+            
+            if all_entries:
+                # Get the maximum position in the queue
+                max_position = max(e.order_position for e in all_entries)
+                
+                # Move the abandoned challenge to the end of the queue (one position after the current max)
+                order_entry.order_position = max_position + 1
+        
         if friend_link:
             # Mark the link as expired so it doesn't show up as a friend challenge anymore
             friend_link.expired = True
@@ -606,18 +658,33 @@ def abandon_challenge(challenge_id):
             friend = User.query.get(friend_id)
             
             if friend:
-                flash(f'Friend challenge with {friend.username} has been abandoned.', 'info')
+                message = f'Friend challenge with {friend.username} has been abandoned. It will now appear at the end of the rotation for this week.'
             else:
-                flash('Friend challenge has been abandoned.', 'info')
+                message = 'Friend challenge has been abandoned. It will now appear at the end of the rotation for this week.'
         else:
-            flash('Challenge abandoned.', 'info')
+            message = 'Challenge abandoned. It will now appear at the end of the rotation for this week.'
             
+        flash(message, 'info')
+        success = True
+            
+        # Commit all changes in a single transaction
         db.session.commit()
+        
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(f"Error abandoning challenge: {str(e)}")
-        flash('Error abandoning challenge.', 'error')
+        message = 'Error abandoning challenge.'
+        flash(message, 'error')
+        success = False
 
+    # Handle AJAX requests differently than regular form submissions
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({
+            'success': success,
+            'message': message,
+            'redirect': url_for('main.game', section='challenges') if success else None
+        })
+    
     return redirect(url_for('main.game', section='challenges'))
 
 # API endpoint to start (add to in-progress) a challenge

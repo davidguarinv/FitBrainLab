@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Fit Quest - Fit Brain Lab{% endblock %}
 {% block content %}
-<main class="flex-1 min-h-screen">
+<main class="flex-1 min-h-screen overflow-x-hidden">
     <!-- Hero Section -->
     <section class="w-full py-12 md:py-24 lg:py-32 relative overflow-hidden">
         <!-- Animated Background -->
@@ -34,8 +34,8 @@
     </section>
 
     <!-- Game Content -->
-    <section class="w-full py-12 md:py-24 bg-gradient-to-b from-slate-50 to-white">
-        <div class="container mx-auto px-4 md:px-6">
+    <section class="w-full py-12 md:py-24 bg-gradient-to-b from-slate-50 to-white overflow-x-hidden">
+        <div class="container mx-auto px-4 md:px-6 max-w-full">
             <!-- Flash Messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -51,7 +51,7 @@
             
     <!-- Navigation Tabs with Alpine.js - Simple tab switching without URL changes -->
     <div x-data="{ activeTab: '{{ section }}' }">
-        <nav class="flex space-x-4 mb-8 border-b border-orange-200/50">
+        <nav class="flex flex-wrap gap-2 mb-8 border-b border-orange-200/50 w-full overflow-hidden">
             <button @click="activeTab = 'leaderboard'"
                class="px-3 py-2 text-sm font-medium rounded-md"
                :class="{'text-orange-500 border-b-2 border-orange-500': activeTab === 'leaderboard', 'text-gray-500 hover:text-orange-600': activeTab !== 'leaderboard'}">Leaderboard</button>
@@ -73,7 +73,7 @@
         </nav>
 
     <!-- Content Sections -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 w-full">
         <!-- Main Content Area -->
         <div class="lg:col-span-2">
             <!-- Auth Section -->

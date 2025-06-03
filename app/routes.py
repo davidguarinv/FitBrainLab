@@ -422,6 +422,12 @@ def stayfine(): return render_template('research/stay_fine.html')
 @bp.route('/research/stride4')
 def stride4(): return render_template('research/stride-4.html')
 
+@bp.route('/research/social_gym')
+def social_gym(): return render_template('research/social_gym.html')
+
+@bp.route('/research/synergistic')
+def synergistic(): return render_template('research/synergistic.html')
+
 @bp.route('/research/brain_adaptations')
 def brain_adaptations(): return render_template('research/brain_adaptations.html')
 

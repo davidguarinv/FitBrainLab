@@ -545,6 +545,22 @@ def complete_challenge(challenge_id):
         if fun_fact:
             fun_fact.times_shown += 1
             fun_fact.last_shown = datetime.utcnow()
+        
+        # Check for new achievements
+        from app.models import UserAchievement, Achievement
+        newly_earned_achievements = UserAchievement.check_achievements(current_user.id)
+        
+        # Get full achievement details for any newly earned achievements
+        new_achievements_data = []
+        for achievement_info in newly_earned_achievements:
+            achievement = Achievement.query.filter_by(name=achievement_info['name']).first()
+            if achievement:
+                new_achievements_data.append({
+                    'name': achievement.name,
+                    'message': achievement.message,
+                    'icon_type': achievement.icon_type,
+                    'condition': achievement.condition
+                })
             
         db.session.commit()
         
@@ -554,6 +570,10 @@ def complete_challenge(challenge_id):
         if fun_fact:
             # Redirect instead of rendering to ensure all required variables are included
             flash('Did you know? ' + fun_fact.fact, 'fun-fact')
+        
+        # If there are new achievements, store them in session for the frontend to display
+        if new_achievements_data:
+            session['new_achievements'] = new_achievements_data
             
         return redirect(url_for('main.game', section='challenges'))
     except Exception as e:
@@ -1609,6 +1629,9 @@ def game(section='leaderboard'):
             'H': current_user.weekly_h_cap
         }
     
+    # Check for new achievements in the session
+    new_achievements = session.pop('new_achievements', None)
+    
     return render_template(
         'game.html',
         section=section,
@@ -1631,5 +1654,6 @@ def game(section='leaderboard'):
         current_user_weekly_points=current_user_weekly_points,
         recent_global_challenges=recent_global_challenges,
         login_form=(LoginForm() if section == 'auth' else None),
-        signup_form=(RegistrationForm() if section == 'auth' else None)
+        signup_form=(RegistrationForm() if section == 'auth' else None),
+        new_achievements=new_achievements
     )

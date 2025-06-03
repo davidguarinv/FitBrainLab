@@ -49,24 +49,24 @@
                 {% endif %}
             {% endwith %}
             
-    <!-- Navigation Tabs with Alpine.js -->
-    <div x-data="{ activeTab: '{{ section }}', loadContent: function(tab) { this.activeTab = tab; window.location.href = '/game/' + tab; } }">
+    <!-- Navigation Tabs with Alpine.js - Simple tab switching without URL changes -->
+    <div x-data="{ activeTab: '{{ section }}' }">
         <nav class="flex space-x-4 mb-8 border-b border-orange-200/50">
-            <button @click="loadContent('leaderboard')"
+            <button @click="activeTab = 'leaderboard'"
                class="px-3 py-2 text-sm font-medium rounded-md"
                :class="{'text-orange-500 border-b-2 border-orange-500': activeTab === 'leaderboard', 'text-gray-500 hover:text-orange-600': activeTab !== 'leaderboard'}">Leaderboard</button>
             {% if current_user.is_authenticated %}
-            <button @click="loadContent('challenges')"
+            <button @click="activeTab = 'challenges'"
                class="px-3 py-2 text-sm font-medium rounded-md"
                :class="{'text-orange-500 border-b-2 border-orange-500': activeTab === 'challenges', 'text-gray-500 hover:text-orange-600': activeTab !== 'challenges'}">Challenges</button>
-            <button @click="loadContent('progress')"
+            <button @click="activeTab = 'progress'"
                class="px-3 py-2 text-sm font-medium rounded-md"
                :class="{'text-orange-500 border-b-2 border-orange-500': activeTab === 'progress', 'text-gray-500 hover:text-orange-600': activeTab !== 'progress'}">My Progress</button>
-            <button @click="loadContent('profile')"
+            <button @click="activeTab = 'profile'"
                class="px-3 py-2 text-sm font-medium rounded-md"
                :class="{'text-primary border-b-2 border-primary': activeTab === 'profile', 'text-gray-500 hover:text-gray-700': activeTab !== 'profile'}">Profile</button>
             {% else %}
-            <button @click="loadContent('auth')"
+            <button @click="activeTab = 'auth'"
                class="px-3 py-2 text-sm font-medium rounded-md"
                :class="{'text-primary border-b-2 border-primary': activeTab === 'auth', 'text-gray-500 hover:text-gray-700': activeTab !== 'auth'}">Login/Signup</button>
             {% endif %}
@@ -498,5 +498,43 @@ function checkInHabit(habitChallengeId) {
         alert('An error occurred while checking in for the habit challenge.');
     });
 }
+
+// Check for new achievements and initialize the presentation if any are found
+document.addEventListener('DOMContentLoaded', function() {
+    {% if new_achievements %}
+    // Convert the server-side data to a JavaScript object
+    const newAchievements = {{ new_achievements|tojson }};
+    
+    // If there are new achievements, display them one by one
+    if (newAchievements && newAchievements.length > 0) {
+        // Start with the first achievement
+        const firstAchievement = newAchievements[0];
+        
+        // Initialize the achievement presentation
+        initAchievementPresentation(firstAchievement);
+        
+        // If there are more achievements, queue them up
+        if (newAchievements.length > 1) {
+            let currentIndex = 1;
+            
+            // Set up event listener for the "Return to FitQuest" button
+            document.addEventListener('achievement-modal-closed', function handleModalClosed() {
+                if (currentIndex < newAchievements.length) {
+                    // Display the next achievement
+                    setTimeout(() => {
+                        initAchievementPresentation(newAchievements[currentIndex]);
+                        currentIndex++;
+                    }, 500); // Small delay before showing the next achievement
+                } else {
+                    // No more achievements, remove the event listener
+                    document.removeEventListener('achievement-modal-closed', handleModalClosed);
+                }
+            });
+        }
+    }
+    {% endif %}
+    
+    // No URL updating functions needed - tabs switch client-side only
+});
 </script>
 {% endblock scripts %}

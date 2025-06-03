@@ -430,6 +430,13 @@ class Achievement:
             'condition': 'points_100000',
             'message': "We didn't think anyone would make it this far. You are officially insane and we hope you're enjoying the game.",
             'icon_type': 'ultimate_champion'
+        },
+        {
+            'id': 8,
+            'name': 'Social Butterfly',
+            'condition': 'friend_10',
+            'message': 'Look at our social butterfly go! Here\'s to all the new friends you\'ll make on your journey towards becoming stressilient',
+            'icon_type': 'heart-handshake'
         }
     ]
     

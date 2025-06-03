@@ -1,0 +1,58 @@
+/* Achievement Presentation Styles */
+
+/* Modal container with backdrop blur */
+#achievement-modal {
+    transition: opacity 0.5s ease;
+}
+
+/* Achievement icon container */
+.achievement-icon-container {
+    transform: translateY(-100vh);
+    transition: transform 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Achievement icon animation */
+.achievement-icon {
+    transform-style: preserve-3d;
+    animation: spin-coin 2s ease-out forwards;
+}
+
+/* Achievement text animation */
+.achievement-text {
+    transition: opacity 1s ease;
+}
+
+/* Animation for the achievement icon to roll down */
+.animate-achievement-icon {
+    transform: translateY(0);
+}
+
+/* Animation for text fade in */
+.animate-fade-in {
+    opacity: 1 !important;
+}
+
+/* Coin spin animation */
+@keyframes spin-coin {
+    0% {
+        transform: rotateY(0deg);
+    }
+    25% {
+        transform: rotateY(90deg);
+    }
+    50% {
+        transform: rotateY(180deg);
+    }
+    75% {
+        transform: rotateY(270deg);
+    }
+    100% {
+        transform: rotateY(360deg);
+    }
+}
+
+/* Apply blur to background when modal is active */
+body.achievement-modal-active > *:not(#achievement-modal) {
+    filter: blur(5px);
+    transition: filter 0.5s ease;
+}

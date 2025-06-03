@@ -47,6 +47,22 @@
                         {% endfor %}
                     </div>
                 {% endif %}
+                {% if current_user.is_authenticated and current_user.username == 'ActiveGenius951' %}
+                <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-6" role="alert">
+                    <strong class="font-bold">Achievement Testing Tools:</strong>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        <a href="{{ url_for('main.setup_achievement_test') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Setup 49 Easy Challenges
+                        </a>
+                        <a href="{{ url_for('main.setup_friend_challenges') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                            Setup 9 Friend Challenges
+                        </a>
+                        <a href="{{ url_for('main.trigger_achievement_check') }}" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                            Trigger Achievement Check
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
             {% endwith %}
             
     <!-- Navigation Tabs with Alpine.js -->
@@ -248,7 +264,7 @@
                     </div>
                     <div>
                         <h4 class="font-medium text-orange-600 text-sm">Friend Challenges</h4>
-                        <p class="text-xs text-gray-600">Share your personal code to attempt challenges with friends. When you both complete the same challenge within the time limit, you'll each earn bonus points!</p>
+                        <p class="text-xs text-gray-600">Share your personal code to attempt challenges with friends. When you both complete the same challenge within the time limit, you'll each earn bonus points! Find your code under the 'Profile' tab.</p>
                     </div>
                     <div>
                         <h4 class="font-medium text-orange-600 text-sm">Achievement Unlocks</h4>

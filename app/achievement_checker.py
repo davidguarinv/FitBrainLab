@@ -126,8 +126,9 @@ def check_user_achievements(user_id):
                 'id': achievement.id,
                 'name': achievement.name,
                 'message': achievement.message,
-                'points_reward': achievement.points_reward,
-                'icon': achievement.icon
+                'icon_type': achievement.icon_type,
+                'condition': achievement.condition,
+                'points_reward': achievement.points_reward
             })
             
             # Add the achievement points to the user's total
@@ -142,13 +143,24 @@ def check_user_achievements(user_id):
 def display_achievement_notifications(achievements):
     """Display flash notifications for earned achievements."""
     for achievement in achievements:
+        # Create a JavaScript object for the achievement data
+        achievement_json = {
+            'id': achievement['id'],
+            'name': achievement['name'],
+            'message': achievement['message'],
+            'icon_type': achievement['icon_type'],
+            'condition': achievement.get('condition', ''),
+            'points_reward': achievement.get('points_reward', 0)
+        }
+        
+        # Create a script tag that will call the showAchievementUnlock function
         flash(
-            f"<div class='achievement-notification'>"
-            f"<div class='achievement-icon'>{achievement['icon']}</div>"
-            f"<div class='achievement-content'>"
-            f"<h4>Achievement Unlocked: {achievement['name']}</h4>"
-            f"<p>{achievement['message']}</p>"
-            f"<p class='achievement-points'>+{achievement['points_reward']} points</p>"
-            f"</div></div>",
+            f"<script>"
+            f"document.addEventListener('DOMContentLoaded', function() {{"
+            f"    setTimeout(function() {{"
+            f"        showAchievementUnlock({achievement_json});"
+            f"    }}, 1000);"
+            f"}});"
+            f"</script>",
             'achievement'
         )

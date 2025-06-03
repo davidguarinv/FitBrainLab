@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import copy
+
 import json
 import math
 import sys
@@ -150,17 +152,20 @@ def submit_application():
                 }), 400
         
         # Send email (using 'application' type for about page form)
-        if send_email(form_data, 'application'):
-            return jsonify({
-                'success': True, 
-                'message': 'Application submitted successfully!'
-            })
-        else:
-            return jsonify({
-                'success': False, 
-                'message': 'Failed to send application. Please try again.'
-            }), 500
-            
+        db.session.commit()
+        
+        # Check for new achievements
+        from app.achievement_checker import check_user_achievements, display_achievement_notifications
+        newly_earned = check_user_achievements(current_user.id)
+        if newly_earned:
+            display_achievement_notifications(newly_earned)
+        
+        # Return success response
+        return jsonify({
+            'success': True,
+            'message': 'Application submitted successfully!'
+        })
+        
     except Exception as e:
         current_app.logger.error(f"Error processing application: {e}")
         return jsonify({
@@ -478,6 +483,7 @@ def complete_challenge(challenge_id):
                     
                     # Also update the first completer's points
                     first_user_id = friend_id  # The friend was the first to complete
+                    first_user = User.query.get(first_user_id)
                     
                     # Find the first user's completed challenge record
                     first_user_completion = CompletedChallenge.query.filter_by(
@@ -490,14 +496,19 @@ def complete_challenge(challenge_id):
                         bonus_points = int(challenge.points * 0.5)
                         first_user_completion.points_earned += bonus_points
                         
+                        # Update user's total points
+                        if first_user:
+                            first_user.points = (first_user.points or 0) + bonus_points
+                        
                         # Notify the first user about the bonus points
                         # This will be shown next time they log in
                         notification = Notification(
                             user_id=first_user_id,
-                            message=f"Your friend completed the challenge! You earned {bonus_points} bonus points!",
+                            message=f"Your friend {current_user.username} completed the challenge! You earned {bonus_points} bonus points!",
                             created_at=datetime.utcnow()
                         )
                         db.session.add(notification)
+                        current_app.logger.info(f"Added bonus points ({bonus_points}) to user {first_user_id} for friend challenge completion")
                     
                     if friend:
                         flash(f"You and {friend.username} both completed the challenge! Bonus points awarded!", "success")
@@ -541,6 +552,13 @@ def complete_challenge(challenge_id):
             fun_fact.last_shown = datetime.utcnow()
             
         db.session.commit()
+        
+        # Check for new achievements
+        from app.achievement_checker import check_user_achievements, display_achievement_notifications
+        newly_earned = check_user_achievements(current_user.id)
+        if newly_earned:
+            display_achievement_notifications(newly_earned)
+            flash(f'You earned {len(newly_earned)} new achievement(s)!', 'success')
         
         if not friend_link:
             flash('Challenge completed successfully!', 'success')
@@ -897,32 +915,10 @@ def complete_challenge_with_friend(challenge_id):
                 flash("This friend request expired. Please try again.", "error")
                 return redirect(url_for('main.game', section='challenges'))
 
-            # Mark confirmation
-            if current_user.id == link.user1_id:
-                link.user1_confirmed = True
-            else:
-                link.user2_confirmed = True
-
-            db.session.commit()
-
-            # If both confirmed, mark as friend-linked but don't complete yet
-            if link.user1_confirmed and link.user2_confirmed:
-                # Only add token usage for the second user (first user already used token when creating the link)
-                if current_user.id == link.user2_id:
-                    # The second user needs to use a token too
-                    # We already checked tokens at the beginning, but we need to check again
-                    # in case another process used a token while this request was processing
-                    current_tokens_left = get_friend_tokens_left(current_user)
-                    if current_tokens_left <= 0:
-                        flash("You've used all your friend tokens this week.", "error")
-                        return redirect(url_for('main.game', section='challenges'))
-                    
-                    # Add token usage record
-                    db.session.add(FriendTokenUsage(user_id=current_user.id, used_at=datetime.utcnow()))
-                    
-                flash("Challenge successfully linked with your friend! Complete it within 24 hours of each other for bonus points.", "success")
-            else:
-                flash("Friend request updated. Waiting for the other user to confirm.", "info")
+            # Since we removed the accept button from UI, this path should not be possible
+            # A user can only initiate a friend challenge, not accept one through this route
+            flash("This challenge already has a pending friend link.", "info")
+            return redirect(url_for('main.game', section='challenges'))
         else:
             # Check if the user has only 1 token left and has a pending friend request
             tokens_left = get_friend_tokens_left(current_user)
@@ -943,7 +939,7 @@ def complete_challenge_with_friend(challenge_id):
                 flash("You cannot send a new friend request when you have only 1 token left and another request is pending.", "error")
                 return redirect(url_for('main.game', section='challenges'))
             
-            # New link
+            # New link - only creating new links is possible through this route
             new_link = FriendChallengeLink(
                 challenge_id=challenge_id,
                 user1_id=current_user.id,
@@ -954,8 +950,23 @@ def complete_challenge_with_friend(challenge_id):
                 expires_at=datetime.utcnow() + timedelta(hours=24)
             )
             db.session.add(new_link)
-            db.session.add(FriendTokenUsage(user_id=current_user.id, used_at=datetime.utcnow()))
-            flash("Challenge linked. Waiting for your friend to confirm within 24 hours.", "info")
+            
+            # Add token usage and commit to ensure it's recorded
+            token_usage = FriendTokenUsage(user_id=current_user.id, used_at=datetime.utcnow())
+            db.session.add(token_usage)
+            db.session.commit()
+            
+            # Log token usage for debugging
+            current_app.logger.info(f"Token used by user {current_user.id} for friend challenge with user {friend.id}")
+            
+            # Check for new achievements after friend challenge creation
+            from app.achievement_checker import check_user_achievements, display_achievement_notifications
+            newly_earned = check_user_achievements(current_user.id)
+            if newly_earned:
+                display_achievement_notifications(newly_earned)
+                flash(f'You earned {len(newly_earned)} new achievement(s)!', 'success')
+            
+            flash(f"Challenge linked with {friend.username}. Waiting for your friend to confirm within 24 hours.", "info")
 
         db.session.commit()
 
@@ -1002,6 +1013,27 @@ def check_expired_friend_challenges():
             
             # Mark the link as expired
             link.expired = True
+            
+            # Send notification to the user who completed the challenge
+            if link.user1_completed and not link.user2_completed:
+                # User 1 completed, User 2 didn't
+                completed_user_id = link.user1_id
+                incomplete_user = User.query.get(link.user2_id)
+                incomplete_username = incomplete_user.username if incomplete_user else "Your friend"
+            else:
+                # User 2 completed, User 1 didn't
+                completed_user_id = link.user2_id
+                incomplete_user = User.query.get(link.user1_id)
+                incomplete_username = incomplete_user.username if incomplete_user else "Your friend"
+            
+            # Create notification for the user who completed the challenge
+            notification = Notification(
+                user_id=completed_user_id,
+                message=f"{incomplete_username} didn't complete the friend challenge in time. No bonus points awarded.",
+                created_at=datetime.utcnow()
+            )
+            db.session.add(notification)
+            current_app.logger.info(f"Added notification to user {completed_user_id} about expired friend challenge")
         
         db.session.commit()
         current_app.logger.info(f"Processed {len(expired_links)} expired friend challenges")
@@ -1047,10 +1079,167 @@ def recover_password():
             return redirect(url_for('main.game', section='auth'))
         else:
             flash('Invalid username or backup code.', 'error')
-            return redirect(url_for('main.recover_password'))
     
     # GET request - show the recovery form
     return render_template('recover_password.html')
+
+# Test routes for development
+@bp.route('/test/setup-achievement-test')
+@login_required
+def setup_achievement_test():
+    """Set up a test user with 49 completed easy challenges to test the achievement system."""
+    if not current_user.is_authenticated or current_user.username != 'ActiveGenius951':
+        flash('This test route is only available for the test user.', 'error')
+        return redirect(url_for('main.game'))
+        
+    try:
+        # Get all easy challenges
+        easy_challenges = Challenge.query.filter_by(difficulty='E').all()
+        
+        # Count existing completed challenges
+        existing_count = CompletedChallenge.query.filter_by(user_id=current_user.id).count()
+        
+        # Calculate how many more challenges to complete (up to 49 total)
+        to_complete = max(0, 49 - existing_count)
+        
+        if to_complete <= 0:
+            flash(f'User already has {existing_count} completed challenges.', 'info')
+            return redirect(url_for('main.game', section='progress'))
+            
+        # Complete challenges up to 49
+        completed = 0
+        for challenge in easy_challenges:
+            # Check if already completed
+            if CompletedChallenge.query.filter_by(
+                user_id=current_user.id, 
+                challenge_id=challenge.id
+            ).first():
+                continue
+                
+            # Create completed challenge record
+            completed_challenge = CompletedChallenge(
+                user_id=current_user.id,
+                challenge_id=challenge.id,
+                completed_at=datetime.utcnow() - timedelta(days=random.randint(1, 30)),
+                points_earned=challenge.points
+            )
+            db.session.add(completed_challenge)
+            
+            # Update user challenge status if it exists
+            uc = UserChallenge.query.filter_by(
+                user_id=current_user.id, 
+                challenge_id=challenge.id
+            ).first()
+            
+            if uc:
+                uc.status = 'completed'
+                
+            completed += 1
+            if completed >= to_complete:
+                break
+                
+        # Update user's total points
+        current_user.points = (current_user.points or 0) + (completed * 100)  # Assuming 100 points per challenge
+        
+        db.session.commit()
+        flash(f'Successfully set up {completed} additional completed challenges. Total: {existing_count + completed}/50 needed for achievement.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error setting up achievement test: {str(e)}")
+        flash(f'Error setting up achievement test: {str(e)}', 'error')
+        
+    return redirect(url_for('main.game', section='progress'))
+
+@bp.route('/test/setup-friend-challenges')
+@login_required
+def setup_friend_challenges():
+    """Set up a test user with 9 completed friend challenges to test the Social Butterfly achievement."""
+    if not current_user.is_authenticated or current_user.username != 'ActiveGenius951':
+        flash('This test route is only available for the test user.', 'error')
+        return redirect(url_for('main.game'))
+        
+    try:
+        # Count existing completed friend challenges
+        existing_count = db.session.query(func.count(FriendChallengeLink.id)).filter(
+            ((FriendChallengeLink.user1_id == current_user.id) & FriendChallengeLink.user1_confirmed) |
+            ((FriendChallengeLink.user2_id == current_user.id) & FriendChallengeLink.user2_confirmed)
+        ).scalar()
+        
+        # Calculate how many more friend challenges to complete (up to 9 total)
+        to_complete = max(0, 9 - existing_count)
+        
+        if to_complete <= 0:
+            flash(f'User already has {existing_count} completed friend challenges.', 'info')
+            return redirect(url_for('main.game', section='challenges'))
+            
+        # Get some other users to create friend challenges with
+        other_users = User.query.filter(User.id != current_user.id).limit(to_complete).all()
+        
+        if len(other_users) < to_complete:
+            flash(f'Not enough other users to create {to_complete} friend challenges.', 'warning')
+            # Create some test users if needed
+            for i in range(len(other_users), to_complete):
+                test_user = User(
+                    username=f'TestUser{i}',
+                    email=f'test{i}@example.com',
+                    password_hash=generate_password_hash('password'),
+                    created_at=datetime.utcnow(),
+                    personal_code=str(uuid.uuid4())[:8].upper()
+                )
+                db.session.add(test_user)
+                db.session.flush()  # Flush to get the ID
+                other_users.append(test_user)
+        
+        # Create friend challenges
+        completed = 0
+        for user in other_users[:to_complete]:
+            # Create a random challenge
+            challenge = Challenge.query.order_by(func.random()).first()
+            
+            # Create friend challenge link
+            fcl = FriendChallengeLink(
+                user1_id=current_user.id,
+                user2_id=user.id,
+                challenge_id=challenge.id,
+                created_at=datetime.utcnow() - timedelta(days=random.randint(1, 30)),
+                user1_confirmed=True,
+                user2_confirmed=True,
+                status='completed'
+            )
+            db.session.add(fcl)
+            completed += 1
+            
+        db.session.commit()
+        flash(f'Successfully set up {completed} additional friend challenges. Total: {existing_count + completed}/10 needed for Social Butterfly achievement.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error setting up friend challenges: {str(e)}")
+        flash(f'Error setting up friend challenges: {str(e)}', 'error')
+        
+    return redirect(url_for('main.game', section='challenges'))
+
+@bp.route('/test/trigger-achievement-check')
+@login_required
+def trigger_achievement_check():
+    """Trigger the achievement check for the current user and display any earned achievements."""
+    if not current_user.is_authenticated:
+        flash('You must be logged in to check achievements.', 'error')
+        return redirect(url_for('main.game'))
+        
+    # Import the achievement checker function
+    from app.achievement_checker import check_user_achievements, display_achievement_notifications
+    
+    # Check for new achievements
+    newly_earned = check_user_achievements(current_user.id)
+    
+    if newly_earned:
+        # Display notifications for newly earned achievements
+        display_achievement_notifications(newly_earned)
+        flash(f'Checked for achievements: {len(newly_earned)} new achievements earned!', 'success')
+    else:
+        flash('No new achievements earned.', 'info')
+        
+    return redirect(url_for('main.game', section='progress'))
 
 # Logout Route
 @bp.route('/logout')
@@ -1362,24 +1551,23 @@ def game(section='leaderboard'):
                         'completion_expires_at': link.completion_expires_at
                     }
             
-            # Get pending friend requests (where user is either initiator or receiver)
+            # Get pending friend requests (only those initiated by the current user)
+            # Since we've removed the ability to accept friend requests through the UI
             pending_requests = FriendChallengeLink.query.filter(
-                (((FriendChallengeLink.user1_id == current_user.id) & (FriendChallengeLink.user1_confirmed == True) & (FriendChallengeLink.user2_confirmed == False)) |
-                ((FriendChallengeLink.user2_id == current_user.id) & (FriendChallengeLink.user2_confirmed == False))) &
+                (FriendChallengeLink.user1_id == current_user.id) & 
+                (FriendChallengeLink.user1_confirmed == True) & 
+                (FriendChallengeLink.user2_confirmed == False) &
                 (FriendChallengeLink.expired == False) &
                 (FriendChallengeLink.expires_at > datetime.utcnow())
             ).all()
             
             for request in pending_requests:
-                # Determine if user is initiator or receiver
-                is_initiator = request.user1_id == current_user.id
-                other_user_id = request.user2_id if is_initiator else request.user1_id
-                other_user = User.query.get(other_user_id)
+                other_user = User.query.get(request.user2_id)
                 
                 if other_user:
                     pending_friend_requests[request.challenge_id] = {
                         'friend_username': other_user.username,
-                        'is_initiator': is_initiator,
+                        'is_initiator': True,  # Always true since we only show requests initiated by current user
                         'expires_at': request.expires_at
                     }
         except Exception as e:

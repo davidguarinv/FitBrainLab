@@ -3958,6 +3958,10 @@ body {
   }
 }
 
+.fade-out {
+  --tw-exit-opacity: 0;
+}
+
 .duration-200 {
   animation-duration: 200ms;
 }

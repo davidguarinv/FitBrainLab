@@ -290,7 +290,7 @@
       </div>
     </section>
 
-    <!-- Combined Habit Building Game & Sample Challenges Section -->
+    <!-- Combined Fit Quest & Sample Challenges Section -->
     <section
       id="game"
       class="w-full py-20 bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50 overflow-hidden"
@@ -380,11 +380,11 @@
           <div class="relative">
             <div class="aspect-video rounded-2xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 p-8 shadow-2xl shadow-orange-500/25 flex items-center justify-center">
               <div class="text-center text-white">
-                <svg class="w-24 h-24 mx-auto mb-4 text-orange-200" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-                <p class="text-2xl font-bold">Fit Quest Interface</p>
-                <p class="text-orange-200">Build streaks, earn rewards</p>
+                <img 
+                src="{{ url_for('static', filename='images/game.png') }}"
+                alt="Fit Quest Game" 
+                class="h-max w-auto mb-4 mx-auto rounded-lg object-contain">
+                <p class="text-2xl font-bold">Fit Quest</p>
               </div>
             </div>
           </div>
@@ -523,7 +523,7 @@
               <div class="text-center text-white">
                 <img 
                 src="{{ url_for('static', filename='images/map.png') }}"
-                alt="Amsterdam The Netherlands Google Maps" 
+                alt="Amsterdam The Netherlands Maps" 
                 class="h-max w-auto mb-4 mx-auto rounded-lg object-contain">
                 <p class="text-2xl font-bold">Amsterdam Sports Map</p>
                 <p class="text-orange-200">Interactive Community Finder</p>
